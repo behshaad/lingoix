@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ✅ اطمینان از اعمال شدن حالت دارک */
+html.dark {
+  @apply bg-gray-900 text-white;
+}
