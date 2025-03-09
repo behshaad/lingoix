@@ -1,4 +1,7 @@
 {
-  "welcome": "Willkommen bei Lingoix",
-  "changeLanguage": "Sprache ändern"
+  "welcome": "Lingoix",
+  "changeLanguage": "Sprache ändern",
+  "login": "Anmelden",
+  "register": "Registrieren",
+  "toggleDarkMode": "Dunkelmodus umschalten"
 }
