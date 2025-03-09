@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 // import RegisterPage from "./pages/RegisterPage";
 // import Dashboard from "./pages/Dashboard";
 
+
 function App() {
   return (
     <Router>
@@ -18,3 +19,4 @@ function App() {
 }
 
 export default App;
+
