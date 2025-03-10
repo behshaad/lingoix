@@ -4,9 +4,25 @@
   "register": "Registrieren",
   "toggleDarkMode": "Dunkelmodus umschalten",
   "resources": "Resources",
-   "welcome_dashboard": "Willkommen in deinem Dashboard!",
+  "welcome_dashboard": "Willkommen in deinem Dashboard!",
   "login": "Einloggen",
   "logout": "Ausloggen",
+  "title": "Laufende Kurse",
+  "lastActive": "Zuletzt aktiv",
+  "progress": "Fortschritt",
+  "continue": "Weiterlernen",
+  "allCourses": "Alle Kurse",
+  "close": "Schließen",  "medals": "Medaillen",
+  "Gold": "Gold",
+  "Silver": "Silber",
+  "Bronze": "Bronze",
+  "Learn 3 days in a week to earn Gold": "Lerne 3 Tage pro Woche, um Gold zu verdienen",
+  "Learn 2 days in a week to earn Silver": "Lerne 2 Tage pro Woche, um Silber zu verdienen",
+  "Learn 1 day in a week to earn Bronze": "Lerne 1 Tag pro Woche, um Bronze zu verdienen",
+  "Next Medal": "Nächste Medaille",
+  "You are 1 day away from earning": "Du bist 1 Tag davon entfernt, zu verdienen",
+  "Continue Learning": "Weiter lernen",
+  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",
 
   "hero": {
     "title": "Willkommen bei Lingoix",
@@ -29,4 +45,5 @@
   ],
   "cta": "Jetzt anmelden"
 }
+
 
