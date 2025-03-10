@@ -3,5 +3,27 @@
   "changeLanguage": "Sprache ändern",
   "login": "Anmelden",
   "register": "Registrieren",
-  "toggleDarkMode": "Dunkelmodus umschalten"
+  "toggleDarkMode": "Dunkelmodus umschalten",
+
+    "hero": {
+    "title": "Willkommen bei Lingoix",
+    "subtitle": "Die beste Plattform zum Sprachenlernen"
+  },
+  "features": "Unsere Funktionen",
+  "featureCards": [
+    {
+      "title": "Interaktive Lektionen",
+      "description": "Lernen mit interaktiven Aktivitäten."
+    },
+    {
+      "title": "Echtzeit-Fortschrittsverfolgung",
+      "description": "Verfolgen Sie Ihren Lernfortschritt."
+    },
+    {
+      "title": "Expertenlehrer",
+      "description": "Lernen Sie von erfahrenen Lehrern."
+    }
+  ],
+  "cta": "Jetzt anmelden"
 }
+

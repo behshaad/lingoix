@@ -3,5 +3,25 @@
   "changeLanguage": "Change Language",
   "login": "Login",
   "register": "Sign Up",
-  "toggleDarkMode": "Toggle Dark Mode"
+  "toggleDarkMode": "Toggle Dark Mode",
+  "hero": {
+    "title": "Welcome to Lingoix",
+    "subtitle": "The best platform for learning languages"
+  },
+  "features": "Our Features",
+  "featureCards": [
+    {
+      "title": "Interactive Lessons",
+      "description": "Learn with engaging activities."
+    },
+    {
+      "title": "Real-Time Progress Tracking",
+      "description": "Track your learning journey."
+    },
+    {
+      "title": "Expert Teachers",
+      "description": "Learn from experienced instructors."
+    }
+  ],
+  "cta": "Sign Up Now"
 }
