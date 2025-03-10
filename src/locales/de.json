@@ -22,7 +22,14 @@
   "Next Medal": "Nächste Medaille",
   "You are 1 day away from earning": "Du bist 1 Tag davon entfernt, zu verdienen",
   "Continue Learning": "Weiter lernen",
-  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",
+  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",  "completedCourses": "Abgeschlossene Kurse",
+  "search": "🔍 Suchen...",
+  "sortByName": "Nach Name sortieren",
+  "sortByScore": "Nach Punktzahl sortieren",
+  "courseName": "Kursname",
+  "score": "Punktzahl",
+  "certificate": "Zertifikat",
+  "download": "Herunterladen 📜",
 
   "hero": {
     "title": "Willkommen bei Lingoix",
