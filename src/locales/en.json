@@ -1,9 +1,12 @@
 {
   "welcome": "Lingoix",
   "changeLanguage": "Change Language",
-  "login": "Login",
   "register": "Sign Up",
   "toggleDarkMode": "Toggle Dark Mode",
+  "resources": "Resources",
+  "welcome_dashboard": "Welcome to your dashboard!",
+  "login": "Login",
+  "logout": "Logout",
   "hero": {
     "title": "Welcome to Lingoix",
     "subtitle": "The best platform for learning languages"

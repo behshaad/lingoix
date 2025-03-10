@@ -1,11 +1,14 @@
 {
   "welcome": "Lingoix",
   "changeLanguage": "Sprache ändern",
-  "login": "Anmelden",
   "register": "Registrieren",
   "toggleDarkMode": "Dunkelmodus umschalten",
+  "resources": "Resources",
+   "welcome_dashboard": "Willkommen in deinem Dashboard!",
+  "login": "Einloggen",
+  "logout": "Ausloggen",
 
-    "hero": {
+  "hero": {
     "title": "Willkommen bei Lingoix",
     "subtitle": "Die beste Plattform zum Sprachenlernen"
   },

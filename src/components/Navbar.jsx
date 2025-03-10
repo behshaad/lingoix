@@ -1,17 +1,36 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { FiSun, FiMoon } from "react-icons/fi"; // آیکون‌های مدرن
+import { FiSun, FiMoon } from "react-icons/fi";
+// import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const { t } = useTranslation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // مدیریت وضعیت منو
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // چک کردن وضعیت کاربر هنگام بارگذاری کامپوننت
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // خروج از حساب کاربری
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/");
+  };
 
   return (
-    <nav className="w-full  py-5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md fixed top-0 left-0 z-50">
+    <nav className="w-full py-5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
         {/* لوگو */}
         <Link
@@ -37,21 +56,60 @@ const Navbar = () => {
           {/* سوییچر زبان */}
           <LanguageSwitcher />
 
-          {/* لینک‌های ورود و ثبت‌نام */}
-          <Link
-            to="/login"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
-          >
-            {t("login")}
-          </Link>
-          <Link
-            to="/register"
-            className="px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-full text-sm font-medium shadow-md hover:bg-blue-700 dark:hover:bg-blue-400 transition"
-          >
-            {t("register")}
-          </Link>
+          {/* نمایش دکمه‌های ورود/ثبت‌نام یا پروفایل کاربر */}
+          {!user ? (
+            <>
+              <Link
+                to="/register"
+                className="px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-full text-sm font-medium shadow-md hover:bg-blue-700 dark:hover:bg-blue-400 transition"
+              >
+                {t("register")}
+              </Link>
+              <Link
+                to="/login"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              >
+                {t("login")}
+              </Link>
+            </>
+          ) : (
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2"
+              >
+                <img
+                  src={user.profilePic || "https://i.pravatar.cc/150"}
+                  alt="Profile"
+                  className="w-9 h-9 rounded-full border border-gray-300 shadow-sm"
+                />
+              </button>
 
-          {/* دکمه همبرگر */}
+              {/* منوی کشویی حساب کاربری */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2">
+                  <p className="text-sm font-semibold text-gray-700 dark:text-white px-3 py-2">
+                    {user.name}
+                  </p>
+                  <hr className="border-gray-300 dark:border-gray-700" />
+                  <Link
+                    to="/dashboard"
+                    className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+                  >
+                    {t("dashboard")}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-3 py-2 text-red-600 hover:text-red-400 rounded-md"
+                  >
+                    {t("logout")}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* دکمه همبرگری برای موبایل */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="block lg:hidden p-2 rounded-full transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -74,25 +132,45 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* منوی همبرگر برای موبایل */}
-      <div
-        className={`lg:hidden ${
-          isMenuOpen ? "block" : "hidden"
-        } absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-lg p-4`}
-      >
-        <Link
-          to="/login"
-          className="block text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition mb-4"
-        >
-          {t("login")}
-        </Link>
-        <Link
-          to="/register"
-          className="block text-center px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-full text-sm font-medium shadow-md hover:bg-blue-700 dark:hover:bg-blue-400 transition"
-        >
-          {t("register")}
-        </Link>
-      </div>
+      {/* منوی همبرگری برای موبایل */}
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-lg p-4">
+          {!user ? (
+            <>
+              <Link
+                to="/login"
+                className="block text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition mb-4"
+              >
+                {t("login")}
+              </Link>
+              <Link
+                to="/register"
+                className="block text-center px-4 py-2 bg-blue-600 text-white dark:bg-blue-500 rounded-full text-sm font-medium shadow-md hover:bg-blue-700 dark:hover:bg-blue-400 transition"
+              >
+                {t("register")}
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-gray-700 dark:text-white px-3 py-2">
+                {user.name}
+              </p>
+              <Link
+                to="/dashboard"
+                className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+              >
+                {t("dashboard")}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-3 py-2 text-red-600 hover:text-red-400 rounded-md"
+              >
+                {t("logout")}
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

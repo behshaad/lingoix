@@ -1,7 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
-// import OtherPage from "./pages/OtherPage";
+import Resources from "./pages/Resources";
+import Dashboard from "./pages/ Dashboard"; 
+import Login from "./components/Login"; 
+
 
 const AppRouter = () => {
   return (
@@ -10,7 +13,9 @@ const AppRouter = () => {
       <div className="content pt-20">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/other" element={<OtherPage />} /> */}
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
