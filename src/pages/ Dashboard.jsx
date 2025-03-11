@@ -27,17 +27,17 @@ const Dashboard = () => {
       <p className="text-lg text-gray-700 dark:text-gray-300">
         {t("welcome_dashboard")}
       </p>
+      <div>
+        <StudyReminder />
+      </div>
       <div className="max-w-6xl mx-auto px-6 py-8">
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CoursesInProgress />
           <CompletedCourses />
           <Medals />
           <LearningStatistics />
-          <StudyReminder/>
         </div>
       </div>
-      ;
     </div>
   );
 };
