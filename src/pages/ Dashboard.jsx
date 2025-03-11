@@ -14,6 +14,7 @@ const Dashboard = () => {
 
   // بررسی اینکه آیا کاربر لاگین کرده است یا نه
   useEffect(() => {
+
     const user = localStorage.getItem("user"); // دریافت اطلاعات کاربر از LocalStorage
     if (!user) {
       navigate("/login"); // اگر لاگین نیست، به صفحه ورود هدایت شود

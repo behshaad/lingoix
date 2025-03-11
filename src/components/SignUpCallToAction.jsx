@@ -2,7 +2,7 @@ import React from "react";
 
 const SignUpCallToAction = () => {
   return (
-    <div className="cta-section bg-white dark:bg-gray-800 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 rounded-lg shadow-lg text-center max-w-md mx-auto">
+    <div className="cta-section bg-white  dark:bg-gray-800 p-6  sm:p-8 md:p-10 lg:p-12 xl:p-14 rounded-lg shadow-lg text-center max-w-md mx-auto">
       <h2 className="text-3xl sm:text-4xl font-semibold text-black dark:text-white mb-4">
         Join Lingoix Now!
       </h2>
@@ -17,3 +17,8 @@ const SignUpCallToAction = () => {
 };
 
 export default SignUpCallToAction;
+
+
+  // <div className="cta-section py-12 text-center">
+  //       <SignUpCallToAction ctaText={t("cta")} />
+  //     </div>
