@@ -7,6 +7,7 @@ import CompletedCourses from "../components/CompletedCourses";
 import Medals from "../components/Medals";
 import LearningStatistics from "../components/LearningStatistics";
 import StudyReminder from "../components/StudyReminder"
+import FlashCard from "../components/FlashCard"
 const Dashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Dashboard = () => {
           <CompletedCourses />
           <Medals />
           <LearningStatistics />
+          <FlashCard/>
         </div>
       </div>
     </div>
