@@ -17,8 +17,3 @@ const SignUpCallToAction = () => {
 };
 
 export default SignUpCallToAction;
-
-
-  // <div className="cta-section py-12 text-center">
-  //       <SignUpCallToAction ctaText={t("cta")} />
-  //     </div>

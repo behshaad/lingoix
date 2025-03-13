@@ -11,7 +11,6 @@
   "continue": "Continue Learning",
   "allCourses": "All Courses",
   "close": "Close",
-  "login": "Login",
   "logout": "Logout",
   "medals": "Medals",
   "Gold": "Gold",
@@ -32,6 +31,12 @@
   "score": "Score",
   "certificate": "Certificate",
   "download": "Download 📜",
+  "allArtworks": "All Artworks",
+  "allArtists": "All Artists",
+  "sellArtwork": "Sell Your Artwork",
+  "createAccount": "Create Free Account",
+  "login": "Login",
+  "cart": "Cart",
   "hero": {
     "title": "Welcome to Lingoix",
     "subtitle": "The best platform for learning languages"

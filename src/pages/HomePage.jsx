@@ -3,7 +3,7 @@ import React from "react";
 import Header from "../components/Header";
 import FeaturesSection from "../components/FeaturesSection";
 import SignUpCallToAction from "../components/SignUpCallToAction";
-// import Test from "../components/Test";
+// import Test from "./Test";
 
 const HomePage = () => {
   return (

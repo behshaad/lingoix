@@ -4,12 +4,12 @@ const RightHero = () => {
       const { t } = useTranslation();
 
   return (
-    <div className="  bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white">
+    <div className="  bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
       <div class="max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:text-left">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:leading-tight xl:text-6xl">
           {t("hero.title")} ✨ digital artworks
         </h1>
-        <p class="mt-5 text-lg font-medium text-gray-900 lg:mt-8 dark:bg-gray-900 dark:text-white">
+        <p class="mt-5 text-lg font-medium text-gray-900 lg:mt-8 dark:text-white">
           {t("hero.subtitle")}
         </p>
 
@@ -179,7 +179,7 @@ const RightHero = () => {
           </svg>
         </div>
 
-        <div class="inline-grid grid-cols-2 mt-8 gap-x-8 text-gray-900 bg-gray-100  dark:bg-gray-900 dark:text-white">
+        <div class="inline-grid grid-cols-2 mt-8 gap-x-8 text-gray-900 bg-gray-100  dark:bg-gray-800 dark:text-white">
           <div>
             <p class="text-4xl font-bold text-gray-900 dark:text-white">50k+</p>
             <p class="mt-2 text-base font-medium text-gray-500">Artwork</p>

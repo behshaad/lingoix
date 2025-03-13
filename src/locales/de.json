@@ -5,14 +5,14 @@
   "toggleDarkMode": "Dunkelmodus umschalten",
   "resources": "Resources",
   "welcome_dashboard": "Willkommen in deinem Dashboard!",
-  "login": "Einloggen",
   "logout": "Ausloggen",
   "title": "Laufende Kurse",
   "lastActive": "Zuletzt aktiv",
   "progress": "Fortschritt",
   "continue": "Weiterlernen",
   "allCourses": "Alle Kurse",
-  "close": "Schließen",  "medals": "Medaillen",
+  "close": "Schließen",
+  "medals": "Medaillen",
   "Gold": "Gold",
   "Silver": "Silber",
   "Bronze": "Bronze",
@@ -22,7 +22,8 @@
   "Next Medal": "Nächste Medaille",
   "You are 1 day away from earning": "Du bist 1 Tag davon entfernt, zu verdienen",
   "Continue Learning": "Weiter lernen",
-  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",  "completedCourses": "Abgeschlossene Kurse",
+  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",
+  "completedCourses": "Abgeschlossene Kurse",
   "search": "🔍 Suchen...",
   "sortByName": "Nach Name sortieren",
   "sortByScore": "Nach Punktzahl sortieren",
@@ -30,6 +31,12 @@
   "score": "Punktzahl",
   "certificate": "Zertifikat",
   "download": "Herunterladen 📜",
+  "allArtworks": "Alle Kunstwerke",
+  "allArtists": "Alle Künstler",
+  "sellArtwork": "Verkaufen Sie Ihr Kunstwerk",
+  "createAccount": "Kostenloses Konto erstellen",
+  "login": "Anmelden",
+  "cart": "Warenkorb",
 
   "hero": {
     "title": "Willkommen bei Lingoix",
@@ -52,5 +59,3 @@
   ],
   "cta": "Jetzt anmelden"
 }
-
-

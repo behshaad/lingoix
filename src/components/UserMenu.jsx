@@ -37,13 +37,13 @@ const UserMenu = ({ user, setUser }) => {
             to="/dashboard"
             className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
           >
-            داشبورد
+            Dashboard
           </Link>
           <button
             onClick={handleLogout}
             className="block w-full text-left px-3 py-2 text-red-600 hover:text-red-400 rounded-md"
           >
-            خروج
+            Exit
           </button>
         </div>
       )}
