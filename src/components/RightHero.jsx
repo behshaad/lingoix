@@ -4,7 +4,7 @@ const RightHero = () => {
       const { t } = useTranslation();
 
   return (
-    <div className="  bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
+    <div className="bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
       <div class="max-w-md mx-auto text-center xl:max-w-lg lg:mx-0 lg:text-left">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:leading-tight xl:text-6xl">
           {t("hero.title")} ✨ digital artworks
