@@ -80,9 +80,9 @@ export default function LanguageCards() {
 
     gsap.to(wrapper, {
       x: -(totalWidth - containerWidth),
-      duration: 10,
+      duration: 3,
       ease: "none",
-      repeat: -1,
+      repeat: 1,
       yoyo: true,
     });
 
@@ -95,14 +95,13 @@ export default function LanguageCards() {
 
   return (
     <div ref={containerRef} className="w-full overflow-hidden py-36 ">
-      <div className="absolute inset-y-0 left-0 w-12 "></div>
-      <div className="absolute inset-y-0 right-0 w-12 "></div>
+
 
       <div ref={wrapperRef} className="flex gap-4 px-4">
         {languages.map((lang, index) => (
           <div
             key={index}
-            className={`${lang.color} rounded-xl p-4 shadow-lg flex flex-col min-w-[200px] transition-transform hover:scale-105`}
+            className={`${lang.color} rounded-xl p-4 shadow-lg flex flex-col min-w-[200px] transition-transform hover:scale-105 `}
           >
             <div className="text-4xl mb-2">{lang.flag}</div>
             <h3 className="font-bold text-lg">{lang.language}</h3>
@@ -115,3 +114,5 @@ export default function LanguageCards() {
     </div>
   );
 }
+
+
