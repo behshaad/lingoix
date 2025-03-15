@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { Link } from "react-router-dom";
+
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -126,22 +126,22 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* <button
+          <button
             onClick={handleSignUp}
             className="w-full h-12 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-white transition"
           >
             ثبت‌نام
-          </button> */}
-          <Link to="/signup" className="text-blue-500 hover:underline">
-            ثبت‌نام کنید
-          </Link>
+          </button>
 
           <div className="text-center text-sm">
             <span>
               حساب کاربری دارید؟{" "}
-              <a href="#" className="font-medium hover:underline">
+              {/* <a href="#" className="font-medium hover:underline">
                 وارد شوید
-              </a>
+              </a> */}
+              <Link to="/login" className="font-medium hover:underline">
+                ثبت‌نام کنید
+              </Link>
             </span>
           </div>
         </div>
@@ -151,7 +151,5 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-
 
 

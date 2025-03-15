@@ -6,16 +6,16 @@ import Test from "./Testix";
 import SmartLearnHero from "../components/SmartLearnHero";
 import StepbyStep from "../components/Stepby/StepbyStep";
 import UserMenu from "../components/UserMenu";
+import SignUp from "./Testix";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <UserMenu/>
       <Header />
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
       {/* <Test /> */}
-      {/* <FeaturesSection /> */}
+      {/* <SignUp/> */}
     </div>
   );
 };

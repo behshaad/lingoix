@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Resources from "./pages/Resources";
 import Dashboard from "./pages/ Dashboard"; 
 import Login from "./components/Login"; 
-
+import SignUp from "./components/SignUp";
 
 const AppRouter = () => {
   return (
@@ -16,6 +16,7 @@ const AppRouter = () => {
           <Route path="/resources" element={<Resources />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </div>
     </Router>
