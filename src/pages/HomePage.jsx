@@ -5,15 +5,17 @@ import FeaturesSection from "../components/FeaturesSection";
 import Test from "./Testix";
 import SmartLearnHero from "../components/SmartLearnHero";
 import StepbyStep from "../components/Stepby/StepbyStep";
+import UserMenu from "../components/UserMenu";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
+      <UserMenu/>
       <Header />
       <SmartLearnHero />
       <StepbyStep />
-      {/* <FeaturesSection /> */}
-      {/* <Test /> */}
       <FeaturesSection />
+      {/* <Test /> */}
+      {/* <FeaturesSection /> */}
     </div>
   );
 };

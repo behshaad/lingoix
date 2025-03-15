@@ -11,7 +11,7 @@ const Header = () => {
     <>
       <SecondNav />
 
-      <div className="flex flex-col lg:flex-row overflow-hidden bg-gray-100 dark:bg-gray-800">
+      <div className="flex flex-col lg:flex-row overflow-hidden bg-gray-100 dark:bg-gray-800/60">
         <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div className="flex flex-col lg:flex-row px-4 mx-auto sm:px-6  max-w-7xl sm:py-16 lg:py-20 xl:py-24">
             <div className="lg:w-1/2 flex justify-center lg:justify-start">

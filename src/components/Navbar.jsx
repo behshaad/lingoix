@@ -50,15 +50,12 @@ const Navbar = () => {
             <ThemeToggle />
           </div>
           {/* سوییچر زبان */}
-
           <div className="hidden lg:block">
             <LanguageSwitcher />
           </div>
           {/* سوییچر زبان */}
-
           {/* نمایش دکمه‌های ورود/ثبت‌نام یا پروفایل کاربر */}
-          {user && <UserMenu user={user} setUser={setUser} />}
-
+          ‍<UserMenu />
           {/* دکمه همبرگری برای موبایل */}
           <button onClick={toggleMobileMenu} className="lg:hidden text-2xl">
             ☰
