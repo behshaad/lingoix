@@ -1,25 +1,23 @@
 import React from "react";
 
-import Header from "../components/Header";
-import FeaturesSection from "../components/FeaturesSection";
-import Test from "./Testix";
-import SmartLearnHero from "../components/SmartLearnHero";
-import StepbyStep from "../components/Stepby/StepbyStep";
-import UserMenu from "../components/UserMenu";
-import SignUp from "./Testix";
+import Hero from "../components/Header/Hero";
+import FeaturesSection from "../components/Home/FeaturesSection";
+import SmartLearnHero from "../components/Home/SmartLearnHero";
+import StepbyStep from "../components/Home/Stepby/StepbyStep";
+
+import Test from "./Test";
+
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <Header />
+      <Hero/>
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
       {/* <Test /> */}
-      {/* <SignUp/> */}
     </div>
   );
 };
 
 export default HomePage;
 
-// Add a step-by-step guide

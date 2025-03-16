@@ -2,12 +2,14 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CoursesInProgress from "../components/CoursesInProgress";
-import CompletedCourses from "../components/CompletedCourses";
-import Medals from "../components/Medals";
-import LearningStatistics from "../components/LearningStatistics";
-import StudyReminder from "../components/StudyReminder"
-import FlashCard from "../components/FlashCard"
+
+import CoursesInProgress from "../components/Students/CoursesInProgress";
+import CompletedCourses from "../components/Students/CompletedCourses";
+import Medals from "../components/Students/Medals";
+import LearningStatistics from "../components/Students/LearningStatistics";
+import StudyReminder from "../components/Students/StudyReminder"
+import FlashCard from "../components/Students/FlashCard"
+
 const Dashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
