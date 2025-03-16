@@ -1,6 +1,6 @@
 import React from "react";
 
-import Hero from "../components/Header/Hero";
+import Hero from "../components/Home/Header/Hero";
 import FeaturesSection from "../components/Home/FeaturesSection";
 import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";

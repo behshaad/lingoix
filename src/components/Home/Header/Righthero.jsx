@@ -3,12 +3,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Draggable } from "gsap/Draggable";
 
-import CommunitySVG from "../../assets/Headercards/community.svg";
-import lesen from "../../assets/Headercards/lesen.svg";
-import location from "../../assets/Headercards/location.svg";
-import ontheway from "../../assets/Headercards/ontheway.svg";
-import playfulcat from "../../assets/Headercards/playfulcat.svg";
-import result from "../../assets/Headercards/result.svg";
+import CommunitySVG from "../../../assets/Headercards/community.svg";
+import lesen from "../../../assets/Headercards/lesen.svg";
+import location from "../../../assets/Headercards/location.svg";
+import ontheway from "../../../assets/Headercards/ontheway.svg";
+import playfulcat from "../../../assets/Headercards/playfulcat.svg";
+import result from "../../../assets/Headercards/result.svg";
 
 const languages = [
   {

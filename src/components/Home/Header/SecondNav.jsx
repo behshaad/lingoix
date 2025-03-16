@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ThemeContext } from "../../context/ThemeContext.jsx"; 
+import { ThemeContext } from "../../../context/ThemeContext.jsx"; 
 import { useTranslation } from "react-i18next";
 
 const SecondNav = () => {
