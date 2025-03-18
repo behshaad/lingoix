@@ -10,7 +10,9 @@ const Hero = () => {
 
       {/* کانتینر اصلی */}
       <div className="flex flex-col md:flex-row m-4 md:m-9 ">
+        
         {/* بخش چپ */}
+
         <div className="w-full md:w-1/2 ">
           <Lefthero />
         </div>
@@ -19,6 +21,8 @@ const Hero = () => {
         <div className="w-full md:w-1/2">
           <RightHero />
         </div>
+
+        
       </div>
     </>
   );

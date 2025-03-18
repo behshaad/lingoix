@@ -88,11 +88,13 @@ export default function LanguageCards() {
     <div ref={containerRef} className=" overflow-hidden ">
       <div ref={wrapperRef} className="flex gap-6  py-14  ">
         {languages.map((lang, index) => (
+          
           <div
             key={index}
-            className={`${lang.color} rounded-xl p-6 shadow-lg flex flex-col min-w-[290px] transition-transform hover:scale-105`}
+            className={`${lang.color}  rounded-xl p-6 shadow-lg flex flex-col gap-6 justify-start min-w-[290px] transition-transform hover:scale-105`}
           >
-            <h3 className="font-bold text-lg">{lang.Title}</h3>
+            <h3 className="font-bold text-lg ">{lang.Title}</h3>
+
             <div className="w-15 h-15 mb-2">
               <img
                 src={lang.flag}
@@ -100,12 +102,18 @@ export default function LanguageCards() {
                 className="w-full h-full object-contain"
               />
             </div>
+
             <span className="text-sm text-gray-600 dark:text-gray-400">
               {lang.Caption}
             </span>
+
           </div>
+
+
         ))}
       </div>
+
+
     </div>
   );
 }

@@ -5,12 +5,12 @@ import FeaturesSection from "../components/Home/FeaturesSection";
 import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";
 
-import Test from "./Test";
+// import Test from "./Test";
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <Hero/>
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
@@ -20,4 +20,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
