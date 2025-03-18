@@ -1,67 +1,67 @@
-import React from "react";
+// import React, { useState } from "react";
+// import { FiBook, FiHeadphones, FiVideo, FiSearch } from "react-icons/fi";
 
-const Test = () => {
-  return (
-    <div className="bg-[#001220] text-white">
-      {/* Header Section */}
-      <header className="sticky top-0 left-0 z-10 py-6 px-8">
-        <nav className="w-full bg-opacity-40 bg-gray-600 text-black py-2 text-center flex justify-around rounded-full backdrop-blur-sm">
-          <ul className="flex justify-between w-4/5">
-            <li className="font-bold">
-              <a href="#portfolio">Portfolio</a>
-            </li>
-            <li className="font-bold">
-              <a href="#press">Press</a>
-            </li>
-            <li className="font-bold">
-              <a href="#shop">Shop</a>
-            </li>
-            <li className="font-bold">
-              <a href="#about">About</a>
-            </li>
-          </ul>
-        </nav>
-      </header>
+// const resources = [
+//   {
+//     title: "کتاب‌ها",
+//     description: "معرفی منابع اصلی کتاب‌های آموزش زبان.",
+//     icon: <FiBook className="w-8 h-8 text-blue-500" />,
+//     link: "#books",
+//   },
+//   {
+//     title: "منابع صوتی",
+//     description: "فایل‌های صوتی برای تقویت مهارت شنیداری.",
+//     icon: <FiHeadphones className="w-8 h-8 text-green-500" />,
+//     link: "#audio",
+//   },
+//   {
+//     title: "ویدیوهای آموزشی",
+//     description: "مجموعه‌ای از ویدیوهای مرتبط با یادگیری زبان.",
+//     icon: <FiVideo className="w-8 h-8 text-red-500" />,
+//     link: "#videos",
+//   },
+// ];
 
-      {/* Sections */}
-      <section
-        id="portfolio"
-        className="h-screen flex justify-center items-center"
-      >
-        <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-900 to-green-400 bg-clip-text text-transparent">
-          startenwir
-        </h2>
-      </section>
+// export default function ResourcesPage() {
+//   const [search, setSearch] = useState("");
 
-      <section id="press" className="h-screen flex justify-center items-center">
-        <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-900 to-green-400 bg-clip-text text-transparent">
-          Press
-        </h2>
-      </section>
+//   const filteredResources = resources.filter((resource) =>
+//     resource.title.toLowerCase().includes(search.toLowerCase())
+//   );
 
-      <section id="shop" className="h-screen flex justify-center items-center">
-        <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-900 to-green-400 bg-clip-text text-transparent">
-          Shop
-        </h2>
-      </section>
+//   return (
+//     <div className="p-6">
+//       {/* نوار جستجو */}
+//       <div className="flex items-center mb-6 border rounded-lg p-2 shadow-sm">
+//         <FiSearch className="text-gray-500 w-5 h-5 mr-2" />
+//         <input
+//           type="text"
+//           placeholder="جستجوی منابع..."
+//           className="w-full p-2 outline-none"
+//           value={search}
+//           onChange={(e) => setSearch(e.target.value)}
+//         />
+//       </div>
 
-      <section id="about" className="h-screen flex justify-center items-center">
-        <h2 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-900 to-green-400 bg-clip-text text-transparent">
-          About
-        </h2>
-      </section>
+//       {/* کارت‌های منابع */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {filteredResources.map((resource, index) => (
+//           <a
+//             key={index}
+//             href={resource.link}
+//             className="p-6 flex flex-col items-center text-center shadow-lg rounded-2xl border border-gray-200 transition-transform transform hover:scale-105 hover:shadow-xl"
+//           >
+//             {resource.icon}
+//             <h2 className="text-xl font-bold mt-4">{resource.title}</h2>
+//             <p className="text-gray-600 mt-2">{resource.description}</p>
+//             <button className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+//               مشاهده منابع
+//             </button>
+//           </a>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
 
-      {/* Custom Cursor */}
-      <div id="cursor" className="cursor-none">
-        <div className="ring">
-          <div />
-        </div>
-        <div className="ring">
-          <div />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Test ;
+// با سرج بالا
