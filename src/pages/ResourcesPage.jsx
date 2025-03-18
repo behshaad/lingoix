@@ -1,5 +1,11 @@
-const r = () => {
-  return ( <><h1>hh</h1></> );
-}
- 
-export default r;
+import Resources from "../components/Resource/Resources";
+
+const ResourcesPage = () => {
+  return (
+    <>
+      <Resources />
+    </>
+  );
+};
+
+export default ResourcesPage;

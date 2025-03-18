@@ -6,16 +6,14 @@ import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";
 
 import Test from "./Test";
-import Resources from "../components/Resource/Resources";
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      {/* <Hero />
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection /> */}
-      <Resources />
+      <FeaturesSection />
     </div>
   );
 };
