@@ -10,10 +10,11 @@ import Test from "./Test";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <Hero />
+      {/* <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection />
+      <FeaturesSection /> */}
+      <Test/>
     </div>
   );
 };
