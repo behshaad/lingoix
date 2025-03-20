@@ -2,7 +2,7 @@ import React from "react";
 
 import ResourcesBook from "./ResourcesBook";
 import ResourcesVideo from "./ResourcesVideo";
-import ResourceAudio from "./ResourceAudio";
+import ResourceAudio from "./ResourceCard";
 
 const Resources = () => {
   return (
