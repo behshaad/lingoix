@@ -16,8 +16,8 @@ const HomePage = () => {
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection /> */}
-      {/* <Test/> */}
-      <ResourceCard/>
+      <Test/>
+      {/* <Resources />{" "} */}
     </div>
   );
 };
