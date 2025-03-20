@@ -12,11 +12,11 @@ import ResourceCard from "../components/Resource/ResourceCard";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      {/* <Hero />
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection /> */}
-      <Test/>
+      <FeaturesSection />
+      {/* <Test/> */}
       {/* <Resources />{" "} */}
     </div>
   );
