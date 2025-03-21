@@ -17,7 +17,7 @@ const Lefthero = () => {
           <a
             href="#"
             title=""
-            class="inline-flex items-center justify-center px-8 py-3 text-base font-bold leading-7 text-white transition-all duration-200 bg-gray-900 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="inline-flex items-center justify-center px-8 py-3 text-base font-bold leading-7 text-white transition-all duration-200 bg-gray-900 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"
             role="button"
           >
             Explore all artwork
@@ -179,7 +179,7 @@ const Lefthero = () => {
           </svg>
         </div>
 
-        <div class="inline-grid grid-cols-2 mt-8 gap-x-8 text-gray-900   dark:bg-gray-800 dark:text-white">
+        <div class="inline-grid grid-cols-2 mt-8 gap-x-8 text-gray-900   dark:text-white">
           <div>
             <p class="text-4xl font-bold text-gray-900 dark:text-white">50k+</p>
             <p class="mt-2 text-base font-medium text-gray-500">Artwork</p>

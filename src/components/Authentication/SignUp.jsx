@@ -64,10 +64,10 @@ const SignUp = () => {
   return (
     <div
       className="h-screen w-screen flex justify-center items-center bg-cover bg-center"
-      // style={{
-      //   backgroundImage:
-      //     "url('https://codingstella.com/wp-content/uploads/2024/01/download-6-scaled.jpeg')",
-      // }}
+      style={{
+        backgroundImage:
+          "url('https://codingstella.com/wp-content/uploads/2024/01/download-6-scaled.jpeg')",
+      }}
     >
       <div className="relative max-w-sm w-96 p-8 bg-white/10 backdrop-blur-lg border border-gray-400 rounded-xl shadow-lg text-white">
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 flex items-center justify-center bg-gray-400 w-32 h-14 rounded-b-xl">

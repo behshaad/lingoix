@@ -18,7 +18,7 @@ const Hero = () => {
         </div>
 
         {/* بخش راست */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full ml-0 md:w-1/2 ">
           <RightHero />
         </div>
 

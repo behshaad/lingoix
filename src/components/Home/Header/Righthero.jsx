@@ -85,13 +85,13 @@ export default function LanguageCards() {
   }, []);
 
   return (
-    <div ref={containerRef} className=" overflow-hidden ">
-      <div ref={wrapperRef} className="flex gap-6  py-14  ">
+    <div ref={containerRef} className=" overflow-hidden   ">
+      <div ref={wrapperRef} className="flex gap-8 py-14  ">
         {languages.map((lang, index) => (
           
           <div
             key={index}
-            className={`${lang.color}  rounded-xl p-6 shadow-lg flex flex-col gap-6 justify-start min-w-[290px] transition-transform hover:scale-105`}
+            className={`${lang.color}  rounded-xl p-6  shadow-lg flex flex-col gap-6 justify-start min-w-[290px] transition-transform hover:scale-105`}
           >
             <h3 className="font-bold text-lg ">{lang.Title}</h3>
 
