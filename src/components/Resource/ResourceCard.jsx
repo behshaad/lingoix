@@ -1,4 +1,4 @@
-// ResourceCard.js
+// ResourceCard.jsx
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
