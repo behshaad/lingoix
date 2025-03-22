@@ -4,6 +4,7 @@ const ResourcesPage = () => {
   return (
     <>
       <Resources />
+      <h1>hhh</h1>
     </>
   );
 };
