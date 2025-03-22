@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFilterResources from "../../hooks/useFilterResources";
-import ResourceCard from "./ResourceCard";
+import ResourceCard from "./FilterSearch";
 
 const resources = [
   {

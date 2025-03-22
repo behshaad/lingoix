@@ -7,16 +7,16 @@ import StepbyStep from "../components/Home/Stepby/StepbyStep";
 
 import Test from "./Test";
 import Resources from "../components/Resource/Resources";
-import ResourceCard from "../components/Resource/ResourceCard";
+import ResourceCard from "../components/Resource/FilterSearch";
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <Hero />
+      {/* <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection />
-      {/* <Test/> */}
+      <FeaturesSection /> */}
+      <Test />
       {/* <Resources />{" "} */}
     </div>
   );
