@@ -21,7 +21,7 @@ const HomePage = () => {
       {/* <Test /> */}
       {/* <Resources />{" "} */}
       {/* <ResourcesPage/> */}
-      <LehrePage/>
+      {/* <LehrePage/> */}
 
     </div>
   );
