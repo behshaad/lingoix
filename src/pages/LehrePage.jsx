@@ -19,6 +19,7 @@ import {
 } from "recharts";
 import GSAP from "gsap";
 import AssignmentManagement from "../components/Lehre/AssignmentManagement";
+import AttendanceManagement from "../components/Lehre/AttendanceManagement";
 
 const data = [
   { name: "Week 1", progress: 40 },
@@ -42,7 +43,7 @@ export default function LehrePage() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">📊 داشبورد اساتید</h1>
+      <h1 className="text-3xl font-bold mb-6">داشبورد اساتید</h1>
       <div className="grid grid-cols-3 gap-6">
         <motion.div className="p-4 bg-white rounded-xl shadow-lg info-card">
           <h2 className="text-xl font-semibold">👨‍🎓 دانشجویان فعال</h2>
@@ -69,6 +70,7 @@ export default function LehrePage() {
         </ResponsiveContainer>
       </div>
       <AssignmentManagement/>
+      <AttendanceManagement/>
     </div>
   );
 }
