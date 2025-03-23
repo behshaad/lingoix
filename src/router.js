@@ -5,6 +5,7 @@ import ResourcesPage from "./pages/ResourcesPage"; // به جای Resources
 import Dashboard from "./pages/StudentDashboard.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp";
+import LehrePage from "./pages/LehrePage.jsx";
 
 const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ const AppRouter = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/Lehre" element={<LehrePage/>} />
         </Routes>
       </div>
     </Router>
