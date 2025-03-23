@@ -7,16 +7,22 @@ import StepbyStep from "../components/Home/Stepby/StepbyStep";
 
 import Test from "./Test";
 
+import ResourcesPage from "./ResourcesPage";
+import LehrePage from "./LehrePage";
+
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      {/* <Hero />
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection /> */}
+      <FeaturesSection />
       {/* <Test /> */}
       {/* <Resources />{" "} */}
+      {/* <ResourcesPage/> */}
+      <LehrePage/>
+
     </div>
   );
 };
