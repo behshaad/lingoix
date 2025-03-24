@@ -40,13 +40,17 @@ export default function AttendanceManagement() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">📅 مدیریت حضور و غیاب</h1>
+    <div className="p-6 text-gray-900  dark:text-white min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-900  dark:text-white">
+        📅 مدیریت حضور و غیاب
+      </h1>
 
       {/* فرم فیلتر کردن */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4">فیلتر کردن وضعیت‌ها</h2>
-        <div className="flex gap-4 mb-4">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900  dark:text-white">
+          فیلتر کردن وضعیت‌ها
+        </h2>
+        <div className="flex gap-4 mb-4 text-gray-900  dark:text-white">
           <input
             type="date"
             className="p-2 border rounded"
@@ -61,7 +65,7 @@ export default function AttendanceManagement() {
             onChange={(e) => setSelectedStudent(e.target.value)}
           />
           <select
-            className="p-2 border rounded"
+            className="p-2 border rounded text-gray-900  dark:text-white"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -72,7 +76,7 @@ export default function AttendanceManagement() {
           </select>
           <button
             onClick={generateReport}
-            className="p-2 bg-blue-500 text-white rounded"
+            className="p-2 bg-blue-500 text-gray-900  dark:text-white rounded"
           >
             گزارش‌گیری
           </button>
@@ -80,7 +84,7 @@ export default function AttendanceManagement() {
       </div>
 
       {/* نمایش وضعیت حضور و غیاب */}
-      <div className="bg-white p-6 rounded-xl shadow-lg">
+      <div className=" text-gray-900  dark:text-white p-6 rounded-xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">لیست حضور و غیاب</h2>
         <motion.table className="w-full text-left">
           <thead>

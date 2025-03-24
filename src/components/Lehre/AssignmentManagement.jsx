@@ -50,11 +50,15 @@ export default function AssignmentManagement() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">📝 مدیریت تکالیف</h1>
+    <div className="p-6 text-gray-900  dark:text-whitemin-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-900  dark:text-white">
+        📝 مدیریت تکالیف
+      </h1>
 
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4">افزودن تکلیف جدید</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900  dark:text-white">
+          افزودن تکلیف جدید
+        </h2>
         <div className="flex gap-4 mb-4">
           <input
             type="text"
@@ -87,7 +91,7 @@ export default function AssignmentManagement() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-lg">
+      <div className="text-gray-900  dark:text-white p-6 rounded-xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">لیست تکالیف</h2>
         <motion.table className="w-full text-left">
           <thead>
@@ -107,13 +111,13 @@ export default function AssignmentManagement() {
                 <td className="p-2">
                   <button
                     onClick={() => deleteAssignment(assignment.id)}
-                    className="p-2 bg-red-500 text-white rounded"
+                    className="p-2 bg-red-500 text-gray-900  dark:text-white rounded"
                   >
                     حذف
                   </button>
                   <button
                     onClick={() => editAssignment(assignment.id)}
-                    className="ml-2 p-2 bg-yellow-500 text-white rounded"
+                    className="ml-2 p-2 bg-yellow-500 text-gray-900  dark:text-white rounded"
                   >
                     ویرایش
                   </button>
