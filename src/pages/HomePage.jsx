@@ -10,11 +10,12 @@ import DashboardLayout from "../components/Dashboard/DashboardLayout";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      {/* <Hero />
+      
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection /> */}
-      <DashboardLayout />
+      <FeaturesSection />
+      {/* <DashboardLayout /> */}
     </div>
   );
 };
