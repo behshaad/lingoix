@@ -19,6 +19,7 @@ const HomePage = () => {
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
+      
       {/* <WordSearch/> */}
 
       {/* <Test /> */}
