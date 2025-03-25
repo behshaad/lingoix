@@ -5,11 +5,7 @@ import FeaturesSection from "../components/Home/FeaturesSection";
 import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";
 
-import Test from "./Test";
 
-import ResourcesPage from "./ResourcesPage";
-import LehrePage from "./LehrePage";
-// import WordSearch from "../components/test/Test";
 
 
 const HomePage = () => {
@@ -19,13 +15,8 @@ const HomePage = () => {
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
-      
-      {/* <WordSearch/> */}
 
-      {/* <Test /> */}
-      {/* <Resources />{" "} */}
-      {/* <ResourcesPage/> */}
-      {/* <LehrePage/> */}
+  
     </div>
   );
 };
