@@ -6,6 +6,7 @@ import Dashboard from "./pages/StudentDashboard.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp";
 import LehrePage from "./pages/LehrePage.jsx";
+import Dictionary from "./components/Dictionary/Dictionary.jsx";
 
 const AppRouter = () => {
   return (
@@ -18,7 +19,8 @@ const AppRouter = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/Lehre" element={<LehrePage/>} />
+          <Route path="/Lehre" element={<LehrePage />} />
+          <Route path="/Dictionary" element={<Dictionary />} />
         </Routes>
       </div>
     </Router>

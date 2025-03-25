@@ -1,9 +1,20 @@
 // Translation service using Google Cloud Translation API
 const API_KEY = process.env.REACT_APP_GOOGLE_TRANSLATE_API_KEY;
+
+if (!API_KEY) {
+  console.error(
+    "Google Translate API key is not configured. Please add REACT_APP_GOOGLE_TRANSLATE_API_KEY to your environment variables."
+  );
+}
+
 const BASE_URL = "https://translation.googleapis.com/language/translate/v2";
 
 export const translationService = {
   async translate(text, sourceLang, targetLang) {
+    if (!API_KEY) {
+      throw new Error("Translation API key is not configured");
+    }
+
     try {
       const response = await fetch(`${BASE_URL}?key=${API_KEY}`, {
         method: "POST",
@@ -19,7 +30,12 @@ export const translationService = {
       });
 
       if (!response.ok) {
-        throw new Error(`Translation failed: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          `Translation failed: ${response.statusText}. ${
+            errorData.error?.message || ""
+          }`
+        );
       }
 
       const data = await response.json();

@@ -17,7 +17,7 @@ const SecondNav = () => {
             {/* لینک‌های ناوبری */}
             <div className="hidden lg:flex lg:justify-start lg:ml-16 lg:space-x-8 xl:space-x-14">
               <Link
-                to="/translator" // مسیر مورد نظر را تنظیم کنید
+                to="/Dictionary" // مسیر مورد نظر را تنظیم کنید
                 className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 {t("Translator")}

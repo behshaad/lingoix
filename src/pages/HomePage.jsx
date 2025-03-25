@@ -9,19 +9,17 @@ import Test from "./Test";
 
 import ResourcesPage from "./ResourcesPage";
 import LehrePage from "./LehrePage";
-import Dictionary from "../components/Dictionary/Dictionary";
-import WordSearch from "../components/test/Test";
+// import WordSearch from "../components/test/Test";
 
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      {/* <Hero />
+      <Hero />
       <SmartLearnHero />
       <StepbyStep />
-      <FeaturesSection /> */}
-      <Dictionary />
-      <WordSearch/>
+      <FeaturesSection />
+      {/* <WordSearch/> */}
 
       {/* <Test /> */}
       {/* <Resources />{" "} */}
