@@ -33,6 +33,13 @@ const LanguageSwitcher = () => {
           >
             English
           </button>
+
+          <button
+            onClick={() => changeLanguage("fa")}
+            className="block px-4 py-2 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+          >
+            فارسی
+          </button>
         </div>
       )}
     </div>
