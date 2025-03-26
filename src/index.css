@@ -1,8 +1,35 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* ✅ اطمینان از اعمال شدن حالت دارک
+html.dark {
+  @apply bg-gray-900 text-white;
+} */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ اطمینان از اعمال شدن حالت دارک */
+/* ✅ حالت دارک */
 html.dark {
   @apply bg-gray-900 text-white;
+}
+
+/* ✅ تنظیم جهت زبان */
+html[dir="rtl"] {
+  @apply text-right;
+}
+
+html[dir="ltr"] {
+  @apply text-left;
+}
+
+/* ✅ تغییر جهت flexbox برای راست‌چین */
+[dir="rtl"] .flex-container {
+  @apply flex-row-reverse;
+}
+
+[dir="ltr"] .flex-container {
+  @apply flex-row;
 }
