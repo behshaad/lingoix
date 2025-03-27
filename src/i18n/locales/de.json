@@ -1,0 +1,58 @@
+{
+  "common": {
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer",
+    "progress": "Fortschritt",
+    "restart": "Neustart"
+  },
+  "vocabulary": {
+    "title": "Vokabelübung",
+    "example": "Beispiel",
+    "translation": "Übersetzung"
+  },
+  "audio": {
+    "title": "Hörübung",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "volume": "Lautstärke",
+    "transcription": "Transkription",
+    "translation": "Übersetzung"
+  },
+  "writing": {
+    "title": "Schreibübung",
+    "prompt": "Aufgabe",
+    "example": "Beispiel",
+    "write": "Schreiben",
+    "submit": "Einreichen",
+    "score": "Punktzahl",
+    "feedback": "Feedback",
+    "download": "Bericht herunterladen"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "vocabulary": "Vokabeln",
+    "audio": "Hören",
+    "writing": "Schreiben",
+    "progress": "Fortschritt",
+    "certificates": "Zertifikate",
+    "chat": "Chat",
+    "ai": "KI-Assistent"
+  },
+  "footer": {
+    "about": "Ihre vertrauenswürdige Plattform für das Sprachenlernen. Beherrschen Sie neue Sprachen mit interaktiven Lektionen und personalisierten Lernpfaden.",
+    "quickLinks": "Schnellzugriff",
+    "home": "Startseite",
+    "courses": "Kurse",
+    "resources": "Ressourcen",
+    "contact": "Kontakt",
+    "contactUs": "Kontaktieren Sie uns",
+    "address": "Sprachstraße 123, Bildungsstadt",
+    "followUs": "Folgen Sie uns",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen"
+  }
+}

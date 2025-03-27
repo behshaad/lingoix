@@ -5,6 +5,7 @@ import FeaturesSection from "../components/Home/FeaturesSection";
 import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
+import Footer from "../components/Footer/Footer";
 
 
 const HomePage = () => {
@@ -15,6 +16,7 @@ const HomePage = () => {
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />
+      <Footer/>
       {/* <DashboardLayout /> */}
     </div>
   );

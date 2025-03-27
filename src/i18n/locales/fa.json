@@ -1,0 +1,58 @@
+{
+  "common": {
+    "easy": "آسان",
+    "medium": "متوسط",
+    "hard": "سخت",
+    "progress": "پیشرفت",
+    "restart": "شروع مجدد"
+  },
+  "vocabulary": {
+    "title": "تمرین واژگان",
+    "example": "مثال",
+    "translation": "ترجمه"
+  },
+  "audio": {
+    "title": "تمرین شنیداری",
+    "play": "پخش",
+    "pause": "مکث",
+    "next": "بعدی",
+    "previous": "قبلی",
+    "volume": "صدا",
+    "transcription": "متن",
+    "translation": "ترجمه"
+  },
+  "writing": {
+    "title": "تمرین نوشتن",
+    "prompt": "موضوع",
+    "example": "مثال",
+    "write": "نوشتن",
+    "submit": "ارسال",
+    "score": "امتیاز",
+    "feedback": "بازخورد",
+    "download": "دانلود گزارش"
+  },
+  "dashboard": {
+    "title": "داشبورد",
+    "vocabulary": "واژگان",
+    "audio": "شنیداری",
+    "writing": "نوشتن",
+    "progress": "پیشرفت",
+    "certificates": "گواهینامه‌ها",
+    "chat": "چت",
+    "ai": "دستیار هوشمند"
+  },
+  "footer": {
+    "about": "پلتفرم مورد اعتماد شما برای یادگیری زبان. با درس‌های تعاملی و مسیرهای یادگیری شخصی‌سازی شده، زبان‌های جدید را یاد بگیرید.",
+    "quickLinks": "دسترسی سریع",
+    "home": "خانه",
+    "courses": "دوره‌ها",
+    "resources": "منابع",
+    "contact": "تماس با ما",
+    "contactUs": "تماس با ما",
+    "address": "خیابان زبان، شهر آموزش",
+    "followUs": "ما را دنبال کنید",
+    "rights": "تمامی حقوق محفوظ است.",
+    "privacy": "حریم خصوصی",
+    "terms": "شرایط استفاده"
+  }
+}
