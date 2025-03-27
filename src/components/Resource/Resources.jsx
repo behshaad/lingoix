@@ -13,7 +13,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useMobile } from "../../hooks/use-mobile";
 
-// import Image from "../assets/Headercards/lesen.svg";
+import CommunitySVG from "../../assets/Headercards/community.svg";
+import playfulcat from "../../assets/Headercards/playfulcat.svg";
+import result from "../../assets/Headercards/result.svg";
+
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -28,7 +31,7 @@ const resources = [
     description:
       "A comprehensive PDF guide for beginners learning Spanish vocabulary and grammar.",
     type: "book",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: CommunitySVG,
     date: "March 15, 2025",
   },
   {
@@ -37,7 +40,7 @@ const resources = [
     description:
       "Audio lessons to help you perfect your French accent and pronunciation.",
     type: "audio",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: playfulcat,
     date: "February 28, 2025",
   },
   {
@@ -46,7 +49,7 @@ const resources = [
     description:
       "Video tutorial explaining the basics of Hiragana, Katakana, and Kanji.",
     type: "video",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: result,
     date: "March 10, 2025",
   },
   {
@@ -55,7 +58,7 @@ const resources = [
     description:
       "Downloadable PDF with essential Italian vocabulary for everyday conversations.",
     type: "book",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: CommunitySVG,
     date: "March 5, 2025",
   },
   {
@@ -64,7 +67,7 @@ const resources = [
     description:
       "Audio dialogues to improve your German speaking and listening skills.",
     type: "audio",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: playfulcat,
     date: "March 12, 2025",
   },
   {
@@ -73,7 +76,7 @@ const resources = [
     description:
       "Video lessons focused on mastering the four tones in Mandarin Chinese.",
     type: "video",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: result,
     date: "February 20, 2025",
   },
   {
@@ -82,7 +85,7 @@ const resources = [
     description:
       "Comprehensive PDF guide to Portuguese grammar rules and exceptions.",
     type: "book",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: CommunitySVG,
     date: "March 8, 2025",
   },
   {
@@ -91,7 +94,7 @@ const resources = [
     description:
       "Audio exercises to help you master Russian pronunciation and accent.",
     type: "audio",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: playfulcat,
     date: "March 1, 2025",
   },
   {
@@ -100,7 +103,7 @@ const resources = [
     description:
       "Video tutorial introducing Hangul, the Korean alphabet system.",
     type: "video",
-    thumbnail: "/placeholder.svg?height=200&width=300",
+    thumbnail: result,
     date: "March 18, 2025",
   },
 ];
