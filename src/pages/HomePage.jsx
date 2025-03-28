@@ -6,6 +6,7 @@ import SmartLearnHero from "../components/Home/SmartLearnHero";
 import StepbyStep from "../components/Home/Stepby/StepbyStep";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Footer from "../components/Footer/Footer";
+import Test from "../components/test/Test";
 
 
 const HomePage = () => {
@@ -13,6 +14,7 @@ const HomePage = () => {
     <div className="home-page top-4">
       
       <Hero />
+      <Test/>
       <SmartLearnHero />
       <StepbyStep />
       <FeaturesSection />

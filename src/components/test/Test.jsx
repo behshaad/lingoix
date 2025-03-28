@@ -1,62 +1,87 @@
-// import { useState } from "react";
+import React, { useState } from "react";
+import Flashcard from "./Flashcardanki";
+import "./anki.css";
 
-// const translateText = async (text, sourceLang, targetLang) => {
-//   const url = "https://libretranslate.de/translate"; // سرور عمومی رایگان
+function Test() {
+  const [cards, setCards] = useState([]);
+  const [front, setFront] = useState("");
+  const [back, setBack] = useState("");
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-//   const response = await fetch(url, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       q: text,
-//       source: sourceLang,
-//       target: targetLang,
-//       format: "text",
-//     }),
-//   });
+  const handleAddCard = (e) => {
+    e.preventDefault();
+    if (front && back) {
+      setCards([...cards, { front, back }]);
+      setFront("");
+      setBack("");
+    }
+  };
 
-//   const data = await response.json();
-//   return data?.translatedText || "ترجمه‌ای یافت نشد";
-// };
+  const nextCard = () => {
+    if (currentCardIndex < cards.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+    }
+  };
 
-// const WordSearch = () => {
-//   const [input, setInput] = useState("");
-//   const [translation, setTranslation] = useState("");
+  const previousCard = () => {
+    if (currentCardIndex > 0) {
+      setCurrentCardIndex(currentCardIndex - 1);
+    }
+  };
 
-//   const searchWord = async () => {
-//     if (!input) {
-//       setTranslation("");
-//       return;
-//     }
+  return (
+    <div className="app">
+      <h1>Anki App</h1>
 
-//     // تشخیص زبان ورودی (فارسی یا آلمانی)
-//     const isGerman = /^[a-zA-ZäöüÄÖÜß]+$/.test(input);
-//     const sourceLang = isGerman ? "de" : "fa";
-//     const targetLang = isGerman ? "fa" : "de";
+      <div className="card-container">
+        {cards.length > 0 ? (
+          <Flashcard
+            front={cards[currentCardIndex].front}
+            back={cards[currentCardIndex].back}
+          />
+        ) : (
+          <p className="no-cards">
+            No cards yet. Add some cards to get started!
+          </p>
+        )}
+      </div>
 
-//     const result = await translateText(input, sourceLang, targetLang);
-//     setTranslation(result);
-//   };
+      <div className="navigation">
+        <button onClick={previousCard} disabled={currentCardIndex === 0}>
+          Previous
+        </button>
+        <span className="card-counter">
+          Card {currentCardIndex + 1} of {cards.length}
+        </span>
+        <button
+          onClick={nextCard}
+          disabled={currentCardIndex === cards.length - 1}
+        >
+          Next
+        </button>
+      </div>
 
-//   return (
-//     <div className="max-w-md mx-auto p-4 bg-white shadow-lg rounded-lg">
-//       <input
-//         type="text"
-//         className="w-full p-2 border rounded-md"
-//         placeholder="کلمه را وارد کنید..."
-//         value={input}
-//         onChange={(e) => setInput(e.target.value)}
-//       />
-//       <button
-//         className="mt-2 w-full bg-blue-500 text-white p-2 rounded-md"
-//         onClick={searchWord}
-//       >
-//         ترجمه کن
-//       </button>
-//       {translation && (
-//         <p className="mt-4 p-2 bg-gray-100 rounded-md">{translation}</p>
-//       )}
-//     </div>
-//   );
-// };
+      <form onSubmit={handleAddCard} className="add-card-form">
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Front of card"
+            value={front}
+            onChange={(e) => setFront(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Back of card"
+            value={back}
+            onChange={(e) => setBack(e.target.value)}
+          />
+        </div>
+        <button type="submit">Add Card</button>
+      </form>
+    </div>
+  );
+}
 
-// export default WordSearch;
+export default Test;
