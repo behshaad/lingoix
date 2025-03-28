@@ -7,18 +7,21 @@ import StepbyStep from "../components/Home/Stepby/StepbyStep";
 import DashboardLayout from "../components/Dashboard/DashboardLayout";
 import Footer from "../components/Footer/Footer";
 import Test from "../components/test/Test";
+import Featur from "../components/Home/Featur/Featur";
+import Product from "../components/Home/Product/Product";
 
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      
       <Hero />
-      <Test/>
+      {/* <Test/> */}
       <SmartLearnHero />
+      <Featur />
       <StepbyStep />
-      <FeaturesSection />
-      <Footer/>
+      {/* <FeaturesSection /> */}
+      <Product/>
+      <Footer />
       {/* <DashboardLayout /> */}
     </div>
   );
