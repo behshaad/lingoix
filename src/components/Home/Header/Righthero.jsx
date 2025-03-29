@@ -85,35 +85,32 @@ export default function LanguageCards() {
   }, []);
 
   return (
-    <div ref={containerRef} className=" overflow-hidden   ">
-      <div ref={wrapperRef} className="flex gap-8 py-14  ">
+    <div ref={containerRef} className="overflow-hidden">
+      <div ref={wrapperRef} className="flex gap-8 py-14">
         {languages.map((lang, index) => (
-          
           <div
             key={index}
-            className={`${lang.color}  rounded-xl p-6  shadow-lg flex flex-col gap-6 justify-start min-w-[290px] transition-transform hover:scale-105`}
+            className={`group ${lang.color} rounded-xl p-6 shadow-lg flex flex-col justify-evenly min-w-[290px] min-h-[380px] transition-transform hover:scale-105 `}
           >
-            <h3 className="font-bold text-lg ">{lang.Title}</h3>
+            {/* عنوان زبان */}
+            <h3 className="font-bold text-lg  dark:text-white">{lang.Title}</h3>
 
-            <div className="w-15 h-15 mb-2">
+            {/* پرچم بزرگ‌تر */}
+            <div className="flex justify-center items-center">
               <img
                 src={lang.flag}
                 alt="flag"
-                className="w-full h-full object-contain"
+                className="w-32 h-52 rounded "
               />
             </div>
 
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            {/* توضیحات */}
+            <span className="text-sm text-gray-700 dark:text-gray-300">
               {lang.Caption}
             </span>
-
           </div>
-
-
         ))}
       </div>
-
-
     </div>
   );
 }
