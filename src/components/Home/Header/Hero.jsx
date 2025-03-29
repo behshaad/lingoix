@@ -9,20 +9,16 @@ const Hero = () => {
       <SecondNav />
 
       {/* کانتینر اصلی */}
-      <div className="flex flex-col md:flex-row m-4 md:m-9 ">
-        
+      <div className="flex flex-col md:flex-row m-4 md:m-9">
         {/* بخش چپ */}
-
-        <div className="w-full md:w-1/2 ">
+        <div className="flex items-center justify-center  w-full md:w-1/2 mb-8 md:mb-0">
           <Lefthero />
         </div>
 
         {/* بخش راست */}
-        <div className="w-full ml-0 md:w-1/2 ">
+        <div className="flex items-center justify-center w-full md:w-1/2">
           <RightHero />
         </div>
-
-        
       </div>
     </>
   );

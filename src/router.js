@@ -7,6 +7,7 @@ import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp";
 import LehrePage from "./pages/LehrePage.jsx";
 import Dictionary from "./components/Dictionary/Dictionary.jsx";
+import Product from "./components/Home/Product/Product.jsx";
 
 const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ const AppRouter = () => {
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/Lehre" element={<LehrePage />} />
           <Route path="/Dictionary" element={<Dictionary />} />
+          <Route path="/Product" element={<Product />} />
         </Routes>
       </div>
     </Router>

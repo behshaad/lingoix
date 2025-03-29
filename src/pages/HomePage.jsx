@@ -13,14 +13,14 @@ import Product from "../components/Home/Product/Product";
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-      <Hero />
 
+      <Hero />
       <SmartLearnHero />
       <Featur />
       <StepbyStep />
       <Product />
       <Footer />
-      
+
       {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
       {/* <Test/> */}
