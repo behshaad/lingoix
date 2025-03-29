@@ -60,5 +60,19 @@
       "description": "Lernen Sie von erfahrenen Lehrern."
     }
   ],
-  "cta": "Jetzt anmelden"
+  "cta": "Jetzt anmelden",
+  "steps": {
+    "1": "🎉 Willkommen bei Lingoix!",
+    "2": "Vervollständigen Sie Ihr Profil und personalisieren Sie Ihre Erfahrung",
+    "3": "🚀 Kennenlernen des Dashboards",
+    "4": "Ihre erste Erfahrung mit Lingoix",
+    "5": "🎯 Beginnen Sie mit dem Lernen!"
+  },
+  "description": {
+    "1": "Bitte geben Sie zu Beginn an, wie Sie diese Plattform nutzen möchten: • Student: Lernen Sie die Sprache und verfolgen Sie den Fortschritt • Lehrer: Lehren und verwalten Sie Schüler • Schule: Verwalten Sie Klassen und Schülerleistungen",
+    "2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "3": "Beschreibung: Dies ist Ihr Kontrollzentrum! Je nach der Rolle, die Sie wählen, können Sie: • Student: Den Lernplan, Tests und Übungen verfolgen. • Lehrer: Den Fortschritt der Schüler sehen und Aufgaben zuweisen. • Schule: Schüler- und Lehrerleistungen verwalten.",
+    "4": "Jetzt sind Sie dran, den ersten Schritt zu machen! • Student: Sehen Sie sich eine Beispielstunde an und machen Sie einen Mini-Test. • Lehrer: Erstellen Sie eine Testaufgabe. • Schule: Sehen Sie sich einen Beispiel-Schülerbericht an.",
+    "5": "Sie haben die grundlegenden Funktionen von Lingoix kennengelernt. Jetzt können Sie mit dem Lernen beginnen!"
+  }
 }

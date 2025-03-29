@@ -58,5 +58,19 @@
       "description": "Learn from experienced instructors."
     }
   ],
-  "cta": "Sign Up Now"
+  "cta": "Sign Up Now",
+  "steps": {
+    "1": "🎉 Welcome to Lingoix!",
+    "2": "Complete your profile and personalize your experience",
+    "3": "🚀 Getting to know the dashboard",
+    "4": "Your first experience with Lingoix",
+    "5": "🎯 Start learning!"
+  },
+  "description": {
+    "1": "From the beginning, please specify how you want to use this platform: • Student: Learn the language and track progress • Teacher: Teach and manage students • School: Manage classes and student performance",
+    "2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "3": "Description: This is your control center! Depending on the role you choose, you can: • Student: Follow the learning roadmap, tests, and exercises. • Teacher: See student progress and assign assignments. • School: Manage student and teacher performance.",
+    "4": "Now it's your turn to take the first step! • Student: View a sample lesson and take a mini-test. • Teacher: Create a test assignment. • School: View a sample student report.",
+    "5": "You've learned about the basic features of Lingoix. Now you can get started and use this platform for learning, teaching, and managing classes."
+  }
 }
