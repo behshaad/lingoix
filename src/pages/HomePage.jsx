@@ -10,19 +10,20 @@ import Test from "../components/test/Test";
 import Featur from "../components/Home/Featur/Featur";
 import Product from "../components/Home/Product/Product";
 
-
 const HomePage = () => {
   return (
     <div className="home-page top-4">
       <Hero />
-      {/* <Test/> */}
+
       <SmartLearnHero />
       <Featur />
       <StepbyStep />
-      {/* <FeaturesSection /> */}
-      <Product/>
+      <Product />
       <Footer />
+      
+      {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
+      {/* <Test/> */}
     </div>
   );
 };
