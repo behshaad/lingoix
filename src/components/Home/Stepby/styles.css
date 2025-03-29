@@ -28,28 +28,31 @@
 }
 
 /* Setting the border of top, bottom, left */
+/* */
 .card:nth-child(odd)::before {
   left: 0px;
-  top: -4.5px;
-  bottom: -4.5px;
-  border-width: 3px 0 3px 3px;
+  top: -2px;
+  bottom: -2px;
+  border-width: 2px 0 2px 2px;
   border-radius: 50px 0 0 50px;
 }
 
 /* Setting the top and bottom to "-5px" because earlier it was out of a pixel in mobile devices */
+/*  */
 @media only screen and (max-width: 400px) {
   .card:nth-child(odd)::before {
-    top: -5px;
-    bottom: -5px;
+    top: -2px;
+    bottom: -2px;
   }
 }
 
 /* Setting the border of top, bottom, right */
+/*  */
 .card:nth-child(even)::before {
   right: 0;
   top: 0;
   bottom: 0;
-  border-width: 3px 3px 3px 0;
+  border-width: 2px 2px 2px 0;
   border-radius: 0 50px 50px 0;
 }
 
@@ -94,8 +97,8 @@
 .title::before {
   content: "";
   position: absolute;
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   background: rgb(7, 1, 1);
   border-radius: 999px;
   border: 3px solid  rgba(0, 170, 255, 0.703)
