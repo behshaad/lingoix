@@ -7,7 +7,7 @@ const Lefthero = () => {
     <div className=" text-gray-900  dark:text-white">
       <div class="max-w-md mx-auto text-center xl:max-w-lg  lg:text-left">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:leading-tight xl:text-6xl">
-          {t("hero.title")} ✨
+          {t("hero.title")}
         </h1>
         <p class="mt-5 text-lg font-medium text-gray-900 lg:mt-8 dark:text-white">
           {t("hero.subtitle")}
@@ -20,7 +20,7 @@ const Lefthero = () => {
             class="inline-flex items-center justify-center px-8 py-3 text-base font-bold leading-7 text-white transition-all duration-200 bg-gray-900 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg"
             role="button"
           >
-            Explore all artwork
+            {t("moto")}
           </a>
         </div>
 

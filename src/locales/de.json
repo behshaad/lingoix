@@ -7,6 +7,8 @@
   "welcome_dashboard": "Willkommen in deinem Dashboard!",
   "logout": "Ausloggen",
   "title": "Laufende Kurse",
+  "moto": "Explore all artwork",
+
   "lastActive": "Zuletzt aktiv",
   "progress": "Fortschritt",
   "continue": "Weiterlernen",
@@ -34,7 +36,7 @@
   "Translator": "Übersetzen",
   "Dashboard": "Armaturenbrett",
   "Resources": "Ressourcen",
-  "Academy":"Akademie",
+  "Academy": "Akademie",
   "createAccount": "Kostenloses Konto erstellen",
   "login": "Anmelden",
   "cart": "Warenkorb",
