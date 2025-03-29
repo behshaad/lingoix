@@ -14,12 +14,12 @@ const HomePage = () => {
   return (
     <div className="home-page top-4">
 
-      <Hero />
-      <SmartLearnHero />
-      <Featur />
+      {/* <Hero /> */}
+      {/* <SmartLearnHero /> */}
+      {/* <Featur /> */}
       <StepbyStep />
-      <Product />
-      <Footer />
+      {/* <Product />
+      <Footer /> */}
 
       {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
