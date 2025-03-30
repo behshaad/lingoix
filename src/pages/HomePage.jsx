@@ -14,10 +14,10 @@ const HomePage = () => {
   return (
     <div className="home-page top-4">
 
-      {/* <Hero /> */}
-      {/* <SmartLearnHero /> */}
-      {/* <Featur /> */}
-      {/* <StepbyStep /> */}
+      <Hero />
+      <SmartLearnHero />
+      <Featur />
+      <StepbyStep />
       <Product />
       {/* <Footer /> */}
 
