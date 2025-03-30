@@ -17,9 +17,9 @@ const HomePage = () => {
       {/* <Hero /> */}
       {/* <SmartLearnHero /> */}
       {/* <Featur /> */}
-      <StepbyStep />
-      {/* <Product />
-      <Footer /> */}
+      {/* <StepbyStep /> */}
+      <Product />
+      {/* <Footer /> */}
 
       {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
