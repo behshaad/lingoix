@@ -1,10 +1,11 @@
 import Resources from "../components/Resource/Resources";
-// import Testre from "../components/Resource/Testre"
+import ResourcesPagee from "../components/Resource/ResourcesPage";
+
 const ResourcesPage = () => {
   return (
     <>
-      <Resources />
-      {/* <Testre/> */}
+      {/* <Resources /> */}
+      <ResourcesPagee/>
     </>
   );
 };
