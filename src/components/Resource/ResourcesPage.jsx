@@ -12,6 +12,7 @@ import CommunitySVG from "../../assets/logo/GLOGO.png";
 import playfulcat from "../../assets/Headercards/playfulcat.svg";
 import result from "../../assets/logo/logo.png";
 
+
 const resources = [
   {
     id: "1",
