@@ -9,6 +9,7 @@ import Footer from "../components/Footer/Footer";
 import Test from "../components/test/Test";
 import Featur from "../components/Home/Featur/Featur";
 import Product from "../components/Home/Product/Product";
+import Are from "../components/test/Flashcardanki";
 
 const HomePage = () => {
   return (
@@ -19,11 +20,12 @@ const HomePage = () => {
       <Featur />
       <StepbyStep />
       <Product />
-      {/* <Footer /> */}
+      <Footer />
 
       {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
       {/* <Test/> */}
+      {/* <Are/> */}
     </div>
   );
 };
