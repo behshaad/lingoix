@@ -10,17 +10,19 @@ import Test from "../components/test/Test";
 import Featur from "../components/Home/Featur/Featur";
 import Product from "../components/Home/Product/Product";
 import Are from "../components/test/Flashcardanki";
+import BookPlayer from "../components/Resource/BookPlayer/BookPlayer";
 
 const HomePage = () => {
   return (
     <div className="home-page top-4">
-
-      <Hero />
+      {/* <Hero />
       <SmartLearnHero />
       <Featur />
       <StepbyStep />
       <Product />
-      <Footer />
+      <Footer /> */}
+
+      <BookPlayer />
 
       {/* <FeaturesSection /> */}
       {/* <DashboardLayout /> */}
