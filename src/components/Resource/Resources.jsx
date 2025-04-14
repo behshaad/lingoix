@@ -13,9 +13,9 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useMobile } from "../../hooks/use-mobile";
 
-import CommunitySVG from "../../assets/Headercards/community.svg";
+import CommunitySVG from "../../assets/logo/GLOGO.png";
 import playfulcat from "../../assets/Headercards/playfulcat.svg";
-import result from "../../assets/Headercards/result.svg";
+import result from "../../assets/logo/logo.png";
 
 
 // Register GSAP plugins
@@ -392,7 +392,7 @@ function ResourceCard({ resource }) {
         <img
           src={resource.thumbnail || "/placeholder.svg"}
           alt={resource.title}
-          className="card-image w-full h-48 object-cover transition-transform duration-300"
+          className="card-image w-full h-48 object-contain transition-transform duration-300"
         />
       </div>
       <div className="card-content p-5 flex-1 flex flex-col">
