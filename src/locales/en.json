@@ -72,5 +72,62 @@
     "3": "Description: This is your control center! Depending on the role you choose, you can: • Student: Follow the learning roadmap, tests, and exercises. • Teacher: See student progress and assign assignments. • School: Manage student and teacher performance.",
     "4": "Now it's your turn to take the first step! • Student: View a sample lesson and take a mini-test. • Teacher: Create a test assignment. • School: View a sample student report.",
     "5": "You've learned about the basic features of Lingoix. Now you can get started and use this platform for learning, teaching, and managing classes."
+  },
+  "common": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "progress": "Progress",
+    "restart": "Restart"
+  },
+  "vocabulary": {
+    "title": "Vocabulary Practice",
+    "example": "Example",
+    "translation": "Translation"
+  },
+  "audio": {
+    "title": "Audio Practice",
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next",
+    "previous": "Previous",
+    "volume": "Volume",
+    "transcription": "Transcription",
+    "translation": "Translation"
+  },
+  "writing": {
+    "title": "Writing Practice",
+    "prompt": "Prompt",
+    "example": "Example",
+    "write": "Write",
+    "submit": "Submit",
+    "score": "Score",
+    "feedback": "Feedback",
+    "download": "Download Report"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "vocabulary": "Vocabulary",
+    "audio": "Audio",
+    "writing": "Writing",
+    "progress": "Progress",
+    "certificates": "Certificates",
+    "chat": "Chat",
+    "ai": "AI Assistant"
+  },
+  
+  "footer": {
+    "about": "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths.",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "courses": "Courses",
+    "resources": "Resources",
+    "contact": "Contact",
+    "contactUs": "Contact Us",
+    "address": "123 Language Street, Education City",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
   }
 }

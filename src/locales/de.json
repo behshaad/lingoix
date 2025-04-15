@@ -74,5 +74,62 @@
     "3": "Beschreibung: Dies ist Ihr Kontrollzentrum! Je nach der Rolle, die Sie wählen, können Sie: • Student: Den Lernplan, Tests und Übungen verfolgen. • Lehrer: Den Fortschritt der Schüler sehen und Aufgaben zuweisen. • Schule: Schüler- und Lehrerleistungen verwalten.",
     "4": "Jetzt sind Sie dran, den ersten Schritt zu machen! • Student: Sehen Sie sich eine Beispielstunde an und machen Sie einen Mini-Test. • Lehrer: Erstellen Sie eine Testaufgabe. • Schule: Sehen Sie sich einen Beispiel-Schülerbericht an.",
     "5": "Sie haben die grundlegenden Funktionen von Lingoix kennengelernt. Jetzt können Sie mit dem Lernen beginnen!"
+  },
+  "common": {
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer",
+    "progress": "Fortschritt",
+    "restart": "Neustart"
+  },
+  "vocabulary": {
+    "title": "Vokabelübung",
+    "example": "Beispiel",
+    "translation": "Übersetzung"
+  },
+  "audio": {
+    "title": "Hörübung",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "volume": "Lautstärke",
+    "transcription": "Transkription",
+    "translation": "Übersetzung"
+  },
+  "writing": {
+    "title": "Schreibübung",
+    "prompt": "Aufgabe",
+    "example": "Beispiel",
+    "write": "Schreiben",
+    "submit": "Einreichen",
+    "score": "Punktzahl",
+    "feedback": "Feedback",
+    "download": "Bericht herunterladen"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "vocabulary": "Vokabeln",
+    "audio": "Hören",
+    "writing": "Schreiben",
+    "progress": "Fortschritt",
+    "certificates": "Zertifikate",
+    "chat": "Chat",
+    "ai": "KI-Assistent"
+  },
+  
+  "footer": {
+    "about": "Ihre vertrauenswürdige Plattform für das Sprachenlernen. Beherrschen Sie neue Sprachen mit interaktiven Lektionen und personalisierten Lernpfaden.",
+    "quickLinks": "Schnellzugriff",
+    "home": "Startseite",
+    "courses": "Kurse",
+    "resources": "Ressourcen",
+    "contact": "Kontakt",
+    "contactUs": "Kontaktieren Sie uns",
+    "address": "Sprachstraße 123, Bildungsstadt",
+    "followUs": "Folgen Sie uns",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen"
   }
 }
