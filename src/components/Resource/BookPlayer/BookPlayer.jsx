@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 export default function BookPlayer() {
   const [pageNumber, setPageNumber] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -8,6 +9,8 @@ export default function BookPlayer() {
     audioFiles: [
       { title: "Chapter 1", pageNumber: 1, url: "audio/kapitel2.mp3" },
       { title: "Chapter 2", pageNumber: 2, url: "audio/kapitel3.mp3" },
+      { title: "Chapter 3", pageNumber: 3, url: "audio/kapitel4.mp3" },
+  
       // لیست فایل‌های صوتی شما
     ],
   };
@@ -21,11 +24,11 @@ export default function BookPlayer() {
   };
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold text-center mb-6">
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
         Interactive Book Player
       </h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-lg p-4">
             <div className="flex justify-between items-center mb-4">
@@ -49,16 +52,19 @@ export default function BookPlayer() {
               <iframe
                 src={`${bookData.pdfUrl}#page=${pageNumber}`}
                 width="100%"
-                height="600"
+                height="400"
                 title="Book PDF"
               />
             </div>
           </div>
         </div>
+
         {/* فایل های صوتی */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-lg p-4">
-            <h2 className="text-xl font-semibold mb-4">Audio Chapters</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4">
+              Audio Chapters
+            </h2>
             <div className="relative mb-4">
               <input
                 type="text"
