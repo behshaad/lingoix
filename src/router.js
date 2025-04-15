@@ -8,6 +8,7 @@ import SignUp from "./components/Authentication/SignUp";
 import LehrePage from "./pages/LehrePage.jsx";
 import Dictionary from "./components/Dictionary/Dictionary.jsx";
 import Product from "./components/Home/Product/Product.jsx";
+import BookPlayer from "./components/Resource/BookPlayer/BookPlayer.jsx";
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,7 @@ const AppRouter = () => {
           <Route path="/Lehre" element={<LehrePage />} />
           <Route path="/Dictionary" element={<Dictionary />} />
           <Route path="/Product" element={<Product />} />
+          <Route path="/BookPlayer" element={<BookPlayer />} />
         </Routes>
       </div>
     </Router>
