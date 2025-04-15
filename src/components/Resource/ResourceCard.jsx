@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import { Book, Headphones, Video } from "lucide-react";
 import { gsap } from "gsap";
 
+
+import { Link, useNavigate } from "react-router-dom";
+
+
 export default function ResourceCard({ resource }) {
   const cardRef = useRef(null);
 
@@ -76,9 +80,15 @@ export default function ResourceCard({ resource }) {
         <p className="text-muted-foreground text-sm mb-4 flex-1">
           {resource.description}
         </p>
-        <button className="mt-auto self-start px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-300">
+        {/* <button className="mt-auto self-start px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-300">
           View Resource
-        </button>
+        </button> */}
+        <Link
+          to="/BookPlayer"
+          className="mt-auto self-start px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-300 "
+        >
+          View Resource
+        </Link>
       </div>
     </div>
   );
