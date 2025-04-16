@@ -43,7 +43,11 @@
 
   "hero": {
     "title": "Willkommen bei Lingoix",
-    "subtitle": "Die beste Plattform zum Sprachenlernen"
+    "subtitle": "Die beste Plattform zum Sprachenlernen",
+    "heading": "Lerne Sprachen schneller mit KI!",
+    "subheading": "Beherrsche jede Sprache mit personalisierten KI-gestützten Lektionen und einem bewährten Lernplan.",
+    "start": "Kostenlos starten",
+    "explore": "Lernpfad erkunden"
   },
   "features": "Unsere Funktionen",
   "featureCards": [
@@ -117,7 +121,32 @@
     "chat": "Chat",
     "ai": "KI-Assistent"
   },
-  
+    "languages": [
+    {
+      "title": "Der smarte Weg zum Sprachenlernen",
+      "caption": "vom Anfang bis zur Meisterschaft"
+    },
+    {
+      "title": "Personalisierte und intelligente Lösung!",
+      "caption": "Mittelstufe"
+    },
+    {
+      "title": "Sprachen schneller und besser lernen",
+      "caption": "und zielgerichteter"
+    },
+    {
+      "title": "Smarte Tools für Lehrkräfte",
+      "caption": "effektives Lernen für Schüler"
+    },
+    {
+      "title": "Die Zukunft des Sprachenlernens ist da",
+      "caption": "Mittelstufe"
+    },
+    {
+      "title": "„Die Zukunft des Sprachenlernens ist da.“",
+      "caption": "eine andere Erfahrung mit KI"
+    }
+  ],
   "footer": {
     "about": "Ihre vertrauenswürdige Plattform für das Sprachenlernen. Beherrschen Sie neue Sprachen mit interaktiven Lektionen und personalisierten Lernpfaden.",
     "quickLinks": "Schnellzugriff",

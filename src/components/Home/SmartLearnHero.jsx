@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { FaArrowRight } from "react-icons/fa";
@@ -9,6 +11,9 @@ import { RiSparklingLine, RiLightbulbFlashFill } from "react-icons/ri";
 import { IoMdChatbubbles } from "react-icons/io";
 
 export default function SmartLearnHero() {
+  const { t } = useTranslation();
+
+
   const heroRef = useRef(null);
   const headingRef = useRef(null);
   const subheadingRef = useRef(null);
@@ -56,24 +61,23 @@ export default function SmartLearnHero() {
           ref={headingRef}
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500 "
         >
-          Learn languages faster with AI!
+          {t("hero.heading")}
         </h1>
         <p
           ref={subheadingRef}
           className="text-xl text-gray-700 dark:text-gray-300 mt-4 max-w-2xl mx-auto"
         >
-          Master any language with personalized AI-powered lessons and a proven
-          learning roadmap.
+          {t("hero.subheading")}
         </p>
         <div
           ref={buttonsRef}
           className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
         >
           <button className="text-lg px-8 py-3 rounded-lg shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:scale-105 active:scale-95 transition transform">
-            Start for Free
+            {t("hero.start")}
           </button>
           <button className="text-lg px-8 py-3 border dark:text-gray-900 border-gray-300 rounded-lg shadow-md flex items-center gap-2 bg-white hover:bg-gray-100 transition">
-            Explore Roadmap <FaArrowRight className="h-5 w-5" />
+            {t("hero.explore")} <FaArrowRight className="h-5 w-5" />
           </button>
         </div>
       </div>

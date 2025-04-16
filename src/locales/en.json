@@ -41,7 +41,11 @@
   "cart": "Cart",
   "hero": {
     "title": "Welcome to Lingoix",
-    "subtitle": "The best platform for learning languages"
+    "subtitle": "The best platform for learning languages",
+    "heading": "Learn languages faster with AI!",
+    "subheading": "Master any language with personalized AI-powered lessons and a proven learning roadmap.",
+    "start": "Start for Free",
+    "explore": "Explore Roadmap"
   },
   "features": "Our Features",
   "featureCards": [
@@ -115,6 +119,35 @@
     "chat": "Chat",
     "ai": "AI Assistant"
   },
+    "languages": [
+    {
+      "title": "The smart path to language learning",
+      "caption": "from beginning to mastery"
+    },
+    {
+      "title": "personalized and smart!",
+      "caption": "Intermediate"
+    },
+    {
+      "title": "Learn languages ​faster, better",
+      "caption": "and more purposefully"
+    },
+    {
+      "title": "Smart tools for teachers",
+      "caption": "effective learning for students"
+    },
+    {
+      "title": "The future of language learning is here",
+      "caption": "Intermediate"
+    },
+    {
+      "title": "“The future of language learning is here .”",
+      "caption": "a different experience with AI"
+    }
+  ]
+,
+
+
   
   "footer": {
     "about": "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths.",
