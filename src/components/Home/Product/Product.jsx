@@ -84,7 +84,7 @@ const Product = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 mt-10 text-center sm:mt-16 sm:grid-cols-2 sm:gap-x-12 gap-y-12 md:grid-cols-3 xl:grid-cols-3 xl:gap-x-16 xl:mt-24">
+        <div className="grid grid-cols-1 mt-10 text-center sm:mt-16 sm:grid-cols-2 sm:gap-x-12 gap-y-1 md:grid-cols-3 xl:grid-cols-3 xl:gap-x-1 xl:mt-24">
           {items.map((item, index) => (
             <div
               key={index}
