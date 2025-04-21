@@ -96,7 +96,7 @@ const Product = () => {
                 index >= 3
                   ? "md:border-t md:border-gray-200 dark:border-gray-700"
                   : ""
-              } transition-all transform hover:scale-105 duration-300`}
+              } transition-all transform hover:scale-95 duration-700`}
             >
               {item.icon}
               <h3 className="mt-12 text-xl font-bold text-gray-900 dark:text-white font-pj">

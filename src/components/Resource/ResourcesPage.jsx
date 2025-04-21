@@ -83,7 +83,7 @@ const resources = [
     description:
       "Audio exercises to help you master Russian pronunciation and accent.",
     type: "audio",
-    thumbnail: playfulcat,
+    thumbnail: result,
     date: "March 1, 2025",
   },
   {
