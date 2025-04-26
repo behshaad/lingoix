@@ -7,8 +7,8 @@ import CoursesInProgress from "../components/Students/CoursesInProgress";
 import CompletedCourses from "../components/Students/CompletedCourses";
 import Medals from "../components/Students/Medals";
 import LearningStatistics from "../components/Students/LearningStatistics";
-import StudyReminder from "../components/Students/StudyReminder"
-import FlashCard from "../components/Students/FlashCard"
+import StudyReminder from "../components/Students/StudyReminder";
+import FlashCard from "../components/Students/FlashCard";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -16,7 +16,6 @@ const Dashboard = () => {
 
   // بررسی اینکه آیا کاربر لاگین کرده است یا نه
   useEffect(() => {
-
     const user = localStorage.getItem("user"); // دریافت اطلاعات کاربر از LocalStorage
     if (!user) {
       navigate("/login"); // اگر لاگین نیست، به صفحه ورود هدایت شود
@@ -36,11 +35,12 @@ const Dashboard = () => {
       </div>
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CoursesInProgress />
+
+          <FlashCard />
           <CompletedCourses />
+          <CoursesInProgress />
           <Medals />
           <LearningStatistics />
-          <FlashCard />
         </div>
       </div>
     </div>
@@ -48,4 +48,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
