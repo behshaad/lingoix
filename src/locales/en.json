@@ -40,7 +40,6 @@
   "login": "Login",
   "cart": "Cart",
 
-  
   "assignmentManagement": "Assignment Management",
   "addAssignment": "Add New Assignment",
   "dueDate": "Due Date",
@@ -53,10 +52,7 @@
   "submitted": "Submitted",
   "completed": "Completed",
   "assignmentList": "Assignment List",
-  "assignmentTitlePlaceholder": "Assignment Title"
-  ,
-
-  
+  "assignmentTitlePlaceholder": "Assignment Title",
   "attendanceManagement": "📅 Attendance Management",
   "filterStatus": "Filter Status",
   "studentNamePlaceholder": "Student Name",
@@ -68,9 +64,7 @@
   "attendanceList": "Attendance List",
   "studentName": "Student Name",
   "date": "Date",
-  "report": "Report: Present - {{present}}, Absent - {{absent}}, Late - {{late}}"
-,
-
+  "report": "Report: Present - {{present}}, Absent - {{absent}}, Late - {{late}}",
   "hero": {
     "title": "Welcome to Lingoix",
     "subtitle": "The best platform for learning languages",
@@ -142,16 +136,13 @@
     "download": "Download Report"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "vocabulary": "Vocabulary",
-    "audio": "Audio",
-    "writing": "Writing",
-    "progress": "Progress",
-    "certificates": "Certificates",
-    "chat": "Chat",
-    "ai": "AI Assistant"
+    "title": "Instructors’ Dashboard",
+    "activeStudents": "Active Students",
+    "averageScores": "Average Scores",
+    "completionRate": "Course Completion Rate",
+    "progressChart": "Overall Progress Chart"
   },
-    "languages": [
+  "languages": [
     {
       "title": "The smart path to language learning",
       "caption": "from beginning to mastery"
@@ -176,11 +167,7 @@
       "title": "“The future of language learning is here .”",
       "caption": "a different experience with AI"
     }
-  ]
-,
-
-
-  
+  ],
   "footer": {
     "about": "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths.",
     "quickLinks": "Quick Links",

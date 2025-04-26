@@ -41,7 +41,6 @@
   "login": "Anmelden",
   "cart": "Warenkorb",
 
-  
   "assignmentManagement": "Aufgabenverwaltung",
   "addAssignment": "Neue Aufgabe hinzufügen",
   "dueDate": "Abgabedatum",
@@ -54,10 +53,7 @@
   "submitted": "Eingereicht",
   "completed": "Abgeschlossen",
   "assignmentList": "Aufgabenliste",
-  "assignmentTitlePlaceholder": "Aufgabentitel"
-,
-
-
+  "assignmentTitlePlaceholder": "Aufgabentitel",
   "attendanceManagement": "📅 Anwesenheitsverwaltung",
   "filterStatus": "Status filtern",
   "studentNamePlaceholder": "Name des Studenten",
@@ -69,9 +65,7 @@
   "attendanceList": "Anwesenheitsliste",
   "studentName": "Name des Studenten",
   "date": "Datum",
-  "report": "Bericht: Anwesend - {{present}}, Abwesend - {{absent}}, Verspätet - {{late}}"
-,
-
+  "report": "Bericht: Anwesend - {{present}}, Abwesend - {{absent}}, Verspätet - {{late}}",
   "hero": {
     "title": "Willkommen bei Lingoix",
     "subtitle": "Die beste Plattform zum Sprachenlernen",
@@ -143,16 +137,13 @@
     "download": "Bericht herunterladen"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "vocabulary": "Vokabeln",
-    "audio": "Hören",
-    "writing": "Schreiben",
-    "progress": "Fortschritt",
-    "certificates": "Zertifikate",
-    "chat": "Chat",
-    "ai": "KI-Assistent"
+    "title": "Dashboard der Dozenten",
+    "activeStudents": "Aktive Studierende",
+    "averageScores": "Durchschnittliche Punktzahl",
+    "completionRate": "Kursabschlussrate",
+    "progressChart": "Gesamtfortschrittsdiagramm"
   },
-    "languages": [
+  "languages": [
     {
       "title": "Der smarte Weg zum Sprachenlernen",
       "caption": "vom Anfang bis zur Meisterschaft"

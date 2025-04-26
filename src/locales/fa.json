@@ -70,6 +70,9 @@
   "report": "گزارش"
 ,
 
+
+    
+
   "hero": {
     "title": "به Lingoix خوش آمدید",
     "subtitle": "بهترین پلتفرم برای یادگیری زبان",
@@ -78,6 +81,8 @@
     "start": "شروع رایگان",
     "explore": "مشاهده مسیر یادگیری"
   },
+
+
   "features": "ویژگی‌های ما",
   "featureCards": [
     {
@@ -140,16 +145,16 @@
     "feedback": "بازخورد",
     "download": "دانلود گزارش"
   },
-  "dashboard": {
-    "title": "داشبورد",
-    "vocabulary": "واژگان",
-    "audio": "شنیداری",
-    "writing": "نوشتن",
-    "progress": "پیشرفت",
-    "certificates": "گواهینامه‌ها",
-    "chat": "چت",
-    "ai": "دستیار هوشمند"
+
+    "dashboard": {
+    "title": "داشبورد مدرسان",
+    "activeStudents": "دانشجویان فعال",
+    "averageScores": "میانگین نمرات",
+    "completionRate": "نرخ اتمام دوره",
+    "progressChart": "نمودار پیشرفت کلی"
   },
+
+
   "languages": [
     {
       "title": "مسیر هوشمند برای یادگیری زبان",
