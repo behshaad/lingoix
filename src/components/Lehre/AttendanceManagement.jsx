@@ -47,10 +47,10 @@ export default function AttendanceManagement() {
 
   return (
     <div
-      className={`p-6 text-gray-900 dark:text-white min-h-screen ${textDirection}`}
+      className={`mt-0 p-6  text-gray-900 dark:text-white ${textDirection}`}
     >
       <h1 className="text-3xl font-bold mb-6">
-        📅 {t("attendanceManagement")}
+         {t("attendanceManagement")}
       </h1>
 
       {/* فرم فیلتر کردن */}

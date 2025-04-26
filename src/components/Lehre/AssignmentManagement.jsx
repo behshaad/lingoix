@@ -66,33 +66,35 @@ export default function AssignmentManagement() {
   const textDirection = useTextDirection();
 
   return (
-    <div className="p-6 text-gray-900 dark:text-white min-h-screen">
+    <div className="p-2 sm:p-4  text-gray-900 dark:text-white ">
       {/* عنوان */}
-      <h1 className={`text-3xl font-bold mb-6 ${textDirection}`}>
+      <h1 className={`text-2xl sm:text-3xl font-bold mb-3 ${textDirection}`}>
         {t("assignmentManagement")}
       </h1>
 
       {/* افزودن تکلیف جدید */}
-      <div className="mb-6">
-        <h2 className={`text-xl font-semibold mb-4 ${textDirection}`}>
+      <div className="mb-4">
+        <h2
+          className={`text-lg sm:text-xl font-semibold mb-2 ${textDirection}`}
+        >
           {t("addAssignment")}
         </h2>
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex flex-col md:flex-row flex-wrap gap-2 mb-2">
           <input
             type="text"
             placeholder={t("assignmentTitlePlaceholder")}
-            className="p-2 border rounded"
+            className="p-2 border rounded w-full md:w-auto"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
           />
           <input
             type="date"
-            className="p-2 border rounded"
+            className="p-2 border rounded w-full md:w-auto"
             value={newDueDate}
             onChange={(e) => setNewDueDate(e.target.value)}
           />
           <select
-            className="p-2 border rounded"
+            className="p-2 border rounded w-full md:w-auto"
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
           >
@@ -102,7 +104,7 @@ export default function AssignmentManagement() {
           </select>
           <button
             onClick={addAssignment}
-            className="p-2 bg-blue-500 text-white rounded"
+            className="p-2 bg-blue-500 text-white rounded w-full md:w-auto"
           >
             {t("add")}
           </button>
@@ -110,26 +112,28 @@ export default function AssignmentManagement() {
       </div>
 
       {/* لیست تکالیف */}
-      <div className="text-gray-900 dark:text-white p-6 rounded-xl shadow-lg">
-        <h2 className={`text-xl font-semibold mb-4 ${textDirection}`}>
+      <div className="text-gray-900 dark:text-white p-2 sm:p-4 rounded-xl shadow-lg overflow-x-auto">
+        <h2
+          className={`text-lg sm:text-xl font-semibold mb-2 ${textDirection}`}
+        >
           {t("assignmentList")}
         </h2>
-        <motion.table className={`w-full ${textDirection}`}>
+        <motion.table className={`w-full min-w-[600px] ${textDirection}`}>
           <thead>
             <tr>
-              <th className="p-2">{t("title")}</th>
-              <th className="p-2">{t("dueDate")}</th>
-              <th className="p-2">{t("status")}</th>
-              <th className="p-2">{t("actions")}</th>
+              <th className="p-1 text-left">{t("title")}</th>
+              <th className="p-1 text-left">{t("dueDate")}</th>
+              <th className="p-1 text-left">{t("status")}</th>
+              <th className="p-1 text-left">{t("actions")}</th>
             </tr>
           </thead>
           <tbody>
             {assignments.map((assignment) => (
-              <tr key={assignment.id}>
-                <td className="p-2">{assignment.title}</td>
-                <td className="p-2">{assignment.dueDate}</td>
-                <td className="p-2">{assignment.status}</td>
-                <td className="p-2 flex gap-2">
+              <tr key={assignment.id} className="border-t">
+                <td className="p-1">{assignment.title}</td>
+                <td className="p-1">{assignment.dueDate}</td>
+                <td className="p-1">{assignment.status}</td>
+                <td className="p-1 flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => deleteAssignment(assignment.id)}
                     className="p-2 bg-red-500 text-white rounded"
