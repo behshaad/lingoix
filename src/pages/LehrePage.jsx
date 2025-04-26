@@ -60,7 +60,7 @@ export default function LehrePage() {
       </div>
       <div className="mt-8  p-6 rounded-xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">
-          📊 Overall Progress Chart{" "}
+          📊 Overall Progress Chart
         </h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>

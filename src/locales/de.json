@@ -41,6 +41,22 @@
   "login": "Anmelden",
   "cart": "Warenkorb",
 
+  
+  "assignmentManagement": "Aufgabenverwaltung",
+  "addAssignment": "Neue Aufgabe hinzufügen",
+  "dueDate": "Abgabedatum",
+  "status": "Status",
+  "actions": "Aktionen",
+  "add": "Hinzufügen",
+  "delete": "Löschen",
+  "edit": "Bearbeiten",
+  "underReview": "In Überprüfung",
+  "submitted": "Eingereicht",
+  "completed": "Abgeschlossen",
+  "assignmentList": "Aufgabenliste",
+  "assignmentTitlePlaceholder": "Aufgabentitel"
+,
+
   "hero": {
     "title": "Willkommen bei Lingoix",
     "subtitle": "Die beste Plattform zum Sprachenlernen",

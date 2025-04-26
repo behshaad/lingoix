@@ -39,6 +39,21 @@
   "createAccount": "ایجاد حساب رایگان",
   "login": "ورود",
   "cart": "سبد خرید",
+  
+  "assignmentManagement": "مدیریت تکالیف",
+  "addAssignment": "افزودن تکلیف جدید",
+  "dueDate": "تاریخ تحویل",
+  "status": "وضعیت",
+  "actions": "عملیات",
+  "add": "افزودن",
+  "delete": "حذف",
+  "edit": "ویرایش",
+  "underReview": "در حال بررسی",
+  "submitted": "ارسال شده",
+  "completed": "تمام شده",
+  "assignmentList": "لیست تکالیف",
+  "assignmentTitlePlaceholder": "عنوان تکلیف"
+,
 
   "hero": {
     "title": "به Lingoix خوش آمدید",

@@ -1,5 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+
+// تابع برای گرفتن جهت متن بر اساس زبان
+function useTextDirection() {
+  const { i18n } = useTranslation();
+  return i18n.language === "fa" ? "text-right" : "text-left";
+}
 
 const initialAssignments = [
   { id: 1, title: "تکلیف 1", dueDate: "2025-03-28", status: "در حال بررسی" },
@@ -7,10 +14,16 @@ const initialAssignments = [
 ];
 
 export default function AssignmentManagement() {
+  const { t, i18n } = useTranslation();
   const [assignments, setAssignments] = useState(initialAssignments);
   const [newTitle, setNewTitle] = useState("");
   const [newDueDate, setNewDueDate] = useState("");
   const [newStatus, setNewStatus] = useState("در حال بررسی");
+
+  // جهت صفحه را تغییر می‌دهد
+  useEffect(() => {
+    document.body.dir = i18n.language === "fa" ? "rtl" : "ltr";
+  }, [i18n.language]);
 
   // افزودن تکلیف جدید
   const addAssignment = () => {
@@ -49,20 +62,25 @@ export default function AssignmentManagement() {
     setNewStatus("در حال بررسی");
   };
 
+  // گرفتن جهت متن
+  const textDirection = useTextDirection();
+
   return (
-    <div className="p-6 text-gray-900  dark:text-whitemin-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900  dark:text-white">
-        📝 مدیریت تکالیف
+    <div className="p-6 text-gray-900 dark:text-white min-h-screen">
+      {/* عنوان */}
+      <h1 className={`text-3xl font-bold mb-6 ${textDirection}`}>
+        {t("assignmentManagement")}
       </h1>
 
+      {/* افزودن تکلیف جدید */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900  dark:text-white">
-          افزودن تکلیف جدید
+        <h2 className={`text-xl font-semibold mb-4 ${textDirection}`}>
+          {t("addAssignment")}
         </h2>
-        <div className="flex gap-4 mb-4">
+        <div className="flex flex-wrap gap-4 mb-4">
           <input
             type="text"
-            placeholder="عنوان تکلیف"
+            placeholder={t("assignmentTitlePlaceholder")}
             className="p-2 border rounded"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
@@ -78,28 +96,31 @@ export default function AssignmentManagement() {
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
           >
-            <option value="در حال بررسی">در حال بررسی</option>
-            <option value="ارسال شده">ارسال شده</option>
-            <option value="تمام شده">تمام شده</option>
+            <option value="در حال بررسی">{t("underReview")}</option>
+            <option value="ارسال شده">{t("submitted")}</option>
+            <option value="تمام شده">{t("completed")}</option>
           </select>
           <button
             onClick={addAssignment}
             className="p-2 bg-blue-500 text-white rounded"
           >
-            افزودن
+            {t("add")}
           </button>
         </div>
       </div>
 
-      <div className="text-gray-900  dark:text-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">لیست تکالیف</h2>
-        <motion.table className="w-full text-left">
+      {/* لیست تکالیف */}
+      <div className="text-gray-900 dark:text-white p-6 rounded-xl shadow-lg">
+        <h2 className={`text-xl font-semibold mb-4 ${textDirection}`}>
+          {t("assignmentList")}
+        </h2>
+        <motion.table className={`w-full ${textDirection}`}>
           <thead>
             <tr>
-              <th className="p-2">عنوان</th>
-              <th className="p-2">تاریخ تحویل</th>
-              <th className="p-2">وضعیت</th>
-              <th className="p-2">عملیات</th>
+              <th className="p-2">{t("title")}</th>
+              <th className="p-2">{t("dueDate")}</th>
+              <th className="p-2">{t("status")}</th>
+              <th className="p-2">{t("actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -108,18 +129,18 @@ export default function AssignmentManagement() {
                 <td className="p-2">{assignment.title}</td>
                 <td className="p-2">{assignment.dueDate}</td>
                 <td className="p-2">{assignment.status}</td>
-                <td className="p-2">
+                <td className="p-2 flex gap-2">
                   <button
                     onClick={() => deleteAssignment(assignment.id)}
-                    className="p-2 bg-red-500 text-gray-900  dark:text-white rounded"
+                    className="p-2 bg-red-500 text-white rounded"
                   >
-                    حذف
+                    {t("delete")}
                   </button>
                   <button
                     onClick={() => editAssignment(assignment.id)}
-                    className="ml-2 p-2 bg-yellow-500 text-gray-900  dark:text-white rounded"
+                    className="p-2 bg-yellow-500 text-white rounded"
                   >
-                    ویرایش
+                    {t("edit")}
                   </button>
                 </td>
               </tr>
