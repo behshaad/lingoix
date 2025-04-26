@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
-const initialAttendance = [
-  { id: 1, student: "علی", date: "2025-03-21", status: "حضور" },
-  { id: 2, student: "زهرا", date: "2025-03-21", status: "غیبت" },
-  { id: 3, student: "حسین", date: "2025-03-22", status: "تاخیر" },
-  // ... سایر داده‌ها
-];
+import { useTranslation } from "react-i18next";
+import { initialAttendance } from "./attendanceData";
 
 export default function AttendanceManagement() {
+  const { t, i18n } = useTranslation();
   const [attendance, setAttendance] = useState(initialAttendance);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
-  const [status, setStatus] = useState("حضور");
+  const [status, setStatus] = useState("همه");
+
+  // جهت نوشتار بر اساس زبان
+  const textDirection = i18n.language === "fa" ? "text-right" : "text-left";
+
+  // تغییر dir صفحه
+  useEffect(() => {
+    document.body.dir = i18n.language === "fa" ? "rtl" : "ltr";
+  }, [i18n.language]);
 
   // فیلتر کردن داده‌ها
   const filteredAttendance = attendance.filter((entry) => {
@@ -35,22 +39,24 @@ export default function AttendanceManagement() {
         .length,
     };
     alert(
-      `گزارش: حضور - ${report.totalPresent}, غیبت - ${report.totalAbsent}, تاخیر - ${report.totalLate}`
+      `${t("report")}: ${t("present")} - ${report.totalPresent}, ${t(
+        "absent"
+      )} - ${report.totalAbsent}, ${t("late")} - ${report.totalLate}`
     );
   };
 
   return (
-    <div className="p-6 text-gray-900  dark:text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900  dark:text-white">
-        📅 مدیریت حضور و غیاب
+    <div
+      className={`p-6 text-gray-900 dark:text-white min-h-screen ${textDirection}`}
+    >
+      <h1 className="text-3xl font-bold mb-6">
+        📅 {t("attendanceManagement")}
       </h1>
 
       {/* فرم فیلتر کردن */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900  dark:text-white">
-          فیلتر کردن وضعیت‌ها
-        </h2>
-        <div className="flex gap-4 mb-4 text-gray-900  dark:text-white">
+        <h2 className="text-xl font-semibold mb-4">{t("filterStatus")}</h2>
+        <div className="flex flex-wrap gap-4 mb-4">
           <input
             type="date"
             className="p-2 border rounded"
@@ -59,39 +65,39 @@ export default function AttendanceManagement() {
           />
           <input
             type="text"
-            placeholder="نام دانشجو"
+            placeholder={t("studentName")}
             className="p-2 border rounded"
             value={selectedStudent}
             onChange={(e) => setSelectedStudent(e.target.value)}
           />
           <select
-            className="p-2 border rounded text-gray-900  dark:text-white"
+            className="p-2 border rounded"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option value="همه">همه</option>
-            <option value="حضور">حضور</option>
-            <option value="غیبت">غیبت</option>
-            <option value="تاخیر">تاخیر</option>
+            <option value="همه">{t("all")}</option>
+            <option value="حضور">{t("present")}</option>
+            <option value="غیبت">{t("absent")}</option>
+            <option value="تاخیر">{t("late")}</option>
           </select>
           <button
             onClick={generateReport}
-            className="p-2 bg-blue-500 text-gray-900  dark:text-white rounded"
+            className="p-2 bg-blue-500 text-white rounded"
           >
-            گزارش‌گیری
+            {t("generateReport")}
           </button>
         </div>
       </div>
 
       {/* نمایش وضعیت حضور و غیاب */}
-      <div className=" text-gray-900  dark:text-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">لیست حضور و غیاب</h2>
-        <motion.table className="w-full text-left">
+      <div className="p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">{t("attendanceList")}</h2>
+        <motion.table className="w-full">
           <thead>
             <tr>
-              <th className="p-2">نام دانشجو</th>
-              <th className="p-2">تاریخ</th>
-              <th className="p-2">وضعیت</th>
+              <th className="p-2">{t("student")}</th>
+              <th className="p-2">{t("date")}</th>
+              <th className="p-2">{t("status")}</th>
             </tr>
           </thead>
           <tbody>

@@ -55,6 +55,21 @@
   "assignmentTitlePlaceholder": "عنوان تکلیف"
 ,
 
+
+  "attendanceManagement": "مدیریت حضور و غیاب",
+  "filterStatus": "فیلتر کردن وضعیت‌ها",
+  "studentName": "نام دانشجو",
+  "all": "همه",
+  "present": "حضور",
+  "absent": "غیبت",
+  "late": "تاخیر",
+  "generateReport": "گزارش‌گیری",
+  "attendanceList": "لیست حضور و غیاب",
+  "student": "دانشجو",
+  "date": "تاریخ",
+  "report": "گزارش"
+,
+
   "hero": {
     "title": "به Lingoix خوش آمدید",
     "subtitle": "بهترین پلتفرم برای یادگیری زبان",

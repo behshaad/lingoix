@@ -54,8 +54,23 @@
   "completed": "Completed",
   "assignmentList": "Assignment List",
   "assignmentTitlePlaceholder": "Assignment Title"
-
   ,
+
+  
+  "attendanceManagement": "📅 Attendance Management",
+  "filterStatus": "Filter Status",
+  "studentNamePlaceholder": "Student Name",
+  "all": "All",
+  "present": "Present",
+  "absent": "Absent",
+  "late": "Late",
+  "generateReport": "Generate Report",
+  "attendanceList": "Attendance List",
+  "studentName": "Student Name",
+  "date": "Date",
+  "report": "Report: Present - {{present}}, Absent - {{absent}}, Late - {{late}}"
+,
+
   "hero": {
     "title": "Welcome to Lingoix",
     "subtitle": "The best platform for learning languages",

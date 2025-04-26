@@ -57,6 +57,21 @@
   "assignmentTitlePlaceholder": "Aufgabentitel"
 ,
 
+
+  "attendanceManagement": "📅 Anwesenheitsverwaltung",
+  "filterStatus": "Status filtern",
+  "studentNamePlaceholder": "Name des Studenten",
+  "all": "Alle",
+  "present": "Anwesend",
+  "absent": "Abwesend",
+  "late": "Verspätet",
+  "generateReport": "Bericht erstellen",
+  "attendanceList": "Anwesenheitsliste",
+  "studentName": "Name des Studenten",
+  "date": "Datum",
+  "report": "Bericht: Anwesend - {{present}}, Abwesend - {{absent}}, Verspätet - {{late}}"
+,
+
   "hero": {
     "title": "Willkommen bei Lingoix",
     "subtitle": "Die beste Plattform zum Sprachenlernen",
