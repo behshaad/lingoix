@@ -1,215 +1,322 @@
+"use client";
+
 import { useState } from "react";
+import { ChevronLeft, Plus, Check, X } from "lucide-react";
 
-// لیست کورس‌ها
-const initialCourses = [
-  { id: 1, name: "Lesson one", questions: [] },
-  { id: 2, name: "Lesson two", questions: [] },
-  { id: 3, name: "Lesson Three", questions: [] },
-];
+export default function FlashcardApp() {
+  // Initial courses data
+  const initialCourses = [
+    {
+      id: "1",
+      name: "Mathematics",
+      questions: [
+        {
+          id: "m1",
+          question: "What is the formula for the area of a circle?",
+          answer: "πr²",
+          correctCount: 0,
+          wrongCount: 0,
+        },
+        {
+          id: "m2",
+          question: "What is the Pythagorean theorem?",
+          answer: "a² + b² = c²",
+          correctCount: 0,
+          wrongCount: 0,
+        },
+      ],
+    },
+    {
+      id: "2",
+      name: "Science",
+      questions: [
+        {
+          id: "s1",
+          question: "What is the chemical symbol for water?",
+          answer: "H₂O",
+          correctCount: 0,
+          wrongCount: 0,
+        },
+        {
+          id: "s2",
+          question: "What is the first element on the periodic table?",
+          answer: "Hydrogen (H)",
+          correctCount: 0,
+          wrongCount: 0,
+        },
+      ],
+    },
+  ];
 
-export default function FlashCards() {
+  // State management
   const [courses, setCourses] = useState(initialCourses);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [newCourseName, setNewCourseName] = useState("");
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
+  const [flippedCardId, setFlippedCardId] = useState(null);
 
-  // وقتی کاربر یک کورس را انتخاب می‌کند، کورس انتخابی ذخیره می‌شود
-  const handleCourseSelect = (courseId) => {
-    setSelectedCourse(courseId);
-  };
-
-  // اضافه کردن کورس جدید
+  // Add a new course
   const handleAddCourse = () => {
+    if (!newCourseName.trim()) return;
+
     const newCourse = {
-      id: courses.length + 1,
+      id: Date.now().toString(),
       name: newCourseName,
       questions: [],
     };
+
     setCourses([...courses, newCourse]);
-    setNewCourseName(""); // Clear input after adding
+    setNewCourseName("");
   };
 
-  // اضافه کردن سوالات به کورس
+  // Add a new question to the selected course
   const handleAddQuestion = () => {
+    if (!selectedCourse || !newQuestion.trim() || !newAnswer.trim()) return;
+
+    const newQuestionObj = {
+      id: Date.now().toString(),
+      question: newQuestion,
+      answer: newAnswer,
+      correctCount: 0,
+      wrongCount: 0,
+    };
+
     const updatedCourses = courses.map((course) => {
-      if (course.id === selectedCourse) {
-        course.questions.push({
-          id: course.questions.length + 1,
-          question: newQuestion,
-          answer: newAnswer,
-        });
+      if (course.id === selectedCourse.id) {
+        return {
+          ...course,
+          questions: [...course.questions, newQuestionObj],
+        };
       }
       return course;
     });
+
     setCourses(updatedCourses);
-    setNewQuestion(""); // Clear input after adding question
-    setNewAnswer(""); // Clear input after adding answer
+    setSelectedCourse({
+      ...selectedCourse,
+      questions: [...selectedCourse.questions, newQuestionObj],
+    });
+    setNewQuestion("");
+    setNewAnswer("");
   };
 
-  // برای بازگشت به صفحه انتخاب کورس‌ها
-  const handleBack = () => {
+  // Handle card flip
+  const handleCardFlip = (questionId) => {
+    setFlippedCardId(flippedCardId === questionId ? null : questionId);
+  };
+
+  // Handle answer feedback (correct/wrong)
+  const handleAnswerFeedback = (questionId, isCorrect) => {
+    if (!selectedCourse) return;
+
+    const updatedCourses = courses.map((course) => {
+      if (course.id === selectedCourse.id) {
+        const updatedQuestions = course.questions.map((q) => {
+          if (q.id === questionId) {
+            return {
+              ...q,
+              correctCount: isCorrect ? q.correctCount + 1 : q.correctCount,
+              wrongCount: isCorrect ? q.wrongCount : q.wrongCount + 1,
+            };
+          }
+          return q;
+        });
+        return { ...course, questions: updatedQuestions };
+      }
+      return course;
+    });
+
+    setCourses(updatedCourses);
+
+    // Update the selected course as well
+    const updatedSelectedCourse = updatedCourses.find(
+      (course) => course.id === selectedCourse.id
+    );
+    if (updatedSelectedCourse) {
+      setSelectedCourse(updatedSelectedCourse);
+    }
+
+    // Reset the flipped state
+    setFlippedCardId(null);
+  };
+
+  // Go back to course list
+  const handleBackToCourses = () => {
     setSelectedCourse(null);
+    setFlippedCardId(null);
   };
-
-  const currentCourse = courses.find((course) => course.id === selectedCourse);
 
   return (
-    <div className="">
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <h1 className="text-3xl font-bold text-center mb-8">
+        Flashcard Study App
+      </h1>
+
       {!selectedCourse ? (
-        <div className="course-selection flex flex-col items-center p-3">
-          <h1 className="text-4xl font-bold mb-8">FlashCards selection</h1>
-          <div className="course-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div
-                key={course.id}
-                className="course-card p-6 bg-opacity-30 backdrop-blur-xl rounded-lg shadow-lg cursor-pointer transition-transform duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-opacity-50"
-                onClick={() => handleCourseSelect(course.id)}
+        // Course List View
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-4">Add New Course</h2>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter course name"
+                value={newCourseName}
+                onChange={(e) => setNewCourseName(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
+              />
+              <button
+                onClick={handleAddCourse}
+                className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
               >
-                <h2 className="text-xl font-semibold ">{course.name}</h2>
-              </div>
-            ))}
+                <Plus className="h-4 w-4 mr-2" />
+                Add Course
+              </button>
+            </div>
           </div>
-          <div className="mt-8">
-            <input
-              type="text"
-              value={newCourseName}
-              onChange={(e) => setNewCourseName(e.target.value)}
-              placeholder="New Course Name"
-              className="p-2 border rounded"
-            />
-            <button
-              onClick={handleAddCourse}
-              className="bg-blue-500 text-white p-3 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300 mt-4"
-            >
-              Add New Course
-            </button>
+
+          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-4">Your Courses</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white border border-gray-200 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow dark:bg-gray-800 dark:border-gray-700"
+                  onClick={() => setSelectedCourse(course)}
+                >
+                  <h3 className="text-lg font-medium">{course.name}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    {course.questions.length} flashcards
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
-        <FlashCard
-          course={currentCourse}
-          onBack={handleBack}
-          handleAddQuestion={handleAddQuestion}
-          newQuestion={newQuestion}
-          setNewQuestion={setNewQuestion}
-          newAnswer={newAnswer}
-          setNewAnswer={setNewAnswer}
-        />
+        // Course Detail View
+        <div className="space-y-6">
+          <div className="flex items-center mb-6">
+            <button
+              onClick={handleBackToCourses}
+              className="flex items-center justify-center mr-4 px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors dark:border-gray-600 dark:hover:bg-gray-700"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to Courses
+            </button>
+            <h2 className="text-2xl font-semibold">{selectedCourse.name}</h2>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
+            <h3 className="text-xl font-semibold mb-4">Add New Flashcard</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Question
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your question"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Answer</label>
+                <input
+                  type="text"
+                  placeholder="Enter the answer"
+                  value={newAnswer}
+                  onChange={(e) => setNewAnswer(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
+                />
+              </div>
+              <button
+                onClick={handleAddQuestion}
+                className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Flashcard
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
+            <h3 className="text-xl font-semibold mb-4">Flashcards</h3>
+            {selectedCourse.questions.length === 0 ? (
+              <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                No flashcards yet. Add your first one above!
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {selectedCourse.questions.map((question) => (
+                  <div
+                    key={question.id}
+                    className={`relative h-48 rounded-lg shadow-md cursor-pointer transition-all duration-300 ${
+                      flippedCardId === question.id
+                        ? "bg-gray-100 dark:bg-gray-700"
+                        : "bg-white dark:bg-gray-800"
+                    } border border-gray-200 dark:border-gray-700`}
+                    onClick={() => handleCardFlip(question.id)}
+                  >
+                    <div className="absolute inset-0 p-6 flex flex-col">
+                      {flippedCardId === question.id ? (
+                        // Answer side
+                        <div className="flex flex-col h-full">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                            Answer:
+                          </p>
+                          <p className="text-lg font-medium flex-1">
+                            {question.answer}
+                          </p>
+                          <div className="flex justify-between mt-4">
+                            <button
+                              className="flex-1 mr-2 flex items-center justify-center px-3 py-1 border border-green-500 rounded-md text-sm hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors dark:hover:bg-green-900"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAnswerFeedback(question.id, true);
+                              }}
+                            >
+                              <Check className="h-4 w-4 mr-1 text-green-500" />
+                              Correct
+                            </button>
+                            <button
+                              className="flex-1 ml-2 flex items-center justify-center px-3 py-1 border border-red-500 rounded-md text-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors dark:hover:bg-red-900"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAnswerFeedback(question.id, false);
+                              }}
+                            >
+                              <X className="h-4 w-4 mr-1 text-red-500" />
+                              Wrong
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // Question side
+                        <div className="flex flex-col h-full">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                            Question:
+                          </p>
+                          <p className="text-lg font-medium flex-1">
+                            {question.question}
+                          </p>
+                          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                            <span>Correct: {question.correctCount}</span>
+                            <span>Wrong: {question.wrongCount}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
 }
-
-function FlashCard({
-  course,
-  onBack,
-  handleAddQuestion,
-  newQuestion,
-  setNewQuestion,
-  newAnswer,
-  setNewAnswer,
-}) {
-  const [selectedId, setSelectedId] = useState(null);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [incorrectAnswers, setIncorrectAnswers] = useState(0);
-
-  const handleClick = (id) => {
-    setSelectedId(id !== selectedId ? id : null);
-  };
-
-  const handleAnswer = (isCorrect, questionId) => {
-    if (isCorrect) {
-      setCorrectAnswers(correctAnswers + 1);
-    } else {
-      setIncorrectAnswers(incorrectAnswers + 1);
-    }
-    setSelectedId(null); // Deselect the card after answering
-  };
-
-  return (
-    <div className="flex flex-col ">
-      <div className="mt-8">
-        <button
-          onClick={onBack}
-          className="bg-gray-700 text-white p-3 rounded-lg shadow-lg hover:bg-gray-800 transition duration-300"
-        >
-          back
-        </button>
-      </div>
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">Course question cards</h1>
-        <p className="text-lg">Correct Answers: {correctAnswers}</p>
-        <p className="text-lg">Incorrect Answers: {incorrectAnswers}</p>
-      </div>
-
-      {/* فرم برای اضافه کردن سوال جدید */}
-      <div className="add-question-form mb-8 ml-8">
-        <input
-          type="text"
-          value={newQuestion}
-          onChange={(e) => setNewQuestion(e.target.value)}
-          placeholder="New Question"
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          value={newAnswer}
-          onChange={(e) => setNewAnswer(e.target.value)}
-          placeholder="Answer"
-          className="p-2 border rounded ml-4"
-        />
-        {/* <button
-          onClick={handleAddQuestion}
-          className="bg-green-500 text-white p-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ml-4"
-        >
-          Add Question
-        </button> */}
-      </div>
-      <button
-        onClick={handleAddQuestion}
-        className="bg-blue-600 text-white p-3  shadow-lg hover:bg-green-600 transition duration-300 "
-      >
-        Add Question
-      </button>
-
-      <div className="flashcard-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {course.questions.map((question) => (
-          <div
-            key={question.id}
-            onClick={() => handleClick(question.id)}
-            className={`flashcard p-6 bg-opacity-20 backdrop-blur-xl rounded-xl shadow-md cursor-pointer transition-all duration-300 transform ${
-              selectedId === question.id
-                ? "bg-blue-500 text-white shadow-2xl scale-105"
-                : "bg-white text-gray-800"
-            } hover:scale-105 hover:shadow-xl hover:bg-blue-50`}
-          >
-            <p className="text-lg font-semibold text-center">
-              {selectedId === question.id ? question.answer : question.question}
-            </p>
-            {selectedId === question.id && (
-              <div className="answer-buttons mt-4 flex justify-center gap-4">
-                <button
-                  className="bg-green-500 text-white p-2 rounded-lg transition-transform duration-300 transform hover:scale-105"
-                  onClick={() => handleAnswer(true, question.id)}
-                >
-                  Correct
-                </button>
-                <button
-                  className="bg-red-500 text-white p-2 rounded-lg transition-transform duration-300 transform hover:scale-105"
-                  onClick={() => handleAnswer(false, question.id)}
-                >
-                  Wrong
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-
-
-
