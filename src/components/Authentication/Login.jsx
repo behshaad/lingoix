@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { apiClient } from "../../services/apiClient";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -42,17 +43,24 @@ const Login = () => {
     return isValid;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validateForm()) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email: username,
-          name: username.split("@")[0],
-          profilePic: `https://i.pravatar.cc/150?u=${username}`,
-        })
-      );
-      navigate("/dashboard");
+      try {
+        const { account } = await apiClient.login(username, password);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: account.email,
+            name: account.displayName,
+            role: account.role,
+            learnerId: account.learnerId,
+            profilePic: `https://i.pravatar.cc/150?u=${account.email}`,
+          })
+        );
+        navigate(account.role === "learner" ? "/dashboard" : "/admin");
+      } catch (error) {
+        setErrors({ password: t("auth.invalidCredentials", "Invalid email or password.") });
+      }
     }
   };
 

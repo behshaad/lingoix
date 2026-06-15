@@ -67,10 +67,19 @@ To install the project, follow these steps:
 
 4. Start the project:
     ```bash
-    npm start
+    npm run dev
     # or
     yarn start
     ```
+
+## Demo backend accounts
+
+The local backend runs on `http://localhost:4000` and seeds these accounts. All use the password `Lingoix123!`.
+
+- Learner: `learner@lingoix.test`
+- Teacher: `teacher@lingoix.test`
+- School Admin: `school@lingoix.test`
+- Platform Admin: `admin@lingoix.test`
 
 ## Usage
 

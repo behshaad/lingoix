@@ -164,7 +164,8 @@
     "emailInvalid": "Bitte geben Sie eine gültige E-Mail ein.",
     "passwordRequired": "Passwort darf nicht leer sein.",
     "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein.",
-    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "invalidCredentials": "Ungültige E-Mail oder ungültiges Passwort."
   },
   "dictionary": {
     "sourceAuto": "Automatisch erkennen",

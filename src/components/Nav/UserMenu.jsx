@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { apiClient } from "../../services/apiClient";
 
 const UserMenu = () => {
   const { t } = useTranslation();
@@ -23,7 +24,8 @@ const UserMenu = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await apiClient.logout().catch(() => {});
     localStorage.removeItem("user");
     setUser(null);
     navigate("/");

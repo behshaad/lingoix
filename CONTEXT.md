@@ -84,9 +84,17 @@ _Avoid_: Admin, platform admin
 A person who manages platform-wide content, resources, the exercise bank, synthetic data, adaptive rules, and system reports.
 _Avoid_: Admin, school admin
 
+**Role Permission**:
+The access boundary attached to an account role. Learners access their own learning data, teachers access assigned classes and students, school admins access their school, and platform admins access platform-wide management.
+_Avoid_: Visibility rule, access setting
+
 **Class**:
 A group where a teacher manages enrolled students. A learner may exist independently, but becomes a student when enrolled in a class.
 _Avoid_: Course, group
+
+**Account**:
+An authenticated identity used to access Lingoix with a role such as learner, teacher, school admin, or platform admin. An account is not the same as a learner profile; teacher and admin accounts do not require learner profiles.
+_Avoid_: Learner, Student, User
 
 **Learner Detail Report**:
 A report focused on one learner's language performance, learning path, learning events, skill weaknesses, targeted exercises, and adaptive decisions.

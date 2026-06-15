@@ -174,7 +174,8 @@
     "emailInvalid": "لطفاً یک ایمیل معتبر وارد کنید.",
     "passwordRequired": "رمز عبور نمی‌تواند خالی باشد.",
     "passwordMin": "رمز عبور باید حداقل ۶ کاراکتر باشد.",
-    "passwordMismatch": "رمزهای عبور مطابقت ندارند."
+    "passwordMismatch": "رمزهای عبور مطابقت ندارند.",
+    "invalidCredentials": "ایمیل یا رمز عبور نادرست است."
   },
   "dictionary": {
     "sourceAuto": "تشخیص خودکار",

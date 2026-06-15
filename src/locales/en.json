@@ -163,7 +163,8 @@
     "emailInvalid": "Please enter a valid email.",
     "passwordRequired": "Password cannot be empty.",
     "passwordMin": "Password must be at least 6 characters.",
-    "passwordMismatch": "Passwords do not match."
+    "passwordMismatch": "Passwords do not match.",
+    "invalidCredentials": "Invalid email or password."
   },
   "dictionary": {
     "sourceAuto": "Auto Detect",

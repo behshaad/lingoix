@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
+import { apiClient } from "../../services/apiClient";
 
 const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
   const menuRef = useRef(null);
@@ -23,7 +24,8 @@ const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
     }
   }, [isOpen]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await apiClient.logout().catch(() => {});
     localStorage.removeItem("user");
     setUser(null);
     toggleMenu();
