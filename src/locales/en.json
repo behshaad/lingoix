@@ -1,0 +1,385 @@
+{
+  "welcome": "Lingoix",
+  "changeLanguage": "Change Language",
+  "register": "Sign Up",
+  "toggleDarkMode": "Toggle Dark Mode",
+  "resources": "Resources",
+  "welcome_dashboard": "Welcome to your dashboard!",
+  "title": "Courses In Progress",
+  "moto": "Explore all artwork",
+  "lastActive": "Last Active",
+  "progress": "Progress",
+  "continue": "Continue Learning",
+  "allCourses": "All Courses",
+  "close": "Close",
+  "logout": "Logout",
+  "medals": "Medals",
+  "Gold": "Gold",
+  "Silver": "Silver",
+  "Bronze": "Bronze",
+  "Learn 3 days in a week to earn Gold": "Learn 3 days in a week to earn Gold",
+  "Learn 2 days in a week to earn Silver": "Learn 2 days in a week to earn Silver",
+  "Learn 1 day in a week to earn Bronze": "Learn 1 day in a week to earn Bronze",
+  "Next Medal": "Next Medal",
+  "You are 1 day away from earning": "You are 1 day away from earning",
+  "Continue Learning": "Continue Learning",
+  "Keep learning to earn your first medal!": "Keep learning to earn your first medal!",
+  "completedCourses": "Completed Courses",
+  "search": "🔍 Search...",
+  "sortByName": "Sort by Name",
+  "sortByScore": "Sort by Score",
+  "courseName": "Course Name",
+  "score": "Score",
+  "certificate": "Certificate",
+  "download": "Download 📜",
+  "Translator": "Translator",
+  "Dashboard": "Dashboard",
+  "Resources": "Resources",
+  "Academy": "Academy",
+  "createAccount": "Create Free Account",
+  "login": "Login",
+  "cart": "Cart",
+
+  "assignmentManagement": "Assignment Management",
+  "addAssignment": "Add New Assignment",
+  "dueDate": "Due Date",
+  "status": "Status",
+  "actions": "Actions",
+  "add": "Add",
+  "delete": "Delete",
+  "edit": "Edit",
+  "underReview": "Under Review",
+  "submitted": "Submitted",
+  "completed": "Completed",
+  "assignmentList": "Assignment List",
+  "assignmentTitlePlaceholder": "Assignment Title",
+  "attendanceManagement": "📅 Attendance Management",
+  "filterStatus": "Filter Status",
+  "studentNamePlaceholder": "Student Name",
+  "all": "All",
+  "present": "Present",
+  "absent": "Absent",
+  "late": "Late",
+  "generateReport": "Generate Report",
+  "attendanceList": "Attendance List",
+  "studentName": "Student Name",
+  "date": "Date",
+  "report": "Report: Present - {{present}}, Absent - {{absent}}, Late - {{late}}",
+  "hero": {
+    "title": "Welcome to Lingoix",
+    "subtitle": "The best platform for learning languages",
+    "heading": "Learn languages faster with AI!",
+    "subheading": "Master any language with personalized AI-powered lessons and a proven learning roadmap.",
+    "start": "Start for Free",
+    "explore": "Explore Roadmap"
+  },
+  "features": "Our Features",
+  "featureCards": [
+    {
+      "title": "Interactive Lessons",
+      "description": "Learn with engaging activities."
+    },
+    {
+      "title": "Real-Time Progress Tracking",
+      "description": "Track your learning journey."
+    },
+    {
+      "title": "Expert Teachers",
+      "description": "Learn from experienced instructors."
+    }
+  ],
+  "cta": "Sign Up Now",
+  "steps": {
+    "1": "🎉 Welcome to Lingoix!",
+    "2": "Complete your profile and personalize your experience",
+    "3": "🚀 Getting to know the dashboard",
+    "4": "Your first experience with Lingoix",
+    "5": "🎯 Start learning!"
+  },
+  "description": {
+    "1": "From the beginning, please specify how you want to use this platform: • Student: Learn the language and track progress • Teacher: Teach and manage students • School: Manage classes and student performance",
+    "2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "3": "Description: This is your control center! Depending on the role you choose, you can: • Student: Follow the learning roadmap, tests, and exercises. • Teacher: See student progress and assign assignments. • School: Manage student and teacher performance.",
+    "4": "Now it's your turn to take the first step! • Student: View a sample lesson and take a mini-test. • Teacher: Create a test assignment. • School: View a sample student report.",
+    "5": "You've learned about the basic features of Lingoix. Now you can get started and use this platform for learning, teaching, and managing classes."
+  },
+  "common": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "progress": "Progress",
+    "restart": "Restart"
+  },
+  "vocabulary": {
+    "title": "Vocabulary Practice",
+    "example": "Example",
+    "translation": "Translation"
+  },
+  "audio": {
+    "title": "Audio Practice",
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next",
+    "previous": "Previous",
+    "volume": "Volume",
+    "transcription": "Transcription",
+    "translation": "Translation"
+  },
+  "writing": {
+    "title": "Writing Practice",
+    "prompt": "Prompt",
+    "example": "Example",
+    "write": "Write",
+    "submit": "Submit",
+    "score": "Score",
+    "feedback": "Feedback",
+    "download": "Download Report"
+  },
+  "dashboard": {
+    "title": "Instructors’ Dashboard",
+    "activeStudents": "Active Students",
+    "averageScores": "Average Scores",
+    "completionRate": "Course Completion Rate",
+    "progressChart": "Overall Progress Chart"
+  },
+  "nav": {
+    "admin": "Admin"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginTitle": "Login",
+    "signupTitle": "Sign Up",
+    "loginButton": "Login",
+    "signupButton": "Sign up",
+    "noAccount": "Do not have an account?",
+    "hasAccount": "Already have an account?",
+    "goToSignup": "Sign up",
+    "goToLogin": "Login",
+    "emailRequired": "Email cannot be empty.",
+    "emailInvalid": "Please enter a valid email.",
+    "passwordRequired": "Password cannot be empty.",
+    "passwordMin": "Password must be at least 6 characters.",
+    "passwordMismatch": "Passwords do not match."
+  },
+  "dictionary": {
+    "sourceAuto": "Auto Detect",
+    "german": "German",
+    "persian": "Persian",
+    "savedWords": "Saved Words",
+    "placeholder": "Enter text to translate...",
+    "translate": "Translate",
+    "saveWord": "Save Word"
+  },
+  "resourcePage": {
+    "title": "Resources",
+    "subtitle": "Explore German learning materials for Persian-speaking learners",
+    "search": "Search resources...",
+    "all": "All Resources",
+    "books": "Books",
+    "audio": "Audio",
+    "grammar": "Grammar",
+    "vocabulary": "Vocabulary"
+  },
+  "bookPlayer": {
+    "audioPrompt": "Select and play the audio chapters from the side panel.",
+    "page": "Page",
+    "previous": "Previous",
+    "next": "Next",
+    "audioChapters": "Audio Chapters",
+    "searchAudio": "Search audio files...",
+    "goToPage": "Go to page {{page}}",
+    "noAudio": "No audio files found"
+  },
+  "resourcesData": {
+    "resource-hueber-a1": {
+      "title": "Hueber German A1 Course PDF",
+      "description": "Primary beginner German course book used for reading and grammar review."
+    },
+    "resource-kapitel-2": {
+      "title": "Kapitel 2 Audio",
+      "description": "Listening practice for early A1 classroom and daily-life phrases."
+    },
+    "resource-kapitel-3": {
+      "title": "Kapitel 3 Audio",
+      "description": "Listening practice for questions, numbers, and short dialogues."
+    },
+    "resource-kapitel-4": {
+      "title": "Kapitel 4 Audio",
+      "description": "Listening practice for routines, travel, and intermediate phrases."
+    },
+    "resource-verb-bank": {
+      "title": "Core German Verb Bank",
+      "description": "Essential verbs for synthetic learner practice and targeted exercises."
+    },
+    "resource-grammar-notes": {
+      "title": "A1-A2 Grammar Notes",
+      "description": "Short explanations for verb position, present tense, cases, and modal verbs."
+    }
+  },
+  "exerciseTemplates": {
+    "flashcardReview": "Flashcard review {{number}}",
+    "verbMeaningMatch": "Verb meaning match {{number}}",
+    "sentenceOrdering": "Sentence ordering {{number}}",
+    "articleCaseDrill": "Article and case drill {{number}}",
+    "modalVerbCompletion": "Modal verb completion {{number}}",
+    "audioComprehensionQuiz": "Audio comprehension quiz {{number}}",
+    "numberDictation": "Number dictation {{number}}",
+    "shortPassageQuestions": "Short passage questions {{number}}",
+    "instructionMatching": "Instruction matching {{number}}",
+    "shortWritingCorrection": "Short writing correction {{number}}",
+    "guidedEmailSubmission": "Guided email submission {{number}}",
+    "translationProduction": "Translation production {{number}}",
+    "translationRecognition": "Translation recognition {{number}}"
+  },
+  "learnerDashboard": {
+    "learningPath": "Learning Path",
+    "languagePerformance": "Language Performance",
+    "adaptiveDecisions": "Adaptive Decisions",
+    "complete": "{{value}}% complete",
+    "accuracy": "{{value}}% accuracy",
+    "averageResponse": "{{value}}s average response",
+    "active": "{{count}} active",
+    "targetedTitle": "Targeted exercises inserted into your path"
+  },
+  "admin": {
+    "title": "Adaptive learning operations",
+    "eyebrow": "Platform Admin",
+    "description": "Manage synthetic learners, inspect language performance, review targeted exercises, and monitor the rules-first adaptive system.",
+    "syntheticNotice": "Synthetic dataset only. Not research validation data.",
+    "overview": "Overview",
+    "learners": "Learners",
+    "classes": "Classes",
+    "content": "Resources",
+    "exercises": "Exercises",
+    "adaptive": "Adaptive",
+    "syntheticLearners": "Synthetic learners",
+    "learningEvents": "Learning events",
+    "resources": "Resources",
+    "averageAccuracy": "Average accuracy",
+    "commonErrorPatterns": "Common error patterns",
+    "skillWeaknessDistribution": "Skill weakness distribution",
+    "learnerDetailReport": "Learner Detail Report",
+    "languagePerformance": "Language performance",
+    "adaptiveDecisions": "Adaptive decisions",
+    "latestLearningEvents": "Latest learning events",
+    "targetedInserted": "{{count}} targeted exercises inserted.",
+    "classReport": "Class Report",
+    "classReportDescription": "Compare enrolled students by progress, accuracy, and response speed.",
+    "students": "Students",
+    "progress": "Progress",
+    "accuracy": "Accuracy",
+    "avgResponse": "Avg response",
+    "student": "Student",
+    "cefr": "CEFR",
+    "weaknesses": "Weaknesses",
+    "teacher": "Teacher",
+    "exerciseBank": "Exercise Bank",
+    "exercise": "Exercise",
+    "difficulty": "Difficulty",
+    "skill": "Skill",
+    "subskill": "Subskill",
+    "minutes": "Minutes",
+    "adaptiveDescription": "Rules-first remediation and practice boosts generated from synthetic learning events.",
+    "learner": "Learner",
+    "type": "Type",
+    "reason": "Reason",
+    "status": "Status",
+    "targetedExercises": "Targeted exercises",
+    "events": "Events",
+    "targetLanguage": "Target language",
+    "classesCount": "{{count}} classes",
+    "decisionsCount": "{{count}} adaptive decisions",
+    "exerciseCount": "{{count}} tagged exercises",
+    "averageProgress": "{{value}}% average progress"
+  },
+  "domain": {
+    "German": "German",
+    "Persian": "Persian",
+    "vocabulary-recall": "Vocabulary recall",
+    "grammar-accuracy": "Grammar accuracy",
+    "listening-comprehension": "Listening comprehension",
+    "reading-comprehension": "Reading comprehension",
+    "writing-quality": "Writing quality",
+    "translation-direction": "Translation direction",
+    "remediation": "Remediation",
+    "practice_boost": "Practice boost",
+    "active": "Active",
+    "teacher_review": "Teacher review",
+    "correct": "correct",
+    "needsReview": "needs review",
+    "answer_submitted": "answer submitted",
+    "hint_requested": "hint requested",
+    "audio_replayed": "audio replayed",
+    "word_searched": "word searched",
+    "writing_submitted": "writing submitted",
+    "nouns": "nouns",
+    "daily verbs": "daily verbs",
+    "separable verbs": "separable verbs",
+    "prepositions": "prepositions",
+    "verb position": "verb position",
+    "cases": "cases",
+    "present tense": "present tense",
+    "modal verbs": "modal verbs",
+    "numbers": "numbers",
+    "slow dialogue": "slow dialogue",
+    "chapter audio": "chapter audio",
+    "dictation": "dictation",
+    "short texts": "short texts",
+    "instructions": "instructions",
+    "PDF passages": "PDF passages",
+    "dialogues": "dialogues",
+    "sentence order": "sentence order",
+    "spelling": "spelling",
+    "short answers": "short answers",
+    "email writing": "email writing",
+    "German to Persian": "German to Persian",
+    "Persian to German": "Persian to German",
+    "false friends": "false friends",
+    "high": "high",
+    "medium": "medium"
+  },
+  "languages": [
+    {
+      "title": "The smart path to language learning",
+      "caption": "from beginning to mastery"
+    },
+    {
+      "title": "personalized and smart!",
+      "caption": "Intermediate"
+    },
+    {
+      "title": "Learn languages ​faster, better",
+      "caption": "and more purposefully"
+    },
+    {
+      "title": "Smart tools for teachers",
+      "caption": "effective learning for students"
+    },
+    {
+      "title": "The future of language learning is here",
+      "caption": "Intermediate"
+    },
+    {
+      "title": "“The future of language learning is here .”",
+      "caption": "a different experience with AI"
+    }
+  ],
+  "footer": {
+    "about": "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths.",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "courses": "Courses",
+    "resources": "Resources",
+    "contact": "Contact",
+    "contactUs": "Contact Us",
+    "address": "123 Language Street, Education City",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

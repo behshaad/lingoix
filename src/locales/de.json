@@ -1,0 +1,386 @@
+{
+  "welcome": "Lingoix",
+  "changeLanguage": "Sprache ändern",
+  "register": "Registrieren",
+  "toggleDarkMode": "Dunkelmodus umschalten",
+  "resources": "Resources",
+  "welcome_dashboard": "Willkommen in deinem Dashboard!",
+  "logout": "Ausloggen",
+  "title": "Laufende Kurse",
+  "moto": "Explore all artwork",
+
+  "lastActive": "Zuletzt aktiv",
+  "progress": "Fortschritt",
+  "continue": "Weiterlernen",
+  "allCourses": "Alle Kurse",
+  "close": "Schließen",
+  "medals": "Medaillen",
+  "Gold": "Gold",
+  "Silver": "Silber",
+  "Bronze": "Bronze",
+  "Learn 3 days in a week to earn Gold": "Lerne 3 Tage pro Woche, um Gold zu verdienen",
+  "Learn 2 days in a week to earn Silver": "Lerne 2 Tage pro Woche, um Silber zu verdienen",
+  "Learn 1 day in a week to earn Bronze": "Lerne 1 Tag pro Woche, um Bronze zu verdienen",
+  "Next Medal": "Nächste Medaille",
+  "You are 1 day away from earning": "Du bist 1 Tag davon entfernt, zu verdienen",
+  "Continue Learning": "Weiter lernen",
+  "Keep learning to earn your first medal!": "Lerne weiter, um deine erste Medaille zu verdienen!",
+  "completedCourses": "Abgeschlossene Kurse",
+  "search": "🔍 Suchen...",
+  "sortByName": "Nach Name sortieren",
+  "sortByScore": "Nach Punktzahl sortieren",
+  "courseName": "Kursname",
+  "score": "Punktzahl",
+  "certificate": "Zertifikat",
+  "download": "Herunterladen 📜",
+  "Translator": "Übersetzen",
+  "Dashboard": "Armaturenbrett",
+  "Resources": "Ressourcen",
+  "Academy": "Akademie",
+  "createAccount": "Kostenloses Konto erstellen",
+  "login": "Anmelden",
+  "cart": "Warenkorb",
+
+  "assignmentManagement": "Aufgabenverwaltung",
+  "addAssignment": "Neue Aufgabe hinzufügen",
+  "dueDate": "Abgabedatum",
+  "status": "Status",
+  "actions": "Aktionen",
+  "add": "Hinzufügen",
+  "delete": "Löschen",
+  "edit": "Bearbeiten",
+  "underReview": "In Überprüfung",
+  "submitted": "Eingereicht",
+  "completed": "Abgeschlossen",
+  "assignmentList": "Aufgabenliste",
+  "assignmentTitlePlaceholder": "Aufgabentitel",
+  "attendanceManagement": "📅 Anwesenheitsverwaltung",
+  "filterStatus": "Status filtern",
+  "studentNamePlaceholder": "Name des Studenten",
+  "all": "Alle",
+  "present": "Anwesend",
+  "absent": "Abwesend",
+  "late": "Verspätet",
+  "generateReport": "Bericht erstellen",
+  "attendanceList": "Anwesenheitsliste",
+  "studentName": "Name des Studenten",
+  "date": "Datum",
+  "report": "Bericht: Anwesend - {{present}}, Abwesend - {{absent}}, Verspätet - {{late}}",
+  "hero": {
+    "title": "Willkommen bei Lingoix",
+    "subtitle": "Die beste Plattform zum Sprachenlernen",
+    "heading": "Lerne Sprachen schneller mit KI!",
+    "subheading": "Beherrsche jede Sprache mit personalisierten KI-gestützten Lektionen und einem bewährten Lernplan.",
+    "start": "Kostenlos starten",
+    "explore": "Lernpfad erkunden"
+  },
+  "features": "Unsere Funktionen",
+  "featureCards": [
+    {
+      "title": "Interaktive Lektionen",
+      "description": "Lernen mit interaktiven Aktivitäten."
+    },
+    {
+      "title": "Echtzeit-Fortschrittsverfolgung",
+      "description": "Verfolgen Sie Ihren Lernfortschritt."
+    },
+    {
+      "title": "Expertenlehrer",
+      "description": "Lernen Sie von erfahrenen Lehrern."
+    }
+  ],
+  "cta": "Jetzt anmelden",
+  "steps": {
+    "1": "🎉 Willkommen bei Lingoix!",
+    "2": "Vervollständigen Sie Ihr Profil und personalisieren Sie Ihre Erfahrung",
+    "3": "🚀 Kennenlernen des Dashboards",
+    "4": "Ihre erste Erfahrung mit Lingoix",
+    "5": "🎯 Beginnen Sie mit dem Lernen!"
+  },
+  "description": {
+    "1": "Bitte geben Sie zu Beginn an, wie Sie diese Plattform nutzen möchten: • Student: Lernen Sie die Sprache und verfolgen Sie den Fortschritt • Lehrer: Lehren und verwalten Sie Schüler • Schule: Verwalten Sie Klassen und Schülerleistungen",
+    "2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "3": "Beschreibung: Dies ist Ihr Kontrollzentrum! Je nach der Rolle, die Sie wählen, können Sie: • Student: Den Lernplan, Tests und Übungen verfolgen. • Lehrer: Den Fortschritt der Schüler sehen und Aufgaben zuweisen. • Schule: Schüler- und Lehrerleistungen verwalten.",
+    "4": "Jetzt sind Sie dran, den ersten Schritt zu machen! • Student: Sehen Sie sich eine Beispielstunde an und machen Sie einen Mini-Test. • Lehrer: Erstellen Sie eine Testaufgabe. • Schule: Sehen Sie sich einen Beispiel-Schülerbericht an.",
+    "5": "Sie haben die grundlegenden Funktionen von Lingoix kennengelernt. Jetzt können Sie mit dem Lernen beginnen!"
+  },
+  "common": {
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer",
+    "progress": "Fortschritt",
+    "restart": "Neustart"
+  },
+  "vocabulary": {
+    "title": "Vokabelübung",
+    "example": "Beispiel",
+    "translation": "Übersetzung"
+  },
+  "audio": {
+    "title": "Hörübung",
+    "play": "Abspielen",
+    "pause": "Pause",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "volume": "Lautstärke",
+    "transcription": "Transkription",
+    "translation": "Übersetzung"
+  },
+  "writing": {
+    "title": "Schreibübung",
+    "prompt": "Aufgabe",
+    "example": "Beispiel",
+    "write": "Schreiben",
+    "submit": "Einreichen",
+    "score": "Punktzahl",
+    "feedback": "Feedback",
+    "download": "Bericht herunterladen"
+  },
+  "dashboard": {
+    "title": "Dashboard der Dozenten",
+    "activeStudents": "Aktive Studierende",
+    "averageScores": "Durchschnittliche Punktzahl",
+    "completionRate": "Kursabschlussrate",
+    "progressChart": "Gesamtfortschrittsdiagramm"
+  },
+  "nav": {
+    "admin": "Administration"
+  },
+  "auth": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "rememberMe": "Angemeldet bleiben",
+    "forgotPassword": "Passwort vergessen?",
+    "loginTitle": "Anmelden",
+    "signupTitle": "Registrieren",
+    "loginButton": "Anmelden",
+    "signupButton": "Registrieren",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Schon ein Konto?",
+    "goToSignup": "Registrieren",
+    "goToLogin": "Anmelden",
+    "emailRequired": "E-Mail darf nicht leer sein.",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail ein.",
+    "passwordRequired": "Passwort darf nicht leer sein.",
+    "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+  },
+  "dictionary": {
+    "sourceAuto": "Automatisch erkennen",
+    "german": "Deutsch",
+    "persian": "Persisch",
+    "savedWords": "Gespeicherte Wörter",
+    "placeholder": "Text zum Übersetzen eingeben...",
+    "translate": "Übersetzen",
+    "saveWord": "Wort speichern"
+  },
+  "resourcePage": {
+    "title": "Ressourcen",
+    "subtitle": "Entdecken Sie Deutschlernmaterialien für persischsprachige Lernende",
+    "search": "Ressourcen suchen...",
+    "all": "Alle Ressourcen",
+    "books": "Bücher",
+    "audio": "Audio",
+    "grammar": "Grammatik",
+    "vocabulary": "Wortschatz"
+  },
+  "bookPlayer": {
+    "audioPrompt": "Wählen Sie die Audiokapitel im Seitenbereich aus und spielen Sie sie ab.",
+    "page": "Seite",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "audioChapters": "Audiokapitel",
+    "searchAudio": "Audiodateien suchen...",
+    "goToPage": "Zu Seite {{page}}",
+    "noAudio": "Keine Audiodateien gefunden"
+  },
+  "resourcesData": {
+    "resource-hueber-a1": {
+      "title": "Hueber Deutsch A1 Kurs-PDF",
+      "description": "Zentrales Deutschkursbuch für Anfänger, Lesen und Grammatik."
+    },
+    "resource-kapitel-2": {
+      "title": "Kapitel 2 Audio",
+      "description": "Hörübung für frühe A1-Klassensprache und Alltagsphrasen."
+    },
+    "resource-kapitel-3": {
+      "title": "Kapitel 3 Audio",
+      "description": "Hörübung für Fragen, Zahlen und kurze Dialoge."
+    },
+    "resource-kapitel-4": {
+      "title": "Kapitel 4 Audio",
+      "description": "Hörübung für Routinen, Reisen und Sätze der Mittelstufe."
+    },
+    "resource-verb-bank": {
+      "title": "Grundwortschatz deutscher Verben",
+      "description": "Wichtige Verben für synthetische Lernende und gezielte Übungen."
+    },
+    "resource-grammar-notes": {
+      "title": "A1-A2 Grammatiknotizen",
+      "description": "Kurze Erklärungen zu Verbposition, Präsens, Kasus und Modalverben."
+    }
+  },
+  "exerciseTemplates": {
+    "flashcardReview": "Karteikartenwiederholung {{number}}",
+    "verbMeaningMatch": "Verb-Bedeutung zuordnen {{number}}",
+    "sentenceOrdering": "Satzstellung {{number}}",
+    "articleCaseDrill": "Artikel- und Kasusübung {{number}}",
+    "modalVerbCompletion": "Modalverb-Ergänzung {{number}}",
+    "audioComprehensionQuiz": "Hörverständnis-Quiz {{number}}",
+    "numberDictation": "Zahlendiktat {{number}}",
+    "shortPassageQuestions": "Fragen zu kurzem Text {{number}}",
+    "instructionMatching": "Anweisungen zuordnen {{number}}",
+    "shortWritingCorrection": "Kurze Schreibkorrektur {{number}}",
+    "guidedEmailSubmission": "Geführte E-Mail-Aufgabe {{number}}",
+    "translationProduction": "Übersetzung produzieren {{number}}",
+    "translationRecognition": "Übersetzung erkennen {{number}}"
+  },
+  "learnerDashboard": {
+    "learningPath": "Lernpfad",
+    "languagePerformance": "Sprachleistung",
+    "adaptiveDecisions": "Adaptive Entscheidungen",
+    "complete": "{{value}}% abgeschlossen",
+    "accuracy": "{{value}}% Genauigkeit",
+    "averageResponse": "{{value}}s durchschnittliche Antwortzeit",
+    "active": "{{count}} aktiv",
+    "targetedTitle": "Gezielte Übungen in Ihrem Lernpfad"
+  },
+  "admin": {
+    "title": "Adaptive Lernoperationen",
+    "eyebrow": "Plattform-Administration",
+    "description": "Verwalten Sie synthetische Lernende, prüfen Sie Sprachleistung, kontrollieren Sie gezielte Übungen und überwachen Sie das regelbasierte adaptive System.",
+    "syntheticNotice": "Nur synthetischer Datensatz. Keine Validierungsdaten für Forschung.",
+    "overview": "Übersicht",
+    "learners": "Lernende",
+    "classes": "Klassen",
+    "content": "Ressourcen",
+    "exercises": "Übungen",
+    "adaptive": "Adaptiv",
+    "syntheticLearners": "Synthetische Lernende",
+    "learningEvents": "Lernereignisse",
+    "resources": "Ressourcen",
+    "averageAccuracy": "Durchschnittliche Genauigkeit",
+    "commonErrorPatterns": "Häufige Fehlermuster",
+    "skillWeaknessDistribution": "Verteilung der Kompetenzschwächen",
+    "learnerDetailReport": "Lernendenbericht",
+    "languagePerformance": "Sprachleistung",
+    "adaptiveDecisions": "Adaptive Entscheidungen",
+    "latestLearningEvents": "Neueste Lernereignisse",
+    "targetedInserted": "{{count}} gezielte Übungen eingefügt.",
+    "classReport": "Klassenbericht",
+    "classReportDescription": "Vergleichen Sie eingeschriebene Studierende nach Fortschritt, Genauigkeit und Antwortgeschwindigkeit.",
+    "students": "Studierende",
+    "progress": "Fortschritt",
+    "accuracy": "Genauigkeit",
+    "avgResponse": "Durchschn. Antwort",
+    "student": "Student",
+    "cefr": "GER",
+    "weaknesses": "Schwächen",
+    "teacher": "Lehrkraft",
+    "exerciseBank": "Übungsbank",
+    "exercise": "Übung",
+    "difficulty": "Schwierigkeit",
+    "skill": "Kompetenz",
+    "subskill": "Teilkompetenz",
+    "minutes": "Minuten",
+    "adaptiveDescription": "Regelbasierte Förderung und Übungsimpulse aus synthetischen Lernereignissen.",
+    "learner": "Lernende/r",
+    "type": "Typ",
+    "reason": "Grund",
+    "status": "Status",
+    "targetedExercises": "Gezielte Übungen",
+    "events": "Ereignisse",
+    "targetLanguage": "Zielsprache",
+    "classesCount": "{{count}} Klassen",
+    "decisionsCount": "{{count}} adaptive Entscheidungen",
+    "exerciseCount": "{{count}} markierte Übungen",
+    "averageProgress": "{{value}}% durchschnittlicher Fortschritt"
+  },
+  "domain": {
+    "German": "Deutsch",
+    "Persian": "Persisch",
+    "vocabulary-recall": "Wortschatzabruf",
+    "grammar-accuracy": "Grammatische Genauigkeit",
+    "listening-comprehension": "Hörverstehen",
+    "reading-comprehension": "Leseverstehen",
+    "writing-quality": "Schreibqualität",
+    "translation-direction": "Übersetzungsrichtung",
+    "remediation": "Förderung",
+    "practice_boost": "Übungsimpuls",
+    "active": "Aktiv",
+    "teacher_review": "Lehrkraftprüfung",
+    "correct": "richtig",
+    "needsReview": "prüfen",
+    "answer_submitted": "Antwort eingereicht",
+    "hint_requested": "Hinweis angefordert",
+    "audio_replayed": "Audio wiederholt",
+    "word_searched": "Wort gesucht",
+    "writing_submitted": "Text eingereicht",
+    "nouns": "Nomen",
+    "daily verbs": "Alltagsverben",
+    "separable verbs": "trennbare Verben",
+    "prepositions": "Präpositionen",
+    "verb position": "Verbposition",
+    "cases": "Kasus",
+    "present tense": "Präsens",
+    "modal verbs": "Modalverben",
+    "numbers": "Zahlen",
+    "slow dialogue": "langsamer Dialog",
+    "chapter audio": "Kapitel-Audio",
+    "dictation": "Diktat",
+    "short texts": "kurze Texte",
+    "instructions": "Anweisungen",
+    "PDF passages": "PDF-Abschnitte",
+    "dialogues": "Dialoge",
+    "sentence order": "Satzstellung",
+    "spelling": "Rechtschreibung",
+    "short answers": "kurze Antworten",
+    "email writing": "E-Mail-Schreiben",
+    "German to Persian": "Deutsch zu Persisch",
+    "Persian to German": "Persisch zu Deutsch",
+    "false friends": "falsche Freunde",
+    "high": "hoch",
+    "medium": "mittel"
+  },
+  "languages": [
+    {
+      "title": "Der smarte Weg zum Sprachenlernen",
+      "caption": "vom Anfang bis zur Meisterschaft"
+    },
+    {
+      "title": "Personalisierte und intelligente Lösung!",
+      "caption": "Mittelstufe"
+    },
+    {
+      "title": "Sprachen schneller und besser lernen",
+      "caption": "und zielgerichteter"
+    },
+    {
+      "title": "Smarte Tools für Lehrkräfte",
+      "caption": "effektives Lernen für Schüler"
+    },
+    {
+      "title": "Die Zukunft des Sprachenlernens ist da",
+      "caption": "Mittelstufe"
+    },
+    {
+      "title": "„Die Zukunft des Sprachenlernens ist da.“",
+      "caption": "eine andere Erfahrung mit KI"
+    }
+  ],
+  "footer": {
+    "about": "Ihre vertrauenswürdige Plattform für das Sprachenlernen. Beherrschen Sie neue Sprachen mit interaktiven Lektionen und personalisierten Lernpfaden.",
+    "quickLinks": "Schnellzugriff",
+    "home": "Startseite",
+    "courses": "Kurse",
+    "resources": "Ressourcen",
+    "contact": "Kontakt",
+    "contactUs": "Kontaktieren Sie uns",
+    "address": "Sprachstraße 123, Bildungsstadt",
+    "followUs": "Folgen Sie uns",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen"
+  }
+}

@@ -1,0 +1,398 @@
+{
+  "welcome": "خوش آمدید",
+  "changeLanguage": "تغییر زبان",
+  "register": "ثبت نام",
+  "toggleDarkMode": "حالت تاریک را تغییر دهید",
+  "resources": "منابع",
+  "welcome_dashboard": "به داشبورد خود خوش آمدید!",
+  "logout": "خروج",
+  "title": "دوره‌های جاری",
+  "moto": " بهترین",
+  "lastActive": "آخرین فعالیت",
+  "progress": "پیشرفت",
+  "continue": "ادامه یادگیری",
+  "allCourses": "همه دوره‌ها",
+  "close": "بستن",
+  "medals": "مدال‌ها",
+  "Gold": "طلا",
+  "Silver": "نقره",
+  "Bronze": "برنز",
+  "Learn 3 days in a week to earn Gold": "با یادگیری ۳ روز در هفته مدال طلا بگیرید",
+  "Learn 2 days in a week to earn Silver": "با یادگیری ۲ روز در هفته مدال نقره بگیرید",
+  "Learn 1 day in a week to earn Bronze": "با یادگیری ۱ روز در هفته مدال برنز بگیرید",
+  "Next Medal": "مدال بعدی",
+  "You are 1 day away from earning": "فقط ۱ روز دیگر تا کسب",
+  "Continue Learning": "ادامه یادگیری",
+  "Keep learning to earn your first medal!": "ادامه دهید تا اولین مدال خود را کسب کنید!",
+  "completedCourses": "دوره‌های تکمیل‌شده",
+  "search": "🔍 جستجو...",
+  "sortByName": "مرتب‌سازی بر اساس نام",
+  "sortByScore": "مرتب‌سازی بر اساس امتیاز",
+  "courseName": "نام دوره",
+  "score": "امتیاز",
+  "certificate": "گواهینامه",
+  "download": "دانلود 📜",
+  "Translator": "مترجم",
+  "Dashboard": "داشبورد",
+  "Resources": "منابع",
+  "Academy": "آکادمی",
+  "createAccount": "ایجاد حساب رایگان",
+  "login": "ورود",
+  "cart": "سبد خرید",
+  
+  "assignmentManagement": "مدیریت تکالیف",
+  "addAssignment": "افزودن تکلیف جدید",
+  "dueDate": "تاریخ تحویل",
+  "status": "وضعیت",
+  "actions": "عملیات",
+  "add": "افزودن",
+  "delete": "حذف",
+  "edit": "ویرایش",
+  "underReview": "در حال بررسی",
+  "submitted": "ارسال شده",
+  "completed": "تمام شده",
+  "assignmentList": "لیست تکالیف",
+  "assignmentTitlePlaceholder": "عنوان تکلیف"
+,
+
+
+  "attendanceManagement": "مدیریت حضور و غیاب",
+  "filterStatus": "فیلتر کردن وضعیت‌ها",
+  "studentName": "نام دانشجو",
+  "all": "همه",
+  "present": "حضور",
+  "absent": "غیبت",
+  "late": "تاخیر",
+  "generateReport": "گزارش‌گیری",
+  "attendanceList": "لیست حضور و غیاب",
+  "student": "دانشجو",
+  "date": "تاریخ",
+  "report": "گزارش"
+,
+
+
+    
+
+  "hero": {
+    "title": "به Lingoix خوش آمدید",
+    "subtitle": "بهترین پلتفرم برای یادگیری زبان",
+    "heading": "زبان‌ها را سریع‌تر با هوش مصنوعی بیاموزید!",
+    "subheading": "هر زبانی را با درس‌های شخصی‌سازی‌شده و مسیر یادگیری اثبات‌شده یاد بگیرید.",
+    "start": "شروع رایگان",
+    "explore": "مشاهده مسیر یادگیری"
+  },
+
+
+  "features": "ویژگی‌های ما",
+  "featureCards": [
+    {
+      "title": "درس‌های تعاملی",
+      "description": "با فعالیت‌های تعاملی یاد بگیرید."
+    },
+    {
+      "title": "پیگیری پیشرفت در لحظه",
+      "description": "پیشرفت یادگیری خود را دنبال کنید."
+    },
+    {
+      "title": "اساتید متخصص",
+      "description": "از اساتید باتجربه یاد بگیرید."
+    }
+  ],
+  "cta": "همین حالا ثبت‌نام کنید",
+  "steps": {
+    "1": "🎉 به Lingoix خوش آمدید!",
+    "2": "پروفایل خود را کامل کرده و تجربه خود را شخصی‌سازی کنید",
+    "3": "🚀 با داشبورد آشنا شوید",
+    "4": "اولین تجربه شما با Lingoix",
+    "5": "🎯 شروع به یادگیری!"
+  },
+  "description": {
+    "1": "از همان ابتدا لطفاً مشخص کنید که چگونه می‌خواهید از این پلتفرم استفاده کنید: • دانش‌آموز: زبان را یاد بگیرید و پیشرفت خود را دنبال کنید • معلم: تدریس کنید و دانش‌آموزان را مدیریت کنید • مدرسه: کلاس‌ها و عملکرد دانش‌آموزان را مدیریت کنید",
+    "2": "لورم ایپسوم دولور سیت آمت، کانسکتتور آدیپیسینگ الیت، سد دو ایوسمود تیمپور اینسیدیدانت اوت لابوره ایت دولوره ماگنا آلیقا. اوت اینم اد مینیوم ونیام، کیوس نوسترید اگزرسیتاتیو اولامکو لابوریس نیسی اوت آلیکیپ اکس ای کامودو کانسکوآت.",
+    "3": "توضیح: این مرکز کنترل شماست! بسته به نقشی که انتخاب می‌کنید، می‌توانید: • دانش‌آموز: نقشه راه یادگیری، آزمون‌ها و تمرینات را دنبال کنید. • معلم: پیشرفت دانش‌آموزان را ببینید و تکالیف را تعیین کنید. • مدرسه: عملکرد دانش‌آموزان و معلمان را مدیریت کنید.",
+    "4": "حالا نوبت شماست که اولین قدم را بردارید! • دانش‌آموز: یک درس نمونه را مشاهده کنید و یک آزمون کوچک انجام دهید. • معلم: یک تکلیف آزمون ایجاد کنید. • مدرسه: یک گزارش نمونه از دانش‌آموز را مشاهده کنید.",
+    "5": "شما با ویژگی‌های اصلی Lingoix آشنا شدید. حالا می‌توانید شروع به یادگیری کنید!"
+  },
+  "common": {
+    "easy": "آسان",
+    "medium": "متوسط",
+    "hard": "سخت",
+    "progress": "پیشرفت",
+    "restart": "شروع مجدد"
+  },
+  "vocabulary": {
+    "title": "تمرین واژگان",
+    "example": "مثال",
+    "translation": "ترجمه"
+  },
+  "audio": {
+    "title": "تمرین شنیداری",
+    "play": "پخش",
+    "pause": "مکث",
+    "next": "بعدی",
+    "previous": "قبلی",
+    "volume": "صدا",
+    "transcription": "متن",
+    "translation": "ترجمه"
+  },
+  "writing": {
+    "title": "تمرین نوشتن",
+    "prompt": "موضوع",
+    "example": "مثال",
+    "write": "نوشتن",
+    "submit": "ارسال",
+    "score": "امتیاز",
+    "feedback": "بازخورد",
+    "download": "دانلود گزارش"
+  },
+
+    "dashboard": {
+    "title": "داشبورد مدرسان",
+    "activeStudents": "دانشجویان فعال",
+    "averageScores": "میانگین نمرات",
+    "completionRate": "نرخ اتمام دوره",
+    "progressChart": "نمودار پیشرفت کلی"
+  },
+  "nav": {
+    "admin": "مدیریت"
+  },
+  "auth": {
+    "email": "ایمیل",
+    "password": "رمز عبور",
+    "confirmPassword": "تایید رمز عبور",
+    "rememberMe": "مرا به خاطر بسپار",
+    "forgotPassword": "فراموشی رمز عبور؟",
+    "loginTitle": "ورود",
+    "signupTitle": "ثبت نام",
+    "loginButton": "ورود",
+    "signupButton": "ثبت نام",
+    "noAccount": "حساب کاربری ندارید؟",
+    "hasAccount": "حساب کاربری دارید؟",
+    "goToSignup": "ثبت نام کنید",
+    "goToLogin": "وارد شوید",
+    "emailRequired": "ایمیل نمی‌تواند خالی باشد.",
+    "emailInvalid": "لطفاً یک ایمیل معتبر وارد کنید.",
+    "passwordRequired": "رمز عبور نمی‌تواند خالی باشد.",
+    "passwordMin": "رمز عبور باید حداقل ۶ کاراکتر باشد.",
+    "passwordMismatch": "رمزهای عبور مطابقت ندارند."
+  },
+  "dictionary": {
+    "sourceAuto": "تشخیص خودکار",
+    "german": "آلمانی",
+    "persian": "فارسی",
+    "savedWords": "واژه‌های ذخیره‌شده",
+    "placeholder": "متن را برای ترجمه وارد کنید...",
+    "translate": "ترجمه",
+    "saveWord": "ذخیره واژه"
+  },
+  "resourcePage": {
+    "title": "منابع",
+    "subtitle": "منابع یادگیری آلمانی برای فارسی‌زبانان",
+    "search": "جستجوی منابع...",
+    "all": "همه منابع",
+    "books": "کتاب‌ها",
+    "audio": "صوتی",
+    "grammar": "گرامر",
+    "vocabulary": "واژگان"
+  },
+  "bookPlayer": {
+    "audioPrompt": "فصل‌های صوتی را از پنل کناری انتخاب و پخش کنید.",
+    "page": "صفحه",
+    "previous": "قبلی",
+    "next": "بعدی",
+    "audioChapters": "فصل‌های صوتی",
+    "searchAudio": "جستجوی فایل صوتی...",
+    "goToPage": "برو به صفحه {{page}}",
+    "noAudio": "فایل صوتی پیدا نشد"
+  },
+  "resourcesData": {
+    "resource-hueber-a1": {
+      "title": "PDF دوره آلمانی A1 هوبر",
+      "description": "کتاب اصلی سطح مبتدی برای خواندن و مرور گرامر آلمانی."
+    },
+    "resource-kapitel-2": {
+      "title": "صوت فصل ۲",
+      "description": "تمرین شنیداری برای عبارات روزمره و کلاس سطح A1."
+    },
+    "resource-kapitel-3": {
+      "title": "صوت فصل ۳",
+      "description": "تمرین شنیداری برای پرسش‌ها، عددها و گفت‌وگوهای کوتاه."
+    },
+    "resource-kapitel-4": {
+      "title": "صوت فصل ۴",
+      "description": "تمرین شنیداری برای روتین‌ها، سفر و عبارت‌های میانی."
+    },
+    "resource-verb-bank": {
+      "title": "بانک فعل‌های پایه آلمانی",
+      "description": "فعل‌های ضروری برای تمرین یادگیرندگان مصنوعی و تمرین‌های هدفمند."
+    },
+    "resource-grammar-notes": {
+      "title": "یادداشت‌های گرامر A1-A2",
+      "description": "توضیح‌های کوتاه درباره جایگاه فعل، زمان حال، حالت‌های دستوری و فعل‌های وجهی."
+    }
+  },
+  "exerciseTemplates": {
+    "flashcardReview": "مرور فلش‌کارت {{number}}",
+    "verbMeaningMatch": "تطبیق معنی فعل {{number}}",
+    "sentenceOrdering": "ترتیب جمله {{number}}",
+    "articleCaseDrill": "تمرین آرتیکل و حالت {{number}}",
+    "modalVerbCompletion": "تکمیل فعل وجهی {{number}}",
+    "audioComprehensionQuiz": "آزمون درک شنیداری {{number}}",
+    "numberDictation": "دیکته عددها {{number}}",
+    "shortPassageQuestions": "پرسش‌های متن کوتاه {{number}}",
+    "instructionMatching": "تطبیق دستورالعمل {{number}}",
+    "shortWritingCorrection": "اصلاح نوشتار کوتاه {{number}}",
+    "guidedEmailSubmission": "تمرین هدایت‌شده ایمیل {{number}}",
+    "translationProduction": "تولید ترجمه {{number}}",
+    "translationRecognition": "تشخیص ترجمه {{number}}"
+  },
+  "learnerDashboard": {
+    "learningPath": "مسیر یادگیری",
+    "languagePerformance": "عملکرد زبانی",
+    "adaptiveDecisions": "تصمیم‌های تطبیقی",
+    "complete": "{{value}}٪ تکمیل شده",
+    "accuracy": "{{value}}٪ دقت",
+    "averageResponse": "میانگین پاسخ {{value}} ثانیه",
+    "active": "{{count}} فعال",
+    "targetedTitle": "تمرین‌های هدفمند افزوده‌شده به مسیر شما"
+  },
+  "admin": {
+    "title": "عملیات یادگیری تطبیقی",
+    "eyebrow": "مدیریت پلتفرم",
+    "description": "یادگیرندگان مصنوعی را مدیریت کنید، عملکرد زبانی را بررسی کنید، تمرین‌های هدفمند را ببینید و سامانه تطبیقی قانون‌محور را پایش کنید.",
+    "syntheticNotice": "فقط داده مصنوعی است؛ داده اعتبارسنجی پژوهشی نیست.",
+    "overview": "نمای کلی",
+    "learners": "یادگیرندگان",
+    "classes": "کلاس‌ها",
+    "content": "منابع",
+    "exercises": "تمرین‌ها",
+    "adaptive": "تطبیقی",
+    "syntheticLearners": "یادگیرندگان مصنوعی",
+    "learningEvents": "رویدادهای یادگیری",
+    "resources": "منابع",
+    "averageAccuracy": "میانگین دقت",
+    "commonErrorPatterns": "الگوهای خطای رایج",
+    "skillWeaknessDistribution": "توزیع ضعف‌های مهارتی",
+    "learnerDetailReport": "گزارش جزئیات یادگیرنده",
+    "languagePerformance": "عملکرد زبانی",
+    "adaptiveDecisions": "تصمیم‌های تطبیقی",
+    "latestLearningEvents": "آخرین رویدادهای یادگیری",
+    "targetedInserted": "{{count}} تمرین هدفمند افزوده شد.",
+    "classReport": "گزارش کلاس",
+    "classReportDescription": "دانشجویان یک کلاس را بر اساس پیشرفت، دقت و سرعت پاسخ مقایسه کنید.",
+    "students": "دانشجویان",
+    "progress": "پیشرفت",
+    "accuracy": "دقت",
+    "avgResponse": "میانگین پاسخ",
+    "student": "دانشجو",
+    "cefr": "CEFR",
+    "weaknesses": "ضعف‌ها",
+    "teacher": "معلم",
+    "exerciseBank": "بانک تمرین",
+    "exercise": "تمرین",
+    "difficulty": "سختی",
+    "skill": "مهارت",
+    "subskill": "زیرمهارت",
+    "minutes": "دقیقه",
+    "adaptiveDescription": "جبران و تقویت قانون‌محور بر اساس رویدادهای یادگیری مصنوعی.",
+    "learner": "یادگیرنده",
+    "type": "نوع",
+    "reason": "دلیل",
+    "status": "وضعیت",
+    "targetedExercises": "تمرین‌های هدفمند",
+    "events": "رویدادها",
+    "targetLanguage": "زبان مقصد",
+    "classesCount": "{{count}} کلاس",
+    "decisionsCount": "{{count}} تصمیم تطبیقی",
+    "exerciseCount": "{{count}} تمرین برچسب‌گذاری‌شده",
+    "averageProgress": "{{value}}٪ میانگین پیشرفت"
+  },
+  "domain": {
+    "German": "آلمانی",
+    "Persian": "فارسی",
+    "vocabulary-recall": "یادآوری واژگان",
+    "grammar-accuracy": "دقت گرامری",
+    "listening-comprehension": "درک شنیداری",
+    "reading-comprehension": "درک خواندن",
+    "writing-quality": "کیفیت نوشتار",
+    "translation-direction": "جهت ترجمه",
+    "remediation": "جبران ضعف",
+    "practice_boost": "تقویت تمرین",
+    "active": "فعال",
+    "teacher_review": "نیازمند بررسی معلم",
+    "correct": "درست",
+    "needsReview": "نیازمند مرور",
+    "answer_submitted": "پاسخ ثبت شد",
+    "hint_requested": "راهنمایی درخواست شد",
+    "audio_replayed": "صوت تکرار شد",
+    "word_searched": "واژه جستجو شد",
+    "writing_submitted": "نوشتار ثبت شد",
+    "nouns": "اسم‌ها",
+    "daily verbs": "فعل‌های روزمره",
+    "separable verbs": "فعل‌های جداشدنی",
+    "prepositions": "حروف اضافه",
+    "verb position": "جایگاه فعل",
+    "cases": "حالت‌های دستوری",
+    "present tense": "زمان حال",
+    "modal verbs": "فعل‌های وجهی",
+    "numbers": "عددها",
+    "slow dialogue": "گفت‌وگوی آهسته",
+    "chapter audio": "صوت فصل",
+    "dictation": "دیکته",
+    "short texts": "متن‌های کوتاه",
+    "instructions": "دستورالعمل‌ها",
+    "PDF passages": "بخش‌های PDF",
+    "dialogues": "گفت‌وگوها",
+    "sentence order": "ترتیب جمله",
+    "spelling": "املا",
+    "short answers": "پاسخ‌های کوتاه",
+    "email writing": "نوشتن ایمیل",
+    "German to Persian": "آلمانی به فارسی",
+    "Persian to German": "فارسی به آلمانی",
+    "false friends": "واژه‌های فریبنده",
+    "high": "زیاد",
+    "medium": "متوسط"
+  },
+
+
+  "languages": [
+    {
+      "title": "مسیر هوشمند برای یادگیری زبان",
+      "caption": "از مبتدی تا تسلط کامل"
+    },
+    {
+      "title": "شخصی‌سازی‌شده و هوشمند!",
+      "caption": "سطح متوسط"
+    },
+    {
+      "title": "یادگیری زبان سریع‌تر و بهتر",
+      "caption": "با هدفمندتر بودن"
+    },
+    {
+      "title": "ابزارهای هوشمند برای معلمان",
+      "caption": "یادگیری مؤثر برای دانش‌آموزان"
+    },
+    {
+      "title": "آینده‌ی یادگیری زبان همینجاست",
+      "caption": "سطح متوسط"
+    },
+    {
+      "title": "«آینده‌ی یادگیری زبان همینجاست.»",
+      "caption": "تجربه‌ای متفاوت با هوش مصنوعی"
+    }
+  ],
+  "footer": {
+    "about": "پلتفرم مورد اعتماد شما برای یادگیری زبان. با درس‌های تعاملی و مسیرهای یادگیری شخصی‌سازی شده، زبان‌های جدید را یاد بگیرید.",
+    "quickLinks": "دسترسی سریع",
+    "home": "خانه",
+    "courses": "دوره‌ها",
+    "resources": "منابع",
+    "contact": "تماس با ما",
+    "contactUs": "تماس با ما",
+    "address": "خیابان زبان، شهر آموزش",
+    "followUs": "ما را دنبال کنید",
+    "rights": "تمامی حقوق محفوظ است.",
+    "privacy": "حریم خصوصی",
+    "terms": "شرایط استفاده"
+  }
+}
