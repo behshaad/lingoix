@@ -10,6 +10,7 @@ import Dictionary from "./components/Dictionary/Dictionary.jsx";
 import Product from "./components/Home/Product/Product.jsx";
 import BookPlayer from "./components/Resource/BookPlayer/BookPlayer.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import PracticePage from "./pages/PracticePage.jsx";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/practice" element={<PracticePage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

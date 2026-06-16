@@ -143,7 +143,8 @@
     "progressChart": "Overall Progress Chart"
   },
   "nav": {
-    "admin": "Admin"
+    "admin": "Admin",
+    "practice": "Practice"
   },
   "auth": {
     "email": "Email",
@@ -328,6 +329,8 @@
     "sequence": "Sequence",
     "promptField": "Prompt",
     "expectedAnswer": "Expected answer",
+    "interactionType": "Interaction type",
+    "choices": "Choices",
     "supportText": "Support text",
     "save": "Save"
   },
@@ -342,6 +345,10 @@
     "translation-direction": "Translation direction",
     "remediation": "Remediation",
     "practice_boost": "Practice boost",
+    "flashcard": "Flashcard",
+    "multiple_choice": "Multiple choice",
+    "writing_prompt": "Writing prompt",
+    "listening_check": "Listening check",
     "active": "Active",
     "teacher_review": "Teacher review",
     "correct": "correct",

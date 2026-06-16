@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Check, X } from "lucide-react";
+import { ChevronLeft, Check, Headphones, PenLine, X } from "lucide-react";
 import {
   collectLearningEvent,
   createAttemptTimer,
@@ -10,7 +10,9 @@ import {
   learningEventStatus,
 } from "../../services/learningEventCollector";
 import {
+  choicesForExercise,
   errorTypeForExercise,
+  eventTypeForInteraction,
   exerciseExpectedAnswer,
   exercisePrompt,
   exerciseSupportText,
@@ -26,6 +28,7 @@ export default function FlashcardApp() {
   const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const [loadStatus, setLoadStatus] = useState("loading");
   const [countsByExercise, setCountsByExercise] = useState({});
+  const [writingByExercise, setWritingByExercise] = useState({});
   const attemptTimerRef = useRef(createAttemptTimer());
 
   useEffect(() => {
@@ -60,7 +63,7 @@ export default function FlashcardApp() {
     setFlippedCardId(flippedCardId === exerciseId ? null : exerciseId);
   };
 
-  const handleAnswerFeedback = async (exercise, isCorrect) => {
+  const recordLearningEvent = async (exercise, isCorrect, extra = {}) => {
     const responseMs = attemptTimerRef.current.elapsedMs();
     setCountsByExercise((current) => {
       const counts = current[exercise.id] || { correct: 0, wrong: 0 };
@@ -76,13 +79,13 @@ export default function FlashcardApp() {
     setEventStatus(learningEventStatus.saving);
     try {
       await collectLearningEvent({
-        type: "answer_submitted",
+        type: eventTypeForInteraction(exercise),
         exerciseId: exercise.id,
         skillArea: exercise.skillArea,
         subskill: exercise.subskill,
         correct: isCorrect,
         responseMs,
-        hintsUsed: flippedCardId === exercise.id ? 1 : 0,
+        hintsUsed: extra.hintsUsed ?? (flippedCardId === exercise.id ? 1 : 0),
         retries: isCorrect ? 0 : 1,
         errorType: isCorrect ? null : errorTypeForExercise(exercise),
       });
@@ -95,11 +98,194 @@ export default function FlashcardApp() {
     attemptTimerRef.current.reset();
   };
 
+  const handleAnswerFeedback = async (exercise, isCorrect) => {
+    await recordLearningEvent(exercise, isCorrect);
+  };
+
+  const handleChoice = async (exercise, choice) => {
+    await recordLearningEvent(exercise, choice === exerciseExpectedAnswer(exercise));
+  };
+
+  const handleWritingSubmit = async (exercise) => {
+    const text = writingByExercise[exercise.id] || "";
+    if (!text.trim()) return;
+    await recordLearningEvent(exercise, text.trim().length >= 80, { hintsUsed: 0 });
+  };
+
   const handleBackToSkills = () => {
     setSelectedSkill(null);
     setFlippedCardId(null);
     setEventStatus(learningEventStatus.idle);
     attemptTimerRef.current.reset();
+  };
+
+  const renderExercise = (exercise) => {
+    const counts = countsByExercise[exercise.id] || { correct: 0, wrong: 0 };
+    const interactionType = exercise.interactionType || "flashcard";
+
+    if (interactionType === "multiple_choice") {
+      return (
+        <div className="flex h-full flex-col">
+          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+            {exerciseTitle(exercise, t)}
+          </p>
+          <p className="mb-3 text-base font-medium">{exercisePrompt(exercise, t)}</p>
+          <div className="flex-1 space-y-2">
+            {choicesForExercise(exercise).map((choice) => (
+              <button
+                key={choice}
+                type="button"
+                className="w-full rounded-md border border-gray-200 px-3 py-2 text-left text-sm transition hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleChoice(exercise, choice);
+                }}
+              >
+                {choice}
+              </button>
+            ))}
+          </div>
+          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+            {t("practice.correct")}: {counts.correct} · {t("practice.wrong")}: {counts.wrong}
+          </p>
+        </div>
+      );
+    }
+
+    if (interactionType === "writing_prompt") {
+      return (
+        <div className="flex h-full flex-col">
+          <div className="mb-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <PenLine className="h-4 w-4" />
+            <span>{exerciseTitle(exercise, t)}</span>
+          </div>
+          <p className="mb-2 text-base font-medium">{exercisePrompt(exercise, t)}</p>
+          <textarea
+            value={writingByExercise[exercise.id] || ""}
+            onChange={(event) =>
+              setWritingByExercise({
+                ...writingByExercise,
+                [exercise.id]: event.target.value,
+              })
+            }
+            onClick={(event) => event.stopPropagation()}
+            className="min-h-20 flex-1 resize-none rounded-md border border-gray-200 bg-white p-2 text-sm dark:border-gray-700 dark:bg-gray-950"
+          />
+          <button
+            type="button"
+            className="mt-3 rounded-md bg-gray-950 px-3 py-2 text-sm text-white dark:bg-white dark:text-gray-950"
+            onClick={(event) => {
+              event.stopPropagation();
+              handleWritingSubmit(exercise);
+            }}
+          >
+            {t("writing.submit")}
+          </button>
+        </div>
+      );
+    }
+
+    if (interactionType === "listening_check") {
+      return (
+        <div className="flex h-full flex-col">
+          <div className="mb-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <Headphones className="h-4 w-4" />
+            <span>{exerciseTitle(exercise, t)}</span>
+          </div>
+          <p className="flex-1 text-base font-medium">{exercisePrompt(exercise, t)}</p>
+          {exercise.resourceSourceUrl && (
+            <audio
+              controls
+              src={exercise.resourceSourceUrl}
+              className="mb-3 w-full"
+              onClick={(event) => event.stopPropagation()}
+            />
+          )}
+          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+            {exerciseSupportText(exercise)}
+          </p>
+          <div className="flex justify-between">
+            <button
+              type="button"
+              className="mr-2 flex flex-1 items-center justify-center rounded-md border border-green-500 px-3 py-1 text-sm transition hover:bg-green-50 dark:hover:bg-green-950"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleAnswerFeedback(exercise, true);
+              }}
+            >
+              <Check className="mr-1 h-4 w-4 text-green-500" />
+              {t("practice.correct")}
+            </button>
+            <button
+              type="button"
+              className="ml-2 flex flex-1 items-center justify-center rounded-md border border-red-500 px-3 py-1 text-sm transition hover:bg-red-50 dark:hover:bg-red-950"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleAnswerFeedback(exercise, false);
+              }}
+            >
+              <X className="mr-1 h-4 w-4 text-red-500" />
+              {t("practice.wrong")}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        {flippedCardId === exercise.id ? (
+          <div className="flex h-full flex-col">
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              {t("practice.expectedAnswer")}
+            </p>
+            <p className="flex-1 text-base font-medium">
+              {exerciseExpectedAnswer(exercise)}
+            </p>
+            <div className="mt-4 flex justify-between">
+              <button
+                type="button"
+                className="mr-2 flex flex-1 items-center justify-center rounded-md border border-green-500 px-3 py-1 text-sm transition hover:bg-green-50 dark:hover:bg-green-950"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleAnswerFeedback(exercise, true);
+                }}
+              >
+                <Check className="mr-1 h-4 w-4 text-green-500" />
+                {t("practice.correct")}
+              </button>
+              <button
+                type="button"
+                className="ml-2 flex flex-1 items-center justify-center rounded-md border border-red-500 px-3 py-1 text-sm transition hover:bg-red-50 dark:hover:bg-red-950"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleAnswerFeedback(exercise, false);
+                }}
+              >
+                <X className="mr-1 h-4 w-4 text-red-500" />
+                {t("practice.wrong")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex h-full flex-col">
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              {exerciseTitle(exercise, t)}
+            </p>
+            <p className="flex-1 text-base font-medium">
+              {exercisePrompt(exercise, t)}
+            </p>
+            <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+              {exerciseSupportText(exercise)}
+            </p>
+            <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+              <span>{t("practice.correct")}: {counts.correct}</span>
+              <span>{t("practice.wrong")}: {counts.wrong}</span>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   if (loadStatus === "loading") {
@@ -171,7 +357,6 @@ export default function FlashcardApp() {
             <h3 className="mb-4 text-xl font-semibold">{t("practice.exerciseCards")}</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {selectedExercises.map((exercise) => {
-                const counts = countsByExercise[exercise.id] || { correct: 0, wrong: 0 };
                 return (
                   <div
                     key={exercise.id}
@@ -183,56 +368,7 @@ export default function FlashcardApp() {
                     onClick={() => handleCardFlip(exercise.id)}
                   >
                     <div className="absolute inset-0 flex flex-col p-5">
-                      {flippedCardId === exercise.id ? (
-                        <div className="flex h-full flex-col">
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            {t("practice.expectedAnswer")}
-                          </p>
-                          <p className="flex-1 text-base font-medium">
-                            {exerciseExpectedAnswer(exercise)}
-                          </p>
-                          <div className="mt-4 flex justify-between">
-                            <button
-                              type="button"
-                              className="mr-2 flex flex-1 items-center justify-center rounded-md border border-green-500 px-3 py-1 text-sm transition hover:bg-green-50 dark:hover:bg-green-950"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                handleAnswerFeedback(exercise, true);
-                              }}
-                            >
-                              <Check className="mr-1 h-4 w-4 text-green-500" />
-                              {t("practice.correct")}
-                            </button>
-                            <button
-                              type="button"
-                              className="ml-2 flex flex-1 items-center justify-center rounded-md border border-red-500 px-3 py-1 text-sm transition hover:bg-red-50 dark:hover:bg-red-950"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                handleAnswerFeedback(exercise, false);
-                              }}
-                            >
-                              <X className="mr-1 h-4 w-4 text-red-500" />
-                              {t("practice.wrong")}
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex h-full flex-col">
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            {exerciseTitle(exercise, t)}
-                          </p>
-                          <p className="flex-1 text-base font-medium">
-                            {exercisePrompt(exercise, t)}
-                          </p>
-                          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-                            {exerciseSupportText(exercise)}
-                          </p>
-                          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
-                            <span>{t("practice.correct")}: {counts.correct}</span>
-                            <span>{t("practice.wrong")}: {counts.wrong}</span>
-                          </div>
-                        </div>
-                      )}
+                      {renderExercise(exercise)}
                     </div>
                   </div>
                 );

@@ -24,6 +24,17 @@ const jsonParse = (value, fallback) => {
   }
 };
 
+const normalizeChoices = (choices) => {
+  if (Array.isArray(choices)) return choices;
+  if (typeof choices === "string") {
+    return choices
+      .split("\n")
+      .map((choice) => choice.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
 const publicAccount = (account) => {
   if (!account) return null;
   return {
@@ -79,8 +90,10 @@ const serializeExercise = (row) => ({
   subskill: row.subskill,
   resourceId: row.resource_id,
   estimatedMinutes: row.estimated_minutes,
+  interactionType: row.interaction_type,
   prompt: row.prompt,
   expectedAnswer: row.expected_answer,
+  choices: jsonParse(row.choices, []),
   supportText: row.support_text,
   resourceSourceUrl: row.resource_source_url,
 });
@@ -381,28 +394,34 @@ app.get("/api/exercises", requireAuth, (req, res) => {
 
 app.post("/api/exercises", requireAuth, requireRoles("platform_admin"), (req, res) => {
   const exercise = {
+    interactionType: "flashcard",
     prompt: "",
     expectedAnswer: "",
+    choices: [],
     supportText: "",
     ...req.body,
   };
   db.prepare(
     `INSERT INTO exercises (
        id, title, title_key, sequence, cefr_level, difficulty, skill_area,
-       subskill, resource_id, estimated_minutes, prompt, expected_answer, support_text
+       subskill, resource_id, estimated_minutes, interaction_type, prompt,
+       expected_answer, choices, support_text
      )
      VALUES (
        @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
-       @subskill, @resourceId, @estimatedMinutes, @prompt, @expectedAnswer, @supportText
+       @subskill, @resourceId, @estimatedMinutes, @interactionType, @prompt,
+       @expectedAnswer, @choices, @supportText
      )`
-  ).run(exercise);
+  ).run({ ...exercise, choices: JSON.stringify(normalizeChoices(exercise.choices)) });
   res.status(201).json({ exercise });
 });
 
 app.put("/api/exercises/:exerciseId", requireAuth, requireRoles("platform_admin"), (req, res) => {
   const exercise = {
+    interactionType: "flashcard",
     prompt: "",
     expectedAnswer: "",
+    choices: [],
     supportText: "",
     ...req.body,
     id: req.params.exerciseId,
@@ -412,9 +431,10 @@ app.put("/api/exercises/:exerciseId", requireAuth, requireRoles("platform_admin"
      SET title=@title, title_key=@titleKey, sequence=@sequence, cefr_level=@cefrLevel,
        difficulty=@difficulty, skill_area=@skillArea, subskill=@subskill,
        resource_id=@resourceId, estimated_minutes=@estimatedMinutes,
-       prompt=@prompt, expected_answer=@expectedAnswer, support_text=@supportText
+       interaction_type=@interactionType, prompt=@prompt,
+       expected_answer=@expectedAnswer, choices=@choices, support_text=@supportText
      WHERE id=@id`
-  ).run(exercise);
+  ).run({ ...exercise, choices: JSON.stringify(normalizeChoices(exercise.choices)) });
   res.json({ exercise });
 });
 

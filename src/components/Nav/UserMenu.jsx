@@ -52,7 +52,13 @@ const UserMenu = () => {
             onClick={() => navigate("/dashboard")}
             className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
           >
-            Dashboard
+            {t("Dashboard")}
+          </button>
+          <button
+            onClick={() => navigate("/practice")}
+            className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+          >
+            {t("nav.practice")}
           </button>
           <button
             onClick={() => navigate("/admin")}

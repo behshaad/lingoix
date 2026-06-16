@@ -154,7 +154,8 @@
     "progressChart": "نمودار پیشرفت کلی"
   },
   "nav": {
-    "admin": "مدیریت"
+    "admin": "مدیریت",
+    "practice": "تمرین"
   },
   "auth": {
     "email": "ایمیل",
@@ -339,6 +340,8 @@
     "sequence": "ترتیب",
     "promptField": "صورت تمرین",
     "expectedAnswer": "پاسخ مورد انتظار",
+    "interactionType": "نوع تعامل",
+    "choices": "گزینه‌ها",
     "supportText": "متن راهنما",
     "save": "ذخیره"
   },
@@ -353,6 +356,10 @@
     "translation-direction": "جهت ترجمه",
     "remediation": "جبران ضعف",
     "practice_boost": "تقویت تمرین",
+    "flashcard": "فلش‌کارت",
+    "multiple_choice": "چندگزینه‌ای",
+    "writing_prompt": "تمرین نوشتاری",
+    "listening_check": "بررسی شنیداری",
     "active": "فعال",
     "teacher_review": "نیازمند بررسی معلم",
     "correct": "درست",

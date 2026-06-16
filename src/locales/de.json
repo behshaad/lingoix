@@ -144,7 +144,8 @@
     "progressChart": "Gesamtfortschrittsdiagramm"
   },
   "nav": {
-    "admin": "Administration"
+    "admin": "Administration",
+    "practice": "Üben"
   },
   "auth": {
     "email": "E-Mail",
@@ -329,6 +330,8 @@
     "sequence": "Reihenfolge",
     "promptField": "Aufgabe",
     "expectedAnswer": "Erwartete Antwort",
+    "interactionType": "Interaktionstyp",
+    "choices": "Antwortoptionen",
     "supportText": "Hilfetext",
     "save": "Speichern"
   },
@@ -343,6 +346,10 @@
     "translation-direction": "Übersetzungsrichtung",
     "remediation": "Förderung",
     "practice_boost": "Übungsimpuls",
+    "flashcard": "Karteikarte",
+    "multiple_choice": "Multiple Choice",
+    "writing_prompt": "Schreibaufgabe",
+    "listening_check": "Hör-Check",
     "active": "Aktiv",
     "teacher_review": "Lehrkraftprüfung",
     "correct": "richtig",

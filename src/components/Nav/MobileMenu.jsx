@@ -85,6 +85,12 @@ const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
           {t("Dashboard")}
         </Link>
         <Link
+          to="/practice"
+          className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"
+        >
+          {t("nav.practice")}
+        </Link>
+        <Link
           to="/resources"
           className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"
         >
@@ -110,6 +116,12 @@ const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
               className="text-gray-800 dark:text-gray-100 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-300"
             >
               {t("Dashboard")}
+            </Link>
+            <Link
+              to="/practice"
+              className="text-gray-800 dark:text-gray-100 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-300"
+            >
+              {t("nav.practice")}
             </Link>
             <button
               onClick={handleLogout}

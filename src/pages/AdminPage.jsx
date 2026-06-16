@@ -35,13 +35,22 @@ const emptyExercise = {
   sequence: 1,
   cefrLevel: "A1",
   difficulty: "easy",
+  interactionType: "flashcard",
   skillArea: "vocabulary-recall",
   subskill: "daily verbs",
   resourceId: "",
   estimatedMinutes: 10,
   prompt: "",
   expectedAnswer: "",
+  choices: [],
   supportText: "",
+};
+
+const interactionTypes = ["flashcard", "multiple_choice", "writing_prompt", "listening_check"];
+
+const choicesDraftValue = (choices) => {
+  if (Array.isArray(choices)) return choices.join("\n");
+  return choices || "";
 };
 
 const StatCard = ({ icon: Icon, label, value, detail }) => (
@@ -274,6 +283,12 @@ const AdminPage = () => {
       estimatedMinutes: Number(exerciseDraft.estimatedMinutes),
       prompt: exerciseDraft.prompt || "",
       expectedAnswer: exerciseDraft.expectedAnswer || "",
+      choices: Array.isArray(exerciseDraft.choices)
+        ? exerciseDraft.choices
+        : String(exerciseDraft.choices || "")
+            .split("\n")
+            .map((choice) => choice.trim())
+            .filter(Boolean),
       supportText: exerciseDraft.supportText || "",
     };
     if (exists) {
@@ -703,6 +718,17 @@ const AdminPage = () => {
                   ))}
                 </SelectInput>
                 <SelectInput
+                  label={t("admin.interactionType", "Interaction type")}
+                  value={exerciseDraft.interactionType}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, interactionType: value })}
+                >
+                  {interactionTypes.map((interactionType) => (
+                    <option key={interactionType} value={interactionType}>
+                      {t(`domain.${interactionType}`, interactionType)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
                   label={t("admin.skill")}
                   value={exerciseDraft.skillArea}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, skillArea: value })}
@@ -746,6 +772,11 @@ const AdminPage = () => {
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, expectedAnswer: value })}
                 />
                 <TextAreaInput
+                  label={t("admin.choices", "Choices")}
+                  value={choicesDraftValue(exerciseDraft.choices)}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, choices: value })}
+                />
+                <TextAreaInput
                   label={t("admin.supportText", "Support text")}
                   value={exerciseDraft.supportText}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, supportText: value })}
@@ -770,6 +801,7 @@ const AdminPage = () => {
                       <th className="py-3">{t("admin.exercise")}</th>
                       <th>{t("admin.cefr")}</th>
                       <th>{t("admin.difficulty")}</th>
+                      <th>{t("admin.interactionType", "Interaction type")}</th>
                       <th>{t("admin.skill")}</th>
                       <th>{t("admin.subskill")}</th>
                       <th>{t("admin.minutes")}</th>
@@ -785,6 +817,7 @@ const AdminPage = () => {
                         <td className="py-3 font-medium">{exerciseTitle(exercise)}</td>
                         <td>{exercise.cefrLevel}</td>
                         <td>{t(`common.${exercise.difficulty}`, exercise.difficulty)}</td>
+                        <td>{t(`domain.${exercise.interactionType}`, exercise.interactionType)}</td>
                         <td>{domainLabel(exercise.skillArea)}</td>
                         <td>{domainLabel(exercise.subskill)}</td>
                         <td>{exercise.estimatedMinutes}</td>

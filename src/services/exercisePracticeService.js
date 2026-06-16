@@ -32,3 +32,22 @@ export const exerciseSupportText = (exercise) =>
 
 export const errorTypeForExercise = (exercise) =>
   errorTypesBySkill[exercise.skillArea] || "vocabulary recall error";
+
+export const choicesForExercise = (exercise) => {
+  if (Array.isArray(exercise.choices) && exercise.choices.length > 0) {
+    return exercise.choices;
+  }
+
+  if (exercise.interactionType !== "multiple_choice") return [];
+
+  return [
+    exerciseExpectedAnswer(exercise),
+    "I need more review before answering.",
+    "This does not match the prompt.",
+  ];
+};
+
+export const eventTypeForInteraction = (exercise) => {
+  if (exercise.interactionType === "writing_prompt") return "writing_submitted";
+  return "answer_submitted";
+};

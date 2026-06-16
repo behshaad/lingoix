@@ -26,47 +26,59 @@ const defaultExerciseContent = (exercise) => {
 
   if (exercise.skillArea === "vocabulary-recall") {
     return {
+      interactionType: "flashcard",
       prompt: `Review the German vocabulary item for ${exercise.subskill}.`,
       expectedAnswer: "Recall the Persian meaning and mark your confidence.",
+      choices: [],
       supportText: "Use this card to identify whether recall is automatic, slow, or missing.",
     };
   }
 
   if (exercise.skillArea === "listening-comprehension") {
     return {
+      interactionType: "listening_check",
       prompt: `Listen to the ${exercise.subskill} material and check your understanding.`,
       expectedAnswer: "Mark correct if you understood the main meaning without guessing.",
+      choices: [],
       supportText: "Replay audio only when needed; transcript use is counted as a hint.",
     };
   }
 
   if (exercise.skillArea === "writing-quality") {
     return {
+      interactionType: "writing_prompt",
       prompt: `Write a short German answer focused on ${exercise.subskill}.`,
       expectedAnswer: "A clear German response with acceptable spelling and sentence order.",
+      choices: [],
       supportText: "Aim for at least two complete German sentences.",
     };
   }
 
   if (exercise.skillArea === "grammar-accuracy") {
     return {
+      interactionType: "multiple_choice",
       prompt: `Complete a German grammar task about ${exercise.subskill}.`,
       expectedAnswer: "Use the correct German form.",
+      choices: ["Use the correct German form.", "Use Persian word order.", "Skip the verb ending."],
       supportText: "Pay attention to verb position, tense, case, and agreement.",
     };
   }
 
   if (exercise.skillArea === "translation-direction") {
     return {
+      interactionType: "flashcard",
       prompt: `Translate in the required direction: ${exercise.subskill}.`,
       expectedAnswer: "A meaning-preserving translation.",
+      choices: [],
       supportText: "Focus on direction-specific errors and false friends.",
     };
   }
 
   return {
+    interactionType: "flashcard",
     prompt: title,
     expectedAnswer: "Complete the task and mark the result honestly.",
+    choices: [],
     supportText: "This exercise is managed from the admin exercise bank.",
   };
 };
@@ -74,8 +86,10 @@ const defaultExerciseContent = (exercise) => {
 const ensureExerciseContentColumns = () => {
   const columns = db.prepare("PRAGMA table_info(exercises)").all().map((column) => column.name);
   const additions = [
+    ["interaction_type", "TEXT NOT NULL DEFAULT 'flashcard'"],
     ["prompt", "TEXT NOT NULL DEFAULT ''"],
     ["expected_answer", "TEXT NOT NULL DEFAULT ''"],
+    ["choices", "TEXT NOT NULL DEFAULT '[]'"],
     ["support_text", "TEXT NOT NULL DEFAULT ''"],
   ];
 
@@ -90,19 +104,34 @@ const backfillExerciseContent = () => {
   const exercises = db.prepare("SELECT * FROM exercises").all();
   const update = db.prepare(`
     UPDATE exercises
-    SET prompt = @prompt, expected_answer = @expectedAnswer, support_text = @supportText
+    SET interaction_type = @interactionType,
+      prompt = @prompt,
+      expected_answer = @expectedAnswer,
+      choices = @choices,
+      support_text = @supportText
     WHERE id = @id
   `);
 
   const transaction = db.transaction(() => {
     exercises.forEach((exercise) => {
-      if (exercise.prompt && exercise.expected_answer && exercise.support_text) return;
-      update.run({ id: exercise.id, ...defaultExerciseContent({
+      const content = defaultExerciseContent({
         title: exercise.title,
         titleKey: exercise.title_key,
         skillArea: exercise.skill_area,
         subskill: exercise.subskill,
-      }) });
+      });
+      if (
+        exercise.interaction_type === content.interactionType &&
+        exercise.prompt &&
+        exercise.expected_answer &&
+        exercise.choices &&
+        exercise.support_text
+      ) return;
+      update.run({
+        id: exercise.id,
+        ...content,
+        choices: JSON.stringify(content.choices),
+      });
     });
   });
 
@@ -192,10 +221,12 @@ const seedDomainData = () => {
   const insertExercise = db.prepare(`
     INSERT INTO exercises (
       id, title, title_key, sequence, cefr_level, difficulty, skill_area,
-      subskill, resource_id, estimated_minutes, prompt, expected_answer, support_text
+      subskill, resource_id, estimated_minutes, interaction_type, prompt,
+      expected_answer, choices, support_text
     ) VALUES (
       @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
-      @subskill, @resourceId, @estimatedMinutes, @prompt, @expectedAnswer, @supportText
+      @subskill, @resourceId, @estimatedMinutes, @interactionType, @prompt,
+      @expectedAnswer, @choices, @supportText
     )
   `);
   const insertWeakness = db.prepare(`
@@ -229,6 +260,7 @@ const seedDomainData = () => {
     dataModule.exerciseBank.forEach((exercise) => insertExercise.run({
       ...exercise,
       ...defaultExerciseContent(exercise),
+      choices: JSON.stringify(defaultExerciseContent(exercise).choices),
     }));
     dataModule.learners.forEach((learner) => {
       insertLearner.run({
