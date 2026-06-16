@@ -30,6 +30,7 @@ const defaultExerciseContent = (exercise) => {
       prompt: `Review the German vocabulary item for ${exercise.subskill}.`,
       expectedAnswer: "Recall the Persian meaning and mark your confidence.",
       choices: [],
+      scoringRule: { type: "self_assessed" },
       supportText: "Use this card to identify whether recall is automatic, slow, or missing.",
     };
   }
@@ -40,6 +41,7 @@ const defaultExerciseContent = (exercise) => {
       prompt: `Listen to the ${exercise.subskill} material and check your understanding.`,
       expectedAnswer: "Mark correct if you understood the main meaning without guessing.",
       choices: [],
+      scoringRule: { type: "exact_text" },
       supportText: "Replay audio only when needed; transcript use is counted as a hint.",
     };
   }
@@ -50,6 +52,7 @@ const defaultExerciseContent = (exercise) => {
       prompt: `Write a short German answer focused on ${exercise.subskill}.`,
       expectedAnswer: "A clear German response with acceptable spelling and sentence order.",
       choices: [],
+      scoringRule: { type: "min_length_keywords", minLength: 80, keywords: [] },
       supportText: "Aim for at least two complete German sentences.",
     };
   }
@@ -60,6 +63,7 @@ const defaultExerciseContent = (exercise) => {
       prompt: `Complete a German grammar task about ${exercise.subskill}.`,
       expectedAnswer: "Use the correct German form.",
       choices: ["Use the correct German form.", "Use Persian word order.", "Skip the verb ending."],
+      scoringRule: { type: "exact_choice" },
       supportText: "Pay attention to verb position, tense, case, and agreement.",
     };
   }
@@ -70,6 +74,7 @@ const defaultExerciseContent = (exercise) => {
       prompt: `Translate in the required direction: ${exercise.subskill}.`,
       expectedAnswer: "A meaning-preserving translation.",
       choices: [],
+      scoringRule: { type: "self_assessed" },
       supportText: "Focus on direction-specific errors and false friends.",
     };
   }
@@ -79,25 +84,35 @@ const defaultExerciseContent = (exercise) => {
     prompt: title,
     expectedAnswer: "Complete the task and mark the result honestly.",
     choices: [],
+    scoringRule: { type: "self_assessed" },
     supportText: "This exercise is managed from the admin exercise bank.",
   };
 };
 
-const ensureExerciseContentColumns = () => {
-  const columns = db.prepare("PRAGMA table_info(exercises)").all().map((column) => column.name);
+const ensureColumns = (tableName, additions) => {
+  const columns = db.prepare(`PRAGMA table_info(${tableName})`).all().map((column) => column.name);
+  additions.forEach(([name, definition]) => {
+    if (!columns.includes(name)) {
+      db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${name} ${definition}`);
+    }
+  });
+};
+
+const ensureContentColumns = () => {
   const additions = [
     ["interaction_type", "TEXT NOT NULL DEFAULT 'flashcard'"],
     ["prompt", "TEXT NOT NULL DEFAULT ''"],
     ["expected_answer", "TEXT NOT NULL DEFAULT ''"],
     ["choices", "TEXT NOT NULL DEFAULT '[]'"],
+    ["scoring_rule", "TEXT NOT NULL DEFAULT '{}'"],
     ["support_text", "TEXT NOT NULL DEFAULT ''"],
   ];
 
-  additions.forEach(([name, definition]) => {
-    if (!columns.includes(name)) {
-      db.exec(`ALTER TABLE exercises ADD COLUMN ${name} ${definition}`);
-    }
-  });
+  ensureColumns("exercises", additions);
+  ensureColumns("learning_events", [
+    ["response_value", "TEXT"],
+    ["score", "REAL"],
+  ]);
 };
 
 const backfillExerciseContent = () => {
@@ -108,6 +123,7 @@ const backfillExerciseContent = () => {
       prompt = @prompt,
       expected_answer = @expectedAnswer,
       choices = @choices,
+      scoring_rule = @scoringRule,
       support_text = @supportText
     WHERE id = @id
   `);
@@ -125,12 +141,15 @@ const backfillExerciseContent = () => {
         exercise.prompt &&
         exercise.expected_answer &&
         exercise.choices &&
+        exercise.scoring_rule &&
+        exercise.scoring_rule !== "{}" &&
         exercise.support_text
       ) return;
       update.run({
         id: exercise.id,
         ...content,
         choices: JSON.stringify(content.choices),
+        scoringRule: JSON.stringify(content.scoringRule),
       });
     });
   });
@@ -222,11 +241,11 @@ const seedDomainData = () => {
     INSERT INTO exercises (
       id, title, title_key, sequence, cefr_level, difficulty, skill_area,
       subskill, resource_id, estimated_minutes, interaction_type, prompt,
-      expected_answer, choices, support_text
+      expected_answer, choices, scoring_rule, support_text
     ) VALUES (
       @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
       @subskill, @resourceId, @estimatedMinutes, @interactionType, @prompt,
-      @expectedAnswer, @choices, @supportText
+      @expectedAnswer, @choices, @scoringRule, @supportText
     )
   `);
   const insertWeakness = db.prepare(`
@@ -261,6 +280,7 @@ const seedDomainData = () => {
       ...exercise,
       ...defaultExerciseContent(exercise),
       choices: JSON.stringify(defaultExerciseContent(exercise).choices),
+      scoringRule: JSON.stringify(defaultExerciseContent(exercise).scoringRule),
     }));
     dataModule.learners.forEach((learner) => {
       insertLearner.run({
@@ -288,7 +308,7 @@ const seedDomainData = () => {
 
 const initializeDatabase = () => {
   runSchema();
-  ensureExerciseContentColumns();
+  ensureContentColumns();
   seedAccounts();
   seedDomainData();
   backfillExerciseContent();

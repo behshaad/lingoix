@@ -141,6 +141,7 @@ export default function AudioPractice() {
         skillArea: currentItem.skillArea,
         subskill: currentItem.subskill,
         correct: isCorrect,
+        responseValue: isCorrect ? exerciseExpectedAnswer(currentItem) : "",
         responseMs,
         hintsUsed: showTranscription ? 1 : 0,
         retries: 0,

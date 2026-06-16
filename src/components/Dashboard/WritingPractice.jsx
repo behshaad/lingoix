@@ -111,6 +111,7 @@ export default function WritingPractice() {
         skillArea: currentItem.skillArea,
         subskill: currentItem.subskill,
         correct: isCorrect,
+        responseValue: userText,
         responseMs,
         hintsUsed: 0,
         retries: 0,

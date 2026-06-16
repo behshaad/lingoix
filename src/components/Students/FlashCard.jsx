@@ -63,31 +63,30 @@ export default function FlashcardApp() {
     setFlippedCardId(flippedCardId === exerciseId ? null : exerciseId);
   };
 
-  const recordLearningEvent = async (exercise, isCorrect, extra = {}) => {
+  const recordLearningEvent = async (exercise, extra = {}) => {
     const responseMs = attemptTimerRef.current.elapsedMs();
-    setCountsByExercise((current) => {
-      const counts = current[exercise.id] || { correct: 0, wrong: 0 };
-      return {
-        ...current,
-        [exercise.id]: {
-          correct: counts.correct + (isCorrect ? 1 : 0),
-          wrong: counts.wrong + (isCorrect ? 0 : 1),
-        },
-      };
-    });
-
     setEventStatus(learningEventStatus.saving);
     try {
-      await collectLearningEvent({
+      const result = await collectLearningEvent({
         type: eventTypeForInteraction(exercise),
         exerciseId: exercise.id,
-        skillArea: exercise.skillArea,
-        subskill: exercise.subskill,
-        correct: isCorrect,
+        correct: extra.correct,
+        responseValue: extra.responseValue,
         responseMs,
         hintsUsed: extra.hintsUsed ?? (flippedCardId === exercise.id ? 1 : 0),
-        retries: isCorrect ? 0 : 1,
-        errorType: isCorrect ? null : errorTypeForExercise(exercise),
+        retries: extra.correct === false ? 1 : 0,
+        errorType: errorTypeForExercise(exercise),
+      });
+      const serverCorrect = Boolean(result.event?.correct);
+      setCountsByExercise((current) => {
+        const counts = current[exercise.id] || { correct: 0, wrong: 0 };
+        return {
+          ...current,
+          [exercise.id]: {
+            correct: counts.correct + (serverCorrect ? 1 : 0),
+            wrong: counts.wrong + (serverCorrect ? 0 : 1),
+          },
+        };
       });
       setEventStatus(learningEventStatus.saved);
     } catch (error) {
@@ -99,17 +98,20 @@ export default function FlashcardApp() {
   };
 
   const handleAnswerFeedback = async (exercise, isCorrect) => {
-    await recordLearningEvent(exercise, isCorrect);
+    await recordLearningEvent(exercise, {
+      correct: isCorrect,
+      responseValue: isCorrect ? "self_assessed_correct" : "self_assessed_incorrect",
+    });
   };
 
   const handleChoice = async (exercise, choice) => {
-    await recordLearningEvent(exercise, choice === exerciseExpectedAnswer(exercise));
+    await recordLearningEvent(exercise, { responseValue: choice });
   };
 
   const handleWritingSubmit = async (exercise) => {
     const text = writingByExercise[exercise.id] || "";
     if (!text.trim()) return;
-    await recordLearningEvent(exercise, text.trim().length >= 80, { hintsUsed: 0 });
+    await recordLearningEvent(exercise, { responseValue: text, hintsUsed: 0 });
   };
 
   const handleBackToSkills = () => {
@@ -210,7 +212,7 @@ export default function FlashcardApp() {
               className="mr-2 flex flex-1 items-center justify-center rounded-md border border-green-500 px-3 py-1 text-sm transition hover:bg-green-50 dark:hover:bg-green-950"
               onClick={(event) => {
                 event.stopPropagation();
-                handleAnswerFeedback(exercise, true);
+                recordLearningEvent(exercise, { responseValue: exerciseExpectedAnswer(exercise) });
               }}
             >
               <Check className="mr-1 h-4 w-4 text-green-500" />
@@ -221,7 +223,7 @@ export default function FlashcardApp() {
               className="ml-2 flex flex-1 items-center justify-center rounded-md border border-red-500 px-3 py-1 text-sm transition hover:bg-red-50 dark:hover:bg-red-950"
               onClick={(event) => {
                 event.stopPropagation();
-                handleAnswerFeedback(exercise, false);
+                recordLearningEvent(exercise, { responseValue: "" });
               }}
             >
               <X className="mr-1 h-4 w-4 text-red-500" />

@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS exercises (
   prompt TEXT NOT NULL DEFAULT '',
   expected_answer TEXT NOT NULL DEFAULT '',
   choices TEXT NOT NULL DEFAULT '[]',
+  scoring_rule TEXT NOT NULL DEFAULT '{}',
   support_text TEXT NOT NULL DEFAULT '',
   FOREIGN KEY (resource_id) REFERENCES resources(id)
 );
@@ -92,6 +93,8 @@ CREATE TABLE IF NOT EXISTS learning_events (
   hints_used INTEGER NOT NULL,
   retries INTEGER NOT NULL,
   error_type TEXT,
+  response_value TEXT,
+  score REAL,
   occurred_at TEXT NOT NULL,
   FOREIGN KEY (learner_id) REFERENCES learners(id) ON DELETE CASCADE,
   FOREIGN KEY (exercise_id) REFERENCES exercises(id)

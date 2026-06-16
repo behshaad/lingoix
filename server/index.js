@@ -35,6 +35,74 @@ const normalizeChoices = (choices) => {
   return [];
 };
 
+const normalizeScoringRule = (rule, interactionType) => {
+  const parsedRule = typeof rule === "string" ? jsonParse(rule, {}) : rule || {};
+  if (parsedRule.type) {
+    return {
+      ...parsedRule,
+      keywords: normalizeChoices(parsedRule.keywords || []),
+      minLength: Number(parsedRule.minLength || 0),
+    };
+  }
+
+  if (interactionType === "multiple_choice") return { type: "exact_choice" };
+  if (interactionType === "writing_prompt") {
+    return { type: "min_length_keywords", minLength: 80, keywords: [] };
+  }
+  if (interactionType === "listening_check") return { type: "exact_text" };
+  return { type: "self_assessed" };
+};
+
+const normalizeText = (value) =>
+  String(value || "")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\s+/g, " ");
+
+const scoreExerciseResponse = (exercise, body) => {
+  const scoringRule = normalizeScoringRule(exercise.scoringRule, exercise.interactionType);
+  const responseValue = body.responseValue ?? body.response ?? "";
+  const normalizedResponse = normalizeText(responseValue);
+  const normalizedAnswer = normalizeText(exercise.expectedAnswer);
+
+  if (scoringRule.type === "exact_choice" || scoringRule.type === "exact_text") {
+    const correct = normalizedResponse.length > 0 && normalizedResponse === normalizedAnswer;
+    return { correct, score: correct ? 1 : 0, responseValue, scoringRule };
+  }
+
+  if (scoringRule.type === "contains_keywords") {
+    const keywords = normalizeChoices(scoringRule.keywords).map(normalizeText);
+    const matched = keywords.filter((keyword) => keyword && normalizedResponse.includes(keyword));
+    const correct = keywords.length > 0 && matched.length === keywords.length;
+    return {
+      correct,
+      score: keywords.length > 0 ? matched.length / keywords.length : 0,
+      responseValue,
+      scoringRule,
+    };
+  }
+
+  if (scoringRule.type === "min_length_keywords") {
+    const keywords = normalizeChoices(scoringRule.keywords).map(normalizeText).filter(Boolean);
+    const minLength = Number(scoringRule.minLength || 0);
+    const lengthOk = String(responseValue || "").trim().length >= minLength;
+    const matched = keywords.filter((keyword) => normalizedResponse.includes(keyword));
+    const keywordOk = keywords.length === 0 || matched.length === keywords.length;
+    const correct = lengthOk && keywordOk;
+    const lengthScore = minLength > 0 ? Math.min(1, String(responseValue || "").trim().length / minLength) : 1;
+    const keywordScore = keywords.length > 0 ? matched.length / keywords.length : 1;
+    return {
+      correct,
+      score: Math.min(lengthScore, keywordScore),
+      responseValue,
+      scoringRule,
+    };
+  }
+
+  const correct = Boolean(body.correct);
+  return { correct, score: correct ? 1 : 0, responseValue: body.responseValue ?? null, scoringRule };
+};
+
 const publicAccount = (account) => {
   if (!account) return null;
   return {
@@ -94,6 +162,7 @@ const serializeExercise = (row) => ({
   prompt: row.prompt,
   expectedAnswer: row.expected_answer,
   choices: jsonParse(row.choices, []),
+  scoringRule: normalizeScoringRule(row.scoring_rule, row.interaction_type),
   supportText: row.support_text,
   resourceSourceUrl: row.resource_source_url,
 });
@@ -110,6 +179,8 @@ const serializeEvent = (row) => ({
   hintsUsed: row.hints_used,
   retries: row.retries,
   errorType: row.error_type,
+  responseValue: row.response_value,
+  score: row.score,
   occurredAt: row.occurred_at,
 });
 
@@ -398,21 +469,27 @@ app.post("/api/exercises", requireAuth, requireRoles("platform_admin"), (req, re
     prompt: "",
     expectedAnswer: "",
     choices: [],
+    scoringRule: null,
     supportText: "",
     ...req.body,
   };
+  const scoringRule = normalizeScoringRule(exercise.scoringRule, exercise.interactionType);
   db.prepare(
     `INSERT INTO exercises (
        id, title, title_key, sequence, cefr_level, difficulty, skill_area,
        subskill, resource_id, estimated_minutes, interaction_type, prompt,
-       expected_answer, choices, support_text
+       expected_answer, choices, scoring_rule, support_text
      )
      VALUES (
        @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
        @subskill, @resourceId, @estimatedMinutes, @interactionType, @prompt,
-       @expectedAnswer, @choices, @supportText
+       @expectedAnswer, @choices, @scoringRule, @supportText
      )`
-  ).run({ ...exercise, choices: JSON.stringify(normalizeChoices(exercise.choices)) });
+  ).run({
+    ...exercise,
+    choices: JSON.stringify(normalizeChoices(exercise.choices)),
+    scoringRule: JSON.stringify(scoringRule),
+  });
   res.status(201).json({ exercise });
 });
 
@@ -422,35 +499,51 @@ app.put("/api/exercises/:exerciseId", requireAuth, requireRoles("platform_admin"
     prompt: "",
     expectedAnswer: "",
     choices: [],
+    scoringRule: null,
     supportText: "",
     ...req.body,
     id: req.params.exerciseId,
   };
+  const scoringRule = normalizeScoringRule(exercise.scoringRule, exercise.interactionType);
   db.prepare(
     `UPDATE exercises
      SET title=@title, title_key=@titleKey, sequence=@sequence, cefr_level=@cefrLevel,
        difficulty=@difficulty, skill_area=@skillArea, subskill=@subskill,
        resource_id=@resourceId, estimated_minutes=@estimatedMinutes,
        interaction_type=@interactionType, prompt=@prompt,
-       expected_answer=@expectedAnswer, choices=@choices, support_text=@supportText
+       expected_answer=@expectedAnswer, choices=@choices,
+       scoring_rule=@scoringRule, support_text=@supportText
      WHERE id=@id`
-  ).run({ ...exercise, choices: JSON.stringify(normalizeChoices(exercise.choices)) });
+  ).run({
+    ...exercise,
+    choices: JSON.stringify(normalizeChoices(exercise.choices)),
+    scoringRule: JSON.stringify(scoringRule),
+  });
   res.json({ exercise });
 });
 
 app.post("/api/learning-events", requireAuth, (req, res) => {
+  const exerciseRow = db.prepare("SELECT * FROM exercises WHERE id = ?").get(req.body.exerciseId);
+  if (!exerciseRow) {
+    res.status(404).json({ error: "exercise_not_found" });
+    return;
+  }
+  const exercise = serializeExercise(exerciseRow);
+  const scoring = scoreExerciseResponse(exercise, req.body);
   const event = {
     id: req.body.id || `event-${crypto.randomUUID()}`,
     learnerId: req.body.learnerId || req.account.learner_id,
-    type: req.body.type,
-    exerciseId: req.body.exerciseId,
-    skillArea: req.body.skillArea,
-    subskill: req.body.subskill,
-    correct: req.body.correct ? 1 : 0,
+    type: req.body.type || (exercise.interactionType === "writing_prompt" ? "writing_submitted" : "answer_submitted"),
+    exerciseId: exercise.id,
+    skillArea: exercise.skillArea,
+    subskill: exercise.subskill,
+    correct: scoring.correct ? 1 : 0,
     responseMs: req.body.responseMs,
     hintsUsed: req.body.hintsUsed || 0,
-    retries: req.body.retries || 0,
-    errorType: req.body.errorType || null,
+    retries: req.body.retries ?? (scoring.correct ? 0 : 1),
+    errorType: scoring.correct ? null : req.body.errorType || null,
+    responseValue: scoring.responseValue,
+    score: scoring.score,
     occurredAt: req.body.occurredAt || new Date().toISOString(),
   };
   const learner = getLearnerBundle(event.learnerId);
@@ -460,11 +553,24 @@ app.post("/api/learning-events", requireAuth, (req, res) => {
   }
 
   db.prepare(
-    `INSERT INTO learning_events (id, learner_id, type, exercise_id, skill_area, subskill, correct, response_ms, hints_used, retries, error_type, occurred_at)
-     VALUES (@id, @learnerId, @type, @exerciseId, @skillArea, @subskill, @correct, @responseMs, @hintsUsed, @retries, @errorType, @occurredAt)`
+    `INSERT INTO learning_events (
+       id, learner_id, type, exercise_id, skill_area, subskill, correct,
+       response_ms, hints_used, retries, error_type, response_value, score, occurred_at
+     )
+     VALUES (
+       @id, @learnerId, @type, @exerciseId, @skillArea, @subskill, @correct,
+       @responseMs, @hintsUsed, @retries, @errorType, @responseValue, @score, @occurredAt
+     )`
   ).run(event);
   runAdaptiveRulesForLearner(event.learnerId);
-  res.status(201).json({ event: { ...event, correct: Boolean(event.correct) } });
+  res.status(201).json({
+    event: { ...event, correct: Boolean(event.correct) },
+    scoring: {
+      correct: scoring.correct,
+      score: scoring.score,
+      rule: scoring.scoringRule,
+    },
+  });
 });
 
 app.get("/api/adaptive-decisions", requireAuth, (req, res) => {

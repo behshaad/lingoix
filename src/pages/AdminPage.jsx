@@ -43,15 +43,33 @@ const emptyExercise = {
   prompt: "",
   expectedAnswer: "",
   choices: [],
+  scoringRule: { type: "self_assessed", minLength: 0, keywords: [] },
   supportText: "",
 };
 
 const interactionTypes = ["flashcard", "multiple_choice", "writing_prompt", "listening_check"];
+const scoringRuleTypes = ["self_assessed", "exact_choice", "exact_text", "contains_keywords", "min_length_keywords"];
 
 const choicesDraftValue = (choices) => {
   if (Array.isArray(choices)) return choices.join("\n");
   return choices || "";
 };
+
+const keywordsDraftValue = (rule) => {
+  if (Array.isArray(rule?.keywords)) return rule.keywords.join("\n");
+  return rule?.keywords || "";
+};
+
+const normalizeDraftRule = (rule) => ({
+  type: rule?.type || "self_assessed",
+  minLength: Number(rule?.minLength || 0),
+  keywords: Array.isArray(rule?.keywords)
+    ? rule.keywords
+    : String(rule?.keywords || "")
+        .split("\n")
+        .map((keyword) => keyword.trim())
+        .filter(Boolean),
+});
 
 const StatCard = ({ icon: Icon, label, value, detail }) => (
   <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -289,6 +307,7 @@ const AdminPage = () => {
             .split("\n")
             .map((choice) => choice.trim())
             .filter(Boolean),
+      scoringRule: normalizeDraftRule(exerciseDraft.scoringRule),
       supportText: exerciseDraft.supportText || "",
     };
     if (exists) {
@@ -729,6 +748,22 @@ const AdminPage = () => {
                   ))}
                 </SelectInput>
                 <SelectInput
+                  label={t("admin.scoringRule", "Scoring rule")}
+                  value={exerciseDraft.scoringRule?.type || "self_assessed"}
+                  onChange={(value) =>
+                    setExerciseDraft({
+                      ...exerciseDraft,
+                      scoringRule: { ...(exerciseDraft.scoringRule || {}), type: value },
+                    })
+                  }
+                >
+                  {scoringRuleTypes.map((ruleType) => (
+                    <option key={ruleType} value={ruleType}>
+                      {t(`domain.${ruleType}`, ruleType)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
                   label={t("admin.skill")}
                   value={exerciseDraft.skillArea}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, skillArea: value })}
@@ -775,6 +810,33 @@ const AdminPage = () => {
                   label={t("admin.choices", "Choices")}
                   value={choicesDraftValue(exerciseDraft.choices)}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, choices: value })}
+                />
+                <TextInput
+                  label={t("admin.minLength", "Minimum length")}
+                  type="number"
+                  value={exerciseDraft.scoringRule?.minLength || 0}
+                  onChange={(value) =>
+                    setExerciseDraft({
+                      ...exerciseDraft,
+                      scoringRule: {
+                        ...(exerciseDraft.scoringRule || {}),
+                        minLength: value,
+                      },
+                    })
+                  }
+                />
+                <TextAreaInput
+                  label={t("admin.keywords", "Keywords")}
+                  value={keywordsDraftValue(exerciseDraft.scoringRule)}
+                  onChange={(value) =>
+                    setExerciseDraft({
+                      ...exerciseDraft,
+                      scoringRule: {
+                        ...(exerciseDraft.scoringRule || {}),
+                        keywords: value,
+                      },
+                    })
+                  }
                 />
                 <TextAreaInput
                   label={t("admin.supportText", "Support text")}
