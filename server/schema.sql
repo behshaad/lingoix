@@ -62,6 +62,9 @@ CREATE TABLE IF NOT EXISTS exercises (
   subskill TEXT NOT NULL,
   resource_id TEXT NOT NULL,
   estimated_minutes INTEGER NOT NULL,
+  prompt TEXT NOT NULL DEFAULT '',
+  expected_answer TEXT NOT NULL DEFAULT '',
+  support_text TEXT NOT NULL DEFAULT '',
   FOREIGN KEY (resource_id) REFERENCES resources(id)
 );
 

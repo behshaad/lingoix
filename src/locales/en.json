@@ -251,6 +251,18 @@
     "saved": "Learning event saved.",
     "failed": "Could not save this learning event."
   },
+  "practice": {
+    "loading": "Loading exercises...",
+    "loadFailed": "Could not load exercises. Please log in again.",
+    "exercisePractice": "Exercise Practice",
+    "chooseSkill": "Choose a skill",
+    "exerciseCount": "{{count}} exercises",
+    "backToSkills": "Back to skills",
+    "exerciseCards": "Exercise cards",
+    "expectedAnswer": "Expected answer",
+    "correct": "Correct",
+    "wrong": "Wrong"
+  },
   "admin": {
     "title": "Adaptive learning operations",
     "eyebrow": "Platform Admin",
@@ -314,6 +326,9 @@
     "sourceUrl": "Source URL",
     "titleKey": "Title key",
     "sequence": "Sequence",
+    "promptField": "Prompt",
+    "expectedAnswer": "Expected answer",
+    "supportText": "Support text",
     "save": "Save"
   },
   "domain": {

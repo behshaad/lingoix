@@ -15,36 +15,17 @@ import {
   eventStatusLabelKey,
   learningEventStatus,
 } from "../../services/learningEventCollector";
-
-// Sample writing prompts
-const writingPrompts = [
-  {
-    id: "exercise-010",
-    title: "مکالمه روزمره",
-    prompt: "درباره یک روز معمولی خود به زبان آلمانی بنویسید.",
-    example:
-      "Ich stehe um 7 Uhr auf. Dann frühstücke ich und gehe zur Arbeit...",
-    difficulty: "easy",
-  },
-  {
-    id: "exercise-023",
-    title: "اخبار",
-    prompt: "یک خبر مهم را به زبان آلمانی بازنویسی کنید.",
-    example: "Die Regierung hat heute neue Gesetze verabschiedet...",
-    difficulty: "medium",
-  },
-  {
-    id: "exercise-036",
-    title: "مصاحبه",
-    prompt: "یک مصاحبه کوتاه با یک شخص مشهور را به زبان آلمانی بنویسید.",
-    example:
-      "Interviewer: Was sind Ihre Ziele für die Zukunft?\nAntwort: Ich möchte...",
-    difficulty: "hard",
-  },
-];
+import {
+  exercisePrompt,
+  exerciseSupportText,
+  exerciseTitle,
+  loadPracticeExercises,
+} from "../../services/exercisePracticeService";
 
 export default function WritingPractice() {
   const { t } = useTranslation();
+  const [writingPrompts, setWritingPrompts] = useState([]);
+  const [loadStatus, setLoadStatus] = useState("loading");
   const [currentPrompt, setCurrentPrompt] = useState(0);
   const [userText, setUserText] = useState("");
   const [feedback, setFeedback] = useState(null);
@@ -53,6 +34,24 @@ export default function WritingPractice() {
   const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const textareaRef = useRef(null);
   const attemptTimerRef = useRef(createAttemptTimer());
+
+  useEffect(() => {
+    let isMounted = true;
+    loadPracticeExercises("writing-quality")
+      .then((items) => {
+        if (!isMounted) return;
+        setWritingPrompts(items);
+        setLoadStatus("ready");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setLoadStatus("failed");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // GSAP animations
   useEffect(() => {
@@ -109,11 +108,11 @@ export default function WritingPractice() {
       await collectLearningEvent({
         type: "writing_submitted",
         exerciseId: currentItem.id,
-        skillArea: "writing-quality",
-        subskill: currentItem.difficulty === "hard" ? "email writing" : "sentence order",
+        skillArea: currentItem.skillArea,
+        subskill: currentItem.subskill,
         correct: isCorrect,
         responseMs,
-        hintsUsed: userText === currentItem.example ? 1 : 0,
+        hintsUsed: 0,
         retries: 0,
         errorType: isCorrect
           ? isSlowCorrect
@@ -149,6 +148,26 @@ export default function WritingPractice() {
 
   const currentItem = writingPrompts[currentPrompt];
 
+  if (loadStatus === "loading") {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadStatus === "failed" || !currentItem) {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loadFailed")}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground py-8">
       <div className="container mx-auto px-4">
@@ -159,7 +178,7 @@ export default function WritingPractice() {
           {/* Prompt */}
           <div className="bg-card rounded-lg p-6 mb-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">{currentItem.title}</h2>
+              <h2 className="text-xl font-semibold">{exerciseTitle(currentItem, t)}</h2>
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
                   currentItem.difficulty === "easy"
@@ -181,9 +200,10 @@ export default function WritingPractice() {
                 {t(eventStatusLabelKey(eventStatus))}
               </p>
             )}
-            <p className="text-lg mb-4">{currentItem.prompt}</p>
+            <p className="text-lg mb-4">{exercisePrompt(currentItem, t)}</p>
+            <p className="mb-4 text-sm text-muted-foreground">{exerciseSupportText(currentItem)}</p>
             <button
-              onClick={() => setUserText(currentItem.example)}
+              onClick={() => setUserText(currentItem.expectedAnswer || "")}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               مشاهده مثال

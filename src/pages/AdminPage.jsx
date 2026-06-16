@@ -39,6 +39,9 @@ const emptyExercise = {
   subskill: "daily verbs",
   resourceId: "",
   estimatedMinutes: 10,
+  prompt: "",
+  expectedAnswer: "",
+  supportText: "",
 };
 
 const StatCard = ({ icon: Icon, label, value, detail }) => (
@@ -67,6 +70,18 @@ const TextInput = ({ label, value, onChange, type = "text" }) => (
     <span className="font-medium text-gray-600 dark:text-gray-300">{label}</span>
     <input
       type={type}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+    />
+  </label>
+);
+
+const TextAreaInput = ({ label, value, onChange, rows = 3 }) => (
+  <label className="block text-sm">
+    <span className="font-medium text-gray-600 dark:text-gray-300">{label}</span>
+    <textarea
+      rows={rows}
       value={value}
       onChange={(event) => onChange(event.target.value)}
       className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
@@ -257,6 +272,9 @@ const AdminPage = () => {
       ...exerciseDraft,
       sequence: Number(exerciseDraft.sequence),
       estimatedMinutes: Number(exerciseDraft.estimatedMinutes),
+      prompt: exerciseDraft.prompt || "",
+      expectedAnswer: exerciseDraft.expectedAnswer || "",
+      supportText: exerciseDraft.supportText || "",
     };
     if (exists) {
       await apiClient.updateExercise(payload.id, payload);
@@ -716,6 +734,21 @@ const AdminPage = () => {
                   type="number"
                   value={exerciseDraft.estimatedMinutes}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, estimatedMinutes: value })}
+                />
+                <TextAreaInput
+                  label={t("admin.promptField", "Prompt")}
+                  value={exerciseDraft.prompt}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, prompt: value })}
+                />
+                <TextAreaInput
+                  label={t("admin.expectedAnswer", "Expected answer")}
+                  value={exerciseDraft.expectedAnswer}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, expectedAnswer: value })}
+                />
+                <TextAreaInput
+                  label={t("admin.supportText", "Support text")}
+                  value={exerciseDraft.supportText}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, supportText: value })}
                 />
                 <button
                   type="submit"

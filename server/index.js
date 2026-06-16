@@ -79,6 +79,10 @@ const serializeExercise = (row) => ({
   subskill: row.subskill,
   resourceId: row.resource_id,
   estimatedMinutes: row.estimated_minutes,
+  prompt: row.prompt,
+  expectedAnswer: row.expected_answer,
+  supportText: row.support_text,
+  resourceSourceUrl: row.resource_source_url,
 });
 
 const serializeEvent = (row) => ({
@@ -362,25 +366,53 @@ app.put("/api/resources/:resourceId", requireAuth, requireRoles("platform_admin"
 });
 
 app.get("/api/exercises", requireAuth, (req, res) => {
-  res.json({ exercises: db.prepare("SELECT * FROM exercises ORDER BY id").all().map(serializeExercise) });
+  res.json({
+    exercises: db
+      .prepare(
+        `SELECT exercises.*, resources.source_url AS resource_source_url
+         FROM exercises
+         LEFT JOIN resources ON resources.id = exercises.resource_id
+         ORDER BY exercises.id`
+      )
+      .all()
+      .map(serializeExercise),
+  });
 });
 
 app.post("/api/exercises", requireAuth, requireRoles("platform_admin"), (req, res) => {
-  const exercise = req.body;
+  const exercise = {
+    prompt: "",
+    expectedAnswer: "",
+    supportText: "",
+    ...req.body,
+  };
   db.prepare(
-    `INSERT INTO exercises (id, title, title_key, sequence, cefr_level, difficulty, skill_area, subskill, resource_id, estimated_minutes)
-     VALUES (@id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea, @subskill, @resourceId, @estimatedMinutes)`
+    `INSERT INTO exercises (
+       id, title, title_key, sequence, cefr_level, difficulty, skill_area,
+       subskill, resource_id, estimated_minutes, prompt, expected_answer, support_text
+     )
+     VALUES (
+       @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
+       @subskill, @resourceId, @estimatedMinutes, @prompt, @expectedAnswer, @supportText
+     )`
   ).run(exercise);
   res.status(201).json({ exercise });
 });
 
 app.put("/api/exercises/:exerciseId", requireAuth, requireRoles("platform_admin"), (req, res) => {
-  const exercise = { ...req.body, id: req.params.exerciseId };
+  const exercise = {
+    prompt: "",
+    expectedAnswer: "",
+    supportText: "",
+    ...req.body,
+    id: req.params.exerciseId,
+  };
   db.prepare(
     `UPDATE exercises
      SET title=@title, title_key=@titleKey, sequence=@sequence, cefr_level=@cefrLevel,
        difficulty=@difficulty, skill_area=@skillArea, subskill=@subskill,
-       resource_id=@resourceId, estimated_minutes=@estimatedMinutes
+       resource_id=@resourceId, estimated_minutes=@estimatedMinutes,
+       prompt=@prompt, expected_answer=@expectedAnswer, support_text=@supportText
      WHERE id=@id`
   ).run(exercise);
   res.json({ exercise });

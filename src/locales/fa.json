@@ -262,6 +262,18 @@
     "saved": "رویداد یادگیری ذخیره شد.",
     "failed": "ذخیره این رویداد یادگیری ممکن نشد."
   },
+  "practice": {
+    "loading": "در حال بارگذاری تمرین‌ها...",
+    "loadFailed": "تمرین‌ها بارگذاری نشدند. لطفاً دوباره وارد شوید.",
+    "exercisePractice": "تمرین یادگیری",
+    "chooseSkill": "انتخاب مهارت",
+    "exerciseCount": "{{count}} تمرین",
+    "backToSkills": "بازگشت به مهارت‌ها",
+    "exerciseCards": "کارت‌های تمرین",
+    "expectedAnswer": "پاسخ مورد انتظار",
+    "correct": "درست",
+    "wrong": "نادرست"
+  },
   "admin": {
     "title": "عملیات یادگیری تطبیقی",
     "eyebrow": "مدیریت پلتفرم",
@@ -325,6 +337,9 @@
     "sourceUrl": "نشانی منبع",
     "titleKey": "کلید عنوان",
     "sequence": "ترتیب",
+    "promptField": "صورت تمرین",
+    "expectedAnswer": "پاسخ مورد انتظار",
+    "supportText": "متن راهنما",
     "save": "ذخیره"
   },
   "domain": {

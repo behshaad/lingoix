@@ -17,37 +17,18 @@ import {
   eventStatusLabelKey,
   learningEventStatus,
 } from "../../services/learningEventCollector";
-
-// Sample audio data
-const audioData = [
-  {
-    id: "exercise-006",
-    title: "مکالمه روزمره",
-    audioUrl: "/audio/conversation-1.mp3",
-    transcription: "Guten Morgen! Wie geht es Ihnen?",
-    translation: "صبح بخیر! حال شما چطور است؟",
-    difficulty: "easy",
-  },
-  {
-    id: "exercise-019",
-    title: "اخبار",
-    audioUrl: "/audio/news-1.mp3",
-    transcription: "Die Wirtschaft wächst in diesem Jahr um 2,5 Prozent.",
-    translation: "اقتصاد امسال 2.5 درصد رشد کرده است.",
-    difficulty: "medium",
-  },
-  {
-    id: "exercise-032",
-    title: "مصاحبه",
-    audioUrl: "/audio/interview-1.mp3",
-    transcription: "Was sind Ihre Ziele für die Zukunft?",
-    translation: "اهداف شما برای آینده چیست؟",
-    difficulty: "hard",
-  },
-];
+import {
+  exerciseExpectedAnswer,
+  exercisePrompt,
+  exerciseSupportText,
+  exerciseTitle,
+  loadPracticeExercises,
+} from "../../services/exercisePracticeService";
 
 export default function AudioPractice() {
   const { t } = useTranslation();
+  const [audioData, setAudioData] = useState([]);
+  const [loadStatus, setLoadStatus] = useState("loading");
   const [currentAudio, setCurrentAudio] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -58,6 +39,24 @@ export default function AudioPractice() {
   const audioRef = useRef(null);
   const progressRef = useRef(null);
   const attemptTimerRef = useRef(createAttemptTimer());
+
+  useEffect(() => {
+    let isMounted = true;
+    loadPracticeExercises("listening-comprehension")
+      .then((items) => {
+        if (!isMounted) return;
+        setAudioData(items);
+        setLoadStatus("ready");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setLoadStatus("failed");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // GSAP animations
   useEffect(() => {
@@ -139,8 +138,8 @@ export default function AudioPractice() {
       await collectLearningEvent({
         type: "answer_submitted",
         exerciseId: currentItem.id,
-        skillArea: "listening-comprehension",
-        subskill: currentItem.difficulty === "easy" ? "slow dialogue" : "chapter audio",
+        skillArea: currentItem.skillArea,
+        subskill: currentItem.subskill,
         correct: isCorrect,
         responseMs,
         hintsUsed: showTranscription ? 1 : 0,
@@ -159,6 +158,26 @@ export default function AudioPractice() {
     attemptTimerRef.current.reset();
   };
 
+  if (loadStatus === "loading") {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadStatus === "failed" || !currentItem) {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loadFailed")}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground py-8">
       <div className="container mx-auto px-4">
@@ -167,7 +186,7 @@ export default function AudioPractice() {
         {/* Audio Player */}
         <div className="max-w-2xl mx-auto bg-card rounded-lg p-6 shadow-lg">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">{currentItem.title}</h2>
+            <h2 className="text-xl font-semibold mb-2">{exerciseTitle(currentItem, t)}</h2>
             {eventStatusLabelKey(eventStatus) && (
               <p className="mb-3 text-sm text-muted-foreground">
                 {t(eventStatusLabelKey(eventStatus))}
@@ -190,6 +209,12 @@ export default function AudioPractice() {
                   : "سخت"}
               </span>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              {exercisePrompt(currentItem, t)}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {exerciseSupportText(currentItem)}
+            </p>
           </div>
 
           {/* Progress Bar */}
@@ -263,9 +288,9 @@ export default function AudioPractice() {
             {showTranscription && (
               <div className="space-y-4">
                 <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-lg mb-2">{currentItem.transcription}</p>
+                  <p className="text-lg mb-2">{exerciseSupportText(currentItem)}</p>
                   <p className="text-muted-foreground">
-                    {currentItem.translation}
+                    {exerciseExpectedAnswer(currentItem)}
                   </p>
                 </div>
 
@@ -293,7 +318,7 @@ export default function AudioPractice() {
         {/* Audio Element */}
         <audio
           ref={audioRef}
-          src={currentItem.audioUrl}
+          src={currentItem.resourceSourceUrl || ""}
           onTimeUpdate={handleTimeUpdate}
           onEnded={() => {
             setIsPlaying(false);

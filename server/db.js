@@ -21,6 +21,94 @@ const runSchema = () => {
   db.exec(schema);
 };
 
+const defaultExerciseContent = (exercise) => {
+  const title = exercise.title || exercise.titleKey || "Exercise";
+
+  if (exercise.skillArea === "vocabulary-recall") {
+    return {
+      prompt: `Review the German vocabulary item for ${exercise.subskill}.`,
+      expectedAnswer: "Recall the Persian meaning and mark your confidence.",
+      supportText: "Use this card to identify whether recall is automatic, slow, or missing.",
+    };
+  }
+
+  if (exercise.skillArea === "listening-comprehension") {
+    return {
+      prompt: `Listen to the ${exercise.subskill} material and check your understanding.`,
+      expectedAnswer: "Mark correct if you understood the main meaning without guessing.",
+      supportText: "Replay audio only when needed; transcript use is counted as a hint.",
+    };
+  }
+
+  if (exercise.skillArea === "writing-quality") {
+    return {
+      prompt: `Write a short German answer focused on ${exercise.subskill}.`,
+      expectedAnswer: "A clear German response with acceptable spelling and sentence order.",
+      supportText: "Aim for at least two complete German sentences.",
+    };
+  }
+
+  if (exercise.skillArea === "grammar-accuracy") {
+    return {
+      prompt: `Complete a German grammar task about ${exercise.subskill}.`,
+      expectedAnswer: "Use the correct German form.",
+      supportText: "Pay attention to verb position, tense, case, and agreement.",
+    };
+  }
+
+  if (exercise.skillArea === "translation-direction") {
+    return {
+      prompt: `Translate in the required direction: ${exercise.subskill}.`,
+      expectedAnswer: "A meaning-preserving translation.",
+      supportText: "Focus on direction-specific errors and false friends.",
+    };
+  }
+
+  return {
+    prompt: title,
+    expectedAnswer: "Complete the task and mark the result honestly.",
+    supportText: "This exercise is managed from the admin exercise bank.",
+  };
+};
+
+const ensureExerciseContentColumns = () => {
+  const columns = db.prepare("PRAGMA table_info(exercises)").all().map((column) => column.name);
+  const additions = [
+    ["prompt", "TEXT NOT NULL DEFAULT ''"],
+    ["expected_answer", "TEXT NOT NULL DEFAULT ''"],
+    ["support_text", "TEXT NOT NULL DEFAULT ''"],
+  ];
+
+  additions.forEach(([name, definition]) => {
+    if (!columns.includes(name)) {
+      db.exec(`ALTER TABLE exercises ADD COLUMN ${name} ${definition}`);
+    }
+  });
+};
+
+const backfillExerciseContent = () => {
+  const exercises = db.prepare("SELECT * FROM exercises").all();
+  const update = db.prepare(`
+    UPDATE exercises
+    SET prompt = @prompt, expected_answer = @expectedAnswer, support_text = @supportText
+    WHERE id = @id
+  `);
+
+  const transaction = db.transaction(() => {
+    exercises.forEach((exercise) => {
+      if (exercise.prompt && exercise.expected_answer && exercise.support_text) return;
+      update.run({ id: exercise.id, ...defaultExerciseContent({
+        title: exercise.title,
+        titleKey: exercise.title_key,
+        skillArea: exercise.skill_area,
+        subskill: exercise.subskill,
+      }) });
+    });
+  });
+
+  transaction();
+};
+
 const seedAccounts = () => {
   const insertAccount = db.prepare(`
     INSERT OR IGNORE INTO accounts (
@@ -104,10 +192,10 @@ const seedDomainData = () => {
   const insertExercise = db.prepare(`
     INSERT INTO exercises (
       id, title, title_key, sequence, cefr_level, difficulty, skill_area,
-      subskill, resource_id, estimated_minutes
+      subskill, resource_id, estimated_minutes, prompt, expected_answer, support_text
     ) VALUES (
       @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
-      @subskill, @resourceId, @estimatedMinutes
+      @subskill, @resourceId, @estimatedMinutes, @prompt, @expectedAnswer, @supportText
     )
   `);
   const insertWeakness = db.prepare(`
@@ -138,7 +226,10 @@ const seedDomainData = () => {
 
   const transaction = db.transaction(() => {
     dataModule.resources.forEach((resource) => insertResource.run(resource));
-    dataModule.exerciseBank.forEach((exercise) => insertExercise.run(exercise));
+    dataModule.exerciseBank.forEach((exercise) => insertExercise.run({
+      ...exercise,
+      ...defaultExerciseContent(exercise),
+    }));
     dataModule.learners.forEach((learner) => {
       insertLearner.run({
         ...learner,
@@ -165,8 +256,10 @@ const seedDomainData = () => {
 
 const initializeDatabase = () => {
   runSchema();
+  ensureExerciseContentColumns();
   seedAccounts();
   seedDomainData();
+  backfillExerciseContent();
 };
 
 module.exports = {

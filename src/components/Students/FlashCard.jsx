@@ -1,203 +1,127 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Plus, Check, X } from "lucide-react";
+import { ChevronLeft, Check, X } from "lucide-react";
 import {
   collectLearningEvent,
   createAttemptTimer,
   eventStatusLabelKey,
   learningEventStatus,
 } from "../../services/learningEventCollector";
+import {
+  errorTypeForExercise,
+  exerciseExpectedAnswer,
+  exercisePrompt,
+  exerciseSupportText,
+  exerciseTitle,
+  loadPracticeExercises,
+} from "../../services/exercisePracticeService";
 
 export default function FlashcardApp() {
   const { t } = useTranslation();
-  // Initial courses data
-  const initialCourses = [
-    {
-      id: "vocabulary-recall",
-      name: "German Vocabulary",
-      questions: [
-        {
-          id: "exercise-001",
-          question: "What does 'das Haus' mean in Persian?",
-          answer: "خانه",
-          skillArea: "vocabulary-recall",
-          subskill: "nouns",
-          errorType: "vocabulary recall error",
-          correctCount: 0,
-          wrongCount: 0,
-        },
-        {
-          id: "exercise-014",
-          question: "Translate 'gehen' into Persian.",
-          answer: "رفتن",
-          skillArea: "vocabulary-recall",
-          subskill: "daily verbs",
-          errorType: "vocabulary recall error",
-          correctCount: 0,
-          wrongCount: 0,
-        },
-      ],
-    },
-    {
-      id: "grammar-accuracy",
-      name: "German Grammar",
-      questions: [
-        {
-          id: "exercise-003",
-          question: "Where is the finite verb in a German main clause?",
-          answer: "Position 2",
-          skillArea: "grammar-accuracy",
-          subskill: "verb position",
-          errorType: "grammar tense error",
-          correctCount: 0,
-          wrongCount: 0,
-        },
-        {
-          id: "exercise-004",
-          question: "Which article fits: ___ Mann?",
-          answer: "der Mann",
-          skillArea: "grammar-accuracy",
-          subskill: "cases",
-          errorType: "grammar tense error",
-          correctCount: 0,
-          wrongCount: 0,
-        },
-      ],
-    },
-  ];
-
-  // State management
-  const [courses, setCourses] = useState(initialCourses);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [newCourseName, setNewCourseName] = useState("");
-  const [newQuestion, setNewQuestion] = useState("");
-  const [newAnswer, setNewAnswer] = useState("");
+  const [exercises, setExercises] = useState([]);
+  const [selectedSkill, setSelectedSkill] = useState(null);
   const [flippedCardId, setFlippedCardId] = useState(null);
   const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
+  const [loadStatus, setLoadStatus] = useState("loading");
+  const [countsByExercise, setCountsByExercise] = useState({});
   const attemptTimerRef = useRef(createAttemptTimer());
 
-  // Add a new course
-  const handleAddCourse = () => {
-    if (!newCourseName.trim()) return;
+  useEffect(() => {
+    let isMounted = true;
+    loadPracticeExercises()
+      .then((items) => {
+        if (!isMounted) return;
+        setExercises(items);
+        setLoadStatus("ready");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setLoadStatus("failed");
+      });
 
-    const newCourse = {
-      id: Date.now().toString(),
-      name: newCourseName,
-      questions: [],
+    return () => {
+      isMounted = false;
     };
+  }, []);
 
-    setCourses([...courses, newCourse]);
-    setNewCourseName("");
+  const skillGroups = useMemo(() => {
+    return exercises.reduce((groups, exercise) => {
+      groups[exercise.skillArea] = groups[exercise.skillArea] || [];
+      groups[exercise.skillArea].push(exercise);
+      return groups;
+    }, {});
+  }, [exercises]);
+
+  const selectedExercises = selectedSkill ? skillGroups[selectedSkill] || [] : [];
+
+  const handleCardFlip = (exerciseId) => {
+    setFlippedCardId(flippedCardId === exerciseId ? null : exerciseId);
   };
 
-  // Add a new question to the selected course
-  const handleAddQuestion = () => {
-    if (!selectedCourse || !newQuestion.trim() || !newAnswer.trim()) return;
-
-    const newQuestionObj = {
-      id: Date.now().toString(),
-      question: newQuestion,
-      answer: newAnswer,
-      correctCount: 0,
-      wrongCount: 0,
-    };
-
-    const updatedCourses = courses.map((course) => {
-      if (course.id === selectedCourse.id) {
-        return {
-          ...course,
-          questions: [...course.questions, newQuestionObj],
-        };
-      }
-      return course;
-    });
-
-    setCourses(updatedCourses);
-    setSelectedCourse({
-      ...selectedCourse,
-      questions: [...selectedCourse.questions, newQuestionObj],
-    });
-    setNewQuestion("");
-    setNewAnswer("");
-  };
-
-  // Handle card flip
-  const handleCardFlip = (questionId) => {
-    setFlippedCardId(flippedCardId === questionId ? null : questionId);
-  };
-
-  // Handle answer feedback (correct/wrong)
-  const handleAnswerFeedback = async (questionId, isCorrect) => {
-    if (!selectedCourse) return;
-    const answeredQuestion = selectedCourse.questions.find((question) => question.id === questionId);
+  const handleAnswerFeedback = async (exercise, isCorrect) => {
     const responseMs = attemptTimerRef.current.elapsedMs();
-
-    const updatedCourses = courses.map((course) => {
-      if (course.id === selectedCourse.id) {
-        const updatedQuestions = course.questions.map((q) => {
-          if (q.id === questionId) {
-            return {
-              ...q,
-              correctCount: isCorrect ? q.correctCount + 1 : q.correctCount,
-              wrongCount: isCorrect ? q.wrongCount : q.wrongCount + 1,
-            };
-          }
-          return q;
-        });
-        return { ...course, questions: updatedQuestions };
-      }
-      return course;
+    setCountsByExercise((current) => {
+      const counts = current[exercise.id] || { correct: 0, wrong: 0 };
+      return {
+        ...current,
+        [exercise.id]: {
+          correct: counts.correct + (isCorrect ? 1 : 0),
+          wrong: counts.wrong + (isCorrect ? 0 : 1),
+        },
+      };
     });
 
-    setCourses(updatedCourses);
-
-    // Update the selected course as well
-    const updatedSelectedCourse = updatedCourses.find(
-      (course) => course.id === selectedCourse.id
-    );
-    if (updatedSelectedCourse) {
-      setSelectedCourse(updatedSelectedCourse);
+    setEventStatus(learningEventStatus.saving);
+    try {
+      await collectLearningEvent({
+        type: "answer_submitted",
+        exerciseId: exercise.id,
+        skillArea: exercise.skillArea,
+        subskill: exercise.subskill,
+        correct: isCorrect,
+        responseMs,
+        hintsUsed: flippedCardId === exercise.id ? 1 : 0,
+        retries: isCorrect ? 0 : 1,
+        errorType: isCorrect ? null : errorTypeForExercise(exercise),
+      });
+      setEventStatus(learningEventStatus.saved);
+    } catch (error) {
+      setEventStatus(learningEventStatus.failed);
     }
 
-    if (answeredQuestion) {
-      setEventStatus(learningEventStatus.saving);
-      try {
-        await collectLearningEvent({
-          type: "answer_submitted",
-          exerciseId: answeredQuestion.id,
-          skillArea: answeredQuestion.skillArea || selectedCourse.id,
-          subskill: answeredQuestion.subskill || selectedCourse.name,
-          correct: isCorrect,
-          responseMs,
-          hintsUsed: flippedCardId === questionId ? 1 : 0,
-          retries: isCorrect ? 0 : 1,
-          errorType: isCorrect ? null : answeredQuestion.errorType || "vocabulary recall error",
-        });
-        setEventStatus(learningEventStatus.saved);
-      } catch (error) {
-        setEventStatus(learningEventStatus.failed);
-      }
-    }
-
-    // Reset the flipped state
     setFlippedCardId(null);
     attemptTimerRef.current.reset();
   };
 
-  // Go back to course list
-  const handleBackToCourses = () => {
-    setSelectedCourse(null);
+  const handleBackToSkills = () => {
+    setSelectedSkill(null);
     setFlippedCardId(null);
     setEventStatus(learningEventStatus.idle);
     attemptTimerRef.current.reset();
   };
 
+  if (loadStatus === "loading") {
+    return (
+      <section className="container mx-auto max-w-4xl px-4 py-8">
+        <p className="text-center text-gray-500 dark:text-gray-400">{t("practice.loading")}</p>
+      </section>
+    );
+  }
+
+  if (loadStatus === "failed") {
+    return (
+      <section className="container mx-auto max-w-4xl px-4 py-8">
+        <p className="text-center text-gray-500 dark:text-gray-400">{t("practice.loadFailed")}</p>
+      </section>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Flashcard Study App
+    <section className="container mx-auto max-w-4xl px-4 py-8">
+      <h1 className="mb-8 text-center text-3xl font-bold">
+        {t("practice.exercisePractice")}
       </h1>
       {eventStatusLabelKey(eventStatus) && (
         <p className="mb-4 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -205,170 +129,118 @@ export default function FlashcardApp() {
         </p>
       )}
 
-      {!selectedCourse ? (
-        // Course List View
+      {!selectedSkill ? (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-4">Add New Course</h2>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter course name"
-                value={newCourseName}
-                onChange={(e) => setNewCourseName(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
-              />
-              <button
-                onClick={handleAddCourse}
-                className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Course
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-4">Your Courses</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {courses.map((course) => (
-                <div
-                  key={course.id}
-                  className="bg-white border border-gray-200 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow dark:bg-gray-800 dark:border-gray-700"
-                  onClick={() => setSelectedCourse(course)}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+            <h2 className="mb-4 text-xl font-semibold">{t("practice.chooseSkill")}</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {Object.entries(skillGroups).map(([skillArea, items]) => (
+                <button
+                  key={skillArea}
+                  type="button"
+                  className="rounded-lg border border-gray-200 bg-white p-6 text-left transition hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
+                  onClick={() => {
+                    setSelectedSkill(skillArea);
+                    attemptTimerRef.current.reset();
+                  }}
                 >
-                  <h3 className="text-lg font-medium">{course.name}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    {course.questions.length} flashcards
+                  <h3 className="text-lg font-medium">{t(`domain.${skillArea}`, skillArea)}</h3>
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    {t("practice.exerciseCount", { count: items.length })}
                   </p>
-                </div>
+                </button>
               ))}
             </div>
           </div>
         </div>
       ) : (
-        // Course Detail View
         <div className="space-y-6">
-          <div className="flex items-center mb-6">
+          <div className="mb-6 flex items-center">
             <button
-              onClick={handleBackToCourses}
-              className="flex items-center justify-center mr-4 px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors dark:border-gray-600 dark:hover:bg-gray-700"
+              type="button"
+              onClick={handleBackToSkills}
+              className="mr-4 flex items-center justify-center rounded-md border border-gray-300 px-3 py-1 text-sm transition hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
             >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Back to Courses
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              {t("practice.backToSkills")}
             </button>
-            <h2 className="text-2xl font-semibold">{selectedCourse.name}</h2>
+            <h2 className="text-2xl font-semibold">{t(`domain.${selectedSkill}`, selectedSkill)}</h2>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-            <h3 className="text-xl font-semibold mb-4">Add New Flashcard</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Question
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter a German learning question"
-                  value={newQuestion}
-                  onChange={(e) => setNewQuestion(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Answer</label>
-                <input
-                  type="text"
-                  placeholder="Enter the answer or Persian translation"
-                  value={newAnswer}
-                  onChange={(e) => setNewAnswer(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
-              <button
-                onClick={handleAddQuestion}
-                className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Flashcard
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-            <h3 className="text-xl font-semibold mb-4">Flashcards</h3>
-            {selectedCourse.questions.length === 0 ? (
-              <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                No flashcards yet. Add your first one above!
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedCourse.questions.map((question) => (
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+            <h3 className="mb-4 text-xl font-semibold">{t("practice.exerciseCards")}</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {selectedExercises.map((exercise) => {
+                const counts = countsByExercise[exercise.id] || { correct: 0, wrong: 0 };
+                return (
                   <div
-                    key={question.id}
-                    className={`relative h-48 rounded-lg shadow-md cursor-pointer transition-all duration-300 ${
-                      flippedCardId === question.id
-                        ? "bg-gray-100 dark:bg-gray-700"
-                        : "bg-white dark:bg-gray-800"
-                    } border border-gray-200 dark:border-gray-700`}
-                    onClick={() => handleCardFlip(question.id)}
+                    key={exercise.id}
+                    className={`relative h-56 cursor-pointer rounded-lg border border-gray-200 shadow-sm transition dark:border-gray-700 ${
+                      flippedCardId === exercise.id
+                        ? "bg-gray-100 dark:bg-gray-800"
+                        : "bg-white dark:bg-gray-900"
+                    }`}
+                    onClick={() => handleCardFlip(exercise.id)}
                   >
-                    <div className="absolute inset-0 p-6 flex flex-col">
-                      {flippedCardId === question.id ? (
-                        // Answer side
-                        <div className="flex flex-col h-full">
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                            Answer:
+                    <div className="absolute inset-0 flex flex-col p-5">
+                      {flippedCardId === exercise.id ? (
+                        <div className="flex h-full flex-col">
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            {t("practice.expectedAnswer")}
                           </p>
-                          <p className="text-lg font-medium flex-1">
-                            {question.answer}
+                          <p className="flex-1 text-base font-medium">
+                            {exerciseExpectedAnswer(exercise)}
                           </p>
-                          <div className="flex justify-between mt-4">
+                          <div className="mt-4 flex justify-between">
                             <button
-                              className="flex-1 mr-2 flex items-center justify-center px-3 py-1 border border-green-500 rounded-md text-sm hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors dark:hover:bg-green-900"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAnswerFeedback(question.id, true);
+                              type="button"
+                              className="mr-2 flex flex-1 items-center justify-center rounded-md border border-green-500 px-3 py-1 text-sm transition hover:bg-green-50 dark:hover:bg-green-950"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleAnswerFeedback(exercise, true);
                               }}
                             >
-                              <Check className="h-4 w-4 mr-1 text-green-500" />
-                              Correct
+                              <Check className="mr-1 h-4 w-4 text-green-500" />
+                              {t("practice.correct")}
                             </button>
                             <button
-                              className="flex-1 ml-2 flex items-center justify-center px-3 py-1 border border-red-500 rounded-md text-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors dark:hover:bg-red-900"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAnswerFeedback(question.id, false);
+                              type="button"
+                              className="ml-2 flex flex-1 items-center justify-center rounded-md border border-red-500 px-3 py-1 text-sm transition hover:bg-red-50 dark:hover:bg-red-950"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleAnswerFeedback(exercise, false);
                               }}
                             >
-                              <X className="h-4 w-4 mr-1 text-red-500" />
-                              Wrong
+                              <X className="mr-1 h-4 w-4 text-red-500" />
+                              {t("practice.wrong")}
                             </button>
                           </div>
                         </div>
                       ) : (
-                        // Question side
-                        <div className="flex flex-col h-full">
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                            Question:
+                        <div className="flex h-full flex-col">
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            {exerciseTitle(exercise, t)}
                           </p>
-                          <p className="text-lg font-medium flex-1">
-                            {question.question}
+                          <p className="flex-1 text-base font-medium">
+                            {exercisePrompt(exercise, t)}
+                          </p>
+                          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+                            {exerciseSupportText(exercise)}
                           </p>
                           <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
-                            <span>Correct: {question.correctCount}</span>
-                            <span>Wrong: {question.wrongCount}</span>
+                            <span>{t("practice.correct")}: {counts.correct}</span>
+                            <span>{t("practice.wrong")}: {counts.wrong}</span>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }

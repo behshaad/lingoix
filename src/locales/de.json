@@ -252,6 +252,18 @@
     "saved": "Lernereignis gespeichert.",
     "failed": "Dieses Lernereignis konnte nicht gespeichert werden."
   },
+  "practice": {
+    "loading": "Übungen werden geladen...",
+    "loadFailed": "Übungen konnten nicht geladen werden. Bitte melden Sie sich erneut an.",
+    "exercisePractice": "Übungspraxis",
+    "chooseSkill": "Kompetenz auswählen",
+    "exerciseCount": "{{count}} Übungen",
+    "backToSkills": "Zurück zu Kompetenzen",
+    "exerciseCards": "Übungskarten",
+    "expectedAnswer": "Erwartete Antwort",
+    "correct": "Richtig",
+    "wrong": "Falsch"
+  },
   "admin": {
     "title": "Adaptive Lernoperationen",
     "eyebrow": "Plattform-Administration",
@@ -315,6 +327,9 @@
     "sourceUrl": "Quell-URL",
     "titleKey": "Titelschlüssel",
     "sequence": "Reihenfolge",
+    "promptField": "Aufgabe",
+    "expectedAnswer": "Erwartete Antwort",
+    "supportText": "Hilfetext",
     "save": "Speichern"
   },
   "domain": {

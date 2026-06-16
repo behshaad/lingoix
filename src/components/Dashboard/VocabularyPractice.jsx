@@ -9,43 +9,24 @@ import {
   eventStatusLabelKey,
   learningEventStatus,
 } from "../../services/learningEventCollector";
+import {
+  errorTypeForExercise,
+  exerciseExpectedAnswer,
+  exercisePrompt,
+  exerciseSupportText,
+  exerciseTitle,
+  loadPracticeExercises,
+} from "../../services/exercisePracticeService";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(Flip);
 }
 
-// Sample vocabulary data
-const vocabularyData = [
-  {
-    id: "exercise-001",
-    word: "Haus",
-    translation: "خانه",
-    example: "Ich gehe nach Hause.",
-    exampleTranslation: "من به خانه می‌روم.",
-    difficulty: "easy",
-  },
-  {
-    id: "exercise-014",
-    word: "Buch",
-    translation: "کتاب",
-    example: "Ich lese ein Buch.",
-    exampleTranslation: "من یک کتاب می‌خوانم.",
-    difficulty: "easy",
-  },
-  {
-    id: "exercise-027",
-    word: "Schule",
-    translation: "مدرسه",
-    example: "Die Schule beginnt um 8 Uhr.",
-    exampleTranslation: "مدرسه ساعت 8 شروع می‌شود.",
-    difficulty: "medium",
-  },
-  // Add more vocabulary items as needed
-];
-
 export default function VocabularyPractice() {
   const { t } = useTranslation();
+  const [vocabularyData, setVocabularyData] = useState([]);
+  const [loadStatus, setLoadStatus] = useState("loading");
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -53,6 +34,24 @@ export default function VocabularyPractice() {
   const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const cardRef = useRef(null);
   const attemptTimerRef = useRef(createAttemptTimer());
+
+  useEffect(() => {
+    let isMounted = true;
+    loadPracticeExercises("vocabulary-recall")
+      .then((items) => {
+        if (!isMounted) return;
+        setVocabularyData(items);
+        setLoadStatus("ready");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setLoadStatus("failed");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // GSAP animations
   useEffect(() => {
@@ -88,14 +87,14 @@ export default function VocabularyPractice() {
       await collectLearningEvent({
         type: "answer_submitted",
         exerciseId: currentVocabulary.id,
-        skillArea: "vocabulary-recall",
-        subskill: "daily verbs",
+        skillArea: currentVocabulary.skillArea,
+        subskill: currentVocabulary.subskill,
         correct: level !== "hard",
         responseMs,
         retries: level === "medium" ? 1 : 0,
         errorType:
           level === "hard"
-            ? "vocabulary recall error"
+            ? errorTypeForExercise(currentVocabulary)
             : level === "medium"
             ? "slow but correct response"
             : null,
@@ -112,6 +111,26 @@ export default function VocabularyPractice() {
   };
 
   const currentVocabulary = vocabularyData[currentCard];
+
+  if (loadStatus === "loading") {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadStatus === "failed" || !currentVocabulary) {
+    return (
+      <div className="min-h-screen bg-background py-8 text-foreground">
+        <div className="container mx-auto px-4">
+          <p className="text-muted-foreground">{t("practice.loadFailed")}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground py-8">
@@ -136,20 +155,23 @@ export default function VocabularyPractice() {
             <div className="absolute inset-0 backface-hidden">
               <div className="h-full bg-card rounded-lg p-8 flex flex-col items-center justify-center shadow-lg">
                 <h2 className="text-4xl font-bold mb-4">
-                  {currentVocabulary.word}
+                  {exerciseTitle(currentVocabulary, t)}
                 </h2>
                 <p className="text-xl text-muted-foreground">
-                  {currentVocabulary.example}
+                  {exercisePrompt(currentVocabulary, t)}
+                </p>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  {exerciseSupportText(currentVocabulary)}
                 </p>
               </div>
             </div>
             <div className="absolute inset-0 backface-hidden rotate-y-180">
               <div className="h-full bg-card rounded-lg p-8 flex flex-col items-center justify-center shadow-lg">
                 <h2 className="text-4xl font-bold mb-4">
-                  {currentVocabulary.translation}
+                  {t("practice.expectedAnswer")}
                 </h2>
                 <p className="text-xl text-muted-foreground">
-                  {currentVocabulary.exampleTranslation}
+                  {exerciseExpectedAnswer(currentVocabulary)}
                 </p>
               </div>
             </div>
@@ -208,6 +230,7 @@ export default function VocabularyPractice() {
               setCurrentCard(0);
               setIsFlipped(false);
               setShowAnswer(false);
+              attemptTimerRef.current.reset();
             }}
             className="flex items-center gap-2 px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors"
           >
