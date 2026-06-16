@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import {
   Send,
@@ -8,11 +9,17 @@ import {
   RotateCcw,
   Download,
 } from "lucide-react";
+import {
+  collectLearningEvent,
+  createAttemptTimer,
+  eventStatusLabelKey,
+  learningEventStatus,
+} from "../../services/learningEventCollector";
 
 // Sample writing prompts
 const writingPrompts = [
   {
-    id: 1,
+    id: "exercise-010",
     title: "مکالمه روزمره",
     prompt: "درباره یک روز معمولی خود به زبان آلمانی بنویسید.",
     example:
@@ -20,14 +27,14 @@ const writingPrompts = [
     difficulty: "easy",
   },
   {
-    id: 2,
+    id: "exercise-023",
     title: "اخبار",
     prompt: "یک خبر مهم را به زبان آلمانی بازنویسی کنید.",
     example: "Die Regierung hat heute neue Gesetze verabschiedet...",
     difficulty: "medium",
   },
   {
-    id: 3,
+    id: "exercise-036",
     title: "مصاحبه",
     prompt: "یک مصاحبه کوتاه با یک شخص مشهور را به زبان آلمانی بنویسید.",
     example:
@@ -37,12 +44,15 @@ const writingPrompts = [
 ];
 
 export default function WritingPractice() {
+  const { t } = useTranslation();
   const [currentPrompt, setCurrentPrompt] = useState(0);
   const [userText, setUserText] = useState("");
   const [feedback, setFeedback] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [corrections, setCorrections] = useState([]);
+  const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const textareaRef = useRef(null);
+  const attemptTimerRef = useRef(createAttemptTimer());
 
   // GSAP animations
   useEffect(() => {
@@ -66,9 +76,14 @@ export default function WritingPractice() {
       // Simulate API call for text correction
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
+      const score = userText.length >= 80 ? 85 : 62;
+      const responseMs = attemptTimerRef.current.elapsedMs();
+      const isCorrect = score >= 75;
+      const isSlowCorrect = isCorrect && responseMs > 45000;
+
       // Sample feedback and corrections
       setFeedback({
-        score: 85,
+        score,
         message: "نوشته شما خوب است، اما چند نکته برای بهبود وجود دارد.",
         suggestions: [
           "از زمان گذشته استفاده کنید",
@@ -89,7 +104,27 @@ export default function WritingPractice() {
           explanation: "استفاده از واژه‌های متنوع‌تر",
         },
       ]);
+
+      setEventStatus(learningEventStatus.saving);
+      await collectLearningEvent({
+        type: "writing_submitted",
+        exerciseId: currentItem.id,
+        skillArea: "writing-quality",
+        subskill: currentItem.difficulty === "hard" ? "email writing" : "sentence order",
+        correct: isCorrect,
+        responseMs,
+        hintsUsed: userText === currentItem.example ? 1 : 0,
+        retries: 0,
+        errorType: isCorrect
+          ? isSlowCorrect
+            ? "slow but correct response"
+            : null
+          : "spelling error",
+      });
+      setEventStatus(learningEventStatus.saved);
+      attemptTimerRef.current.reset();
     } catch (error) {
+      setEventStatus(learningEventStatus.failed);
       setFeedback({
         score: 0,
         message: "خطا در بررسی متن. لطفاً دوباره تلاش کنید.",
@@ -103,6 +138,8 @@ export default function WritingPractice() {
     setUserText("");
     setFeedback(null);
     setCorrections([]);
+    setEventStatus(learningEventStatus.idle);
+    attemptTimerRef.current.reset();
   };
 
   const handleNextPrompt = () => {
@@ -139,6 +176,11 @@ export default function WritingPractice() {
                   : "سخت"}
               </span>
             </div>
+            {eventStatusLabelKey(eventStatus) && (
+              <p className="mb-3 text-sm text-muted-foreground">
+                {t(eventStatusLabelKey(eventStatus))}
+              </p>
+            )}
             <p className="text-lg mb-4">{currentItem.prompt}</p>
             <button
               onClick={() => setUserText(currentItem.example)}

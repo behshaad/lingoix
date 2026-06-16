@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import {
   Play,
@@ -10,11 +11,17 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
+import {
+  collectLearningEvent,
+  createAttemptTimer,
+  eventStatusLabelKey,
+  learningEventStatus,
+} from "../../services/learningEventCollector";
 
 // Sample audio data
 const audioData = [
   {
-    id: 1,
+    id: "exercise-006",
     title: "مکالمه روزمره",
     audioUrl: "/audio/conversation-1.mp3",
     transcription: "Guten Morgen! Wie geht es Ihnen?",
@@ -22,7 +29,7 @@ const audioData = [
     difficulty: "easy",
   },
   {
-    id: 2,
+    id: "exercise-019",
     title: "اخبار",
     audioUrl: "/audio/news-1.mp3",
     transcription: "Die Wirtschaft wächst in diesem Jahr um 2,5 Prozent.",
@@ -30,7 +37,7 @@ const audioData = [
     difficulty: "medium",
   },
   {
-    id: 3,
+    id: "exercise-032",
     title: "مصاحبه",
     audioUrl: "/audio/interview-1.mp3",
     transcription: "Was sind Ihre Ziele für die Zukunft?",
@@ -40,14 +47,17 @@ const audioData = [
 ];
 
 export default function AudioPractice() {
+  const { t } = useTranslation();
   const [currentAudio, setCurrentAudio] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showTranscription, setShowTranscription] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const audioRef = useRef(null);
   const progressRef = useRef(null);
+  const attemptTimerRef = useRef(createAttemptTimer());
 
   // GSAP animations
   useEffect(() => {
@@ -113,9 +123,41 @@ export default function AudioPractice() {
     }
     setIsPlaying(false);
     setProgress(0);
+    setShowTranscription(false);
+    setEventStatus(learningEventStatus.idle);
+    attemptTimerRef.current.reset();
   };
 
   const currentItem = audioData[currentAudio];
+
+  const handleComprehensionFeedback = async (isCorrect) => {
+    const responseMs = attemptTimerRef.current.elapsedMs();
+    const isSlowCorrect = isCorrect && responseMs > 10000;
+    setEventStatus(learningEventStatus.saving);
+
+    try {
+      await collectLearningEvent({
+        type: "answer_submitted",
+        exerciseId: currentItem.id,
+        skillArea: "listening-comprehension",
+        subskill: currentItem.difficulty === "easy" ? "slow dialogue" : "chapter audio",
+        correct: isCorrect,
+        responseMs,
+        hintsUsed: showTranscription ? 1 : 0,
+        retries: 0,
+        errorType: isCorrect
+          ? isSlowCorrect
+            ? "slow but correct response"
+            : null
+          : "listening misrecognition",
+      });
+      setEventStatus(learningEventStatus.saved);
+    } catch (error) {
+      setEventStatus(learningEventStatus.failed);
+    }
+
+    attemptTimerRef.current.reset();
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground py-8">
@@ -126,6 +168,11 @@ export default function AudioPractice() {
         <div className="max-w-2xl mx-auto bg-card rounded-lg p-6 shadow-lg">
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">{currentItem.title}</h2>
+            {eventStatusLabelKey(eventStatus) && (
+              <p className="mb-3 text-sm text-muted-foreground">
+                {t(eventStatusLabelKey(eventStatus))}
+              </p>
+            )}
             <div className="flex items-center gap-2">
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
@@ -223,11 +270,17 @@ export default function AudioPractice() {
                 </div>
 
                 <div className="flex justify-center gap-4">
-                  <button className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                  <button
+                    onClick={() => handleComprehensionFeedback(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  >
                     <CheckCircle className="h-5 w-5" />
                     <span>درست</span>
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                  <button
+                    onClick={() => handleComprehensionFeedback(false)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
                     <XCircle className="h-5 w-5" />
                     <span>نادرست</span>
                   </button>

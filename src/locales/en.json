@@ -246,6 +246,11 @@
     "active": "{{count}} active",
     "targetedTitle": "Targeted exercises inserted into your path"
   },
+  "learningEvents": {
+    "saving": "Saving learning event...",
+    "saved": "Learning event saved.",
+    "failed": "Could not save this learning event."
+  },
   "admin": {
     "title": "Adaptive learning operations",
     "eyebrow": "Platform Admin",

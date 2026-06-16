@@ -1,46 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, Plus, Check, X } from "lucide-react";
+import {
+  collectLearningEvent,
+  createAttemptTimer,
+  eventStatusLabelKey,
+  learningEventStatus,
+} from "../../services/learningEventCollector";
 
 export default function FlashcardApp() {
+  const { t } = useTranslation();
   // Initial courses data
   const initialCourses = [
     {
-      id: "1",
-      name: "Mathematics",
+      id: "vocabulary-recall",
+      name: "German Vocabulary",
       questions: [
         {
-          id: "m1",
-          question: "What is the formula for the area of a circle?",
-          answer: "πr²",
+          id: "exercise-001",
+          question: "What does 'das Haus' mean in Persian?",
+          answer: "خانه",
+          skillArea: "vocabulary-recall",
+          subskill: "nouns",
+          errorType: "vocabulary recall error",
           correctCount: 0,
           wrongCount: 0,
         },
         {
-          id: "m2",
-          question: "What is the Pythagorean theorem?",
-          answer: "a² + b² = c²",
+          id: "exercise-014",
+          question: "Translate 'gehen' into Persian.",
+          answer: "رفتن",
+          skillArea: "vocabulary-recall",
+          subskill: "daily verbs",
+          errorType: "vocabulary recall error",
           correctCount: 0,
           wrongCount: 0,
         },
       ],
     },
     {
-      id: "2",
-      name: "Science",
+      id: "grammar-accuracy",
+      name: "German Grammar",
       questions: [
         {
-          id: "s1",
-          question: "What is the chemical symbol for water?",
-          answer: "H₂O",
+          id: "exercise-003",
+          question: "Where is the finite verb in a German main clause?",
+          answer: "Position 2",
+          skillArea: "grammar-accuracy",
+          subskill: "verb position",
+          errorType: "grammar tense error",
           correctCount: 0,
           wrongCount: 0,
         },
         {
-          id: "s2",
-          question: "What is the first element on the periodic table?",
-          answer: "Hydrogen (H)",
+          id: "exercise-004",
+          question: "Which article fits: ___ Mann?",
+          answer: "der Mann",
+          skillArea: "grammar-accuracy",
+          subskill: "cases",
+          errorType: "grammar tense error",
           correctCount: 0,
           wrongCount: 0,
         },
@@ -55,6 +75,8 @@ export default function FlashcardApp() {
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
   const [flippedCardId, setFlippedCardId] = useState(null);
+  const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
+  const attemptTimerRef = useRef(createAttemptTimer());
 
   // Add a new course
   const handleAddCourse = () => {
@@ -107,8 +129,10 @@ export default function FlashcardApp() {
   };
 
   // Handle answer feedback (correct/wrong)
-  const handleAnswerFeedback = (questionId, isCorrect) => {
+  const handleAnswerFeedback = async (questionId, isCorrect) => {
     if (!selectedCourse) return;
+    const answeredQuestion = selectedCourse.questions.find((question) => question.id === questionId);
+    const responseMs = attemptTimerRef.current.elapsedMs();
 
     const updatedCourses = courses.map((course) => {
       if (course.id === selectedCourse.id) {
@@ -137,14 +161,37 @@ export default function FlashcardApp() {
       setSelectedCourse(updatedSelectedCourse);
     }
 
+    if (answeredQuestion) {
+      setEventStatus(learningEventStatus.saving);
+      try {
+        await collectLearningEvent({
+          type: "answer_submitted",
+          exerciseId: answeredQuestion.id,
+          skillArea: answeredQuestion.skillArea || selectedCourse.id,
+          subskill: answeredQuestion.subskill || selectedCourse.name,
+          correct: isCorrect,
+          responseMs,
+          hintsUsed: flippedCardId === questionId ? 1 : 0,
+          retries: isCorrect ? 0 : 1,
+          errorType: isCorrect ? null : answeredQuestion.errorType || "vocabulary recall error",
+        });
+        setEventStatus(learningEventStatus.saved);
+      } catch (error) {
+        setEventStatus(learningEventStatus.failed);
+      }
+    }
+
     // Reset the flipped state
     setFlippedCardId(null);
+    attemptTimerRef.current.reset();
   };
 
   // Go back to course list
   const handleBackToCourses = () => {
     setSelectedCourse(null);
     setFlippedCardId(null);
+    setEventStatus(learningEventStatus.idle);
+    attemptTimerRef.current.reset();
   };
 
   return (
@@ -152,6 +199,11 @@ export default function FlashcardApp() {
       <h1 className="text-3xl font-bold text-center mb-8">
         Flashcard Study App
       </h1>
+      {eventStatusLabelKey(eventStatus) && (
+        <p className="mb-4 text-center text-sm text-gray-500 dark:text-gray-400">
+          {t(eventStatusLabelKey(eventStatus))}
+        </p>
+      )}
 
       {!selectedCourse ? (
         // Course List View
@@ -217,7 +269,7 @@ export default function FlashcardApp() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your question"
+                  placeholder="Enter a German learning question"
                   value={newQuestion}
                   onChange={(e) => setNewQuestion(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"
@@ -227,7 +279,7 @@ export default function FlashcardApp() {
                 <label className="block text-sm font-medium mb-1">Answer</label>
                 <input
                   type="text"
-                  placeholder="Enter the answer"
+                  placeholder="Enter the answer or Persian translation"
                   value={newAnswer}
                   onChange={(e) => setNewAnswer(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600"

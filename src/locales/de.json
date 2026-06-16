@@ -247,6 +247,11 @@
     "active": "{{count}} aktiv",
     "targetedTitle": "Gezielte Übungen in Ihrem Lernpfad"
   },
+  "learningEvents": {
+    "saving": "Lernereignis wird gespeichert...",
+    "saved": "Lernereignis gespeichert.",
+    "failed": "Dieses Lernereignis konnte nicht gespeichert werden."
+  },
   "admin": {
     "title": "Adaptive Lernoperationen",
     "eyebrow": "Plattform-Administration",

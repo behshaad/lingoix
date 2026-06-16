@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { MdThumbUp, MdThumbDown, MdRefresh, MdGrade } from "react-icons/md";
+import {
+  collectLearningEvent,
+  createAttemptTimer,
+  eventStatusLabelKey,
+  learningEventStatus,
+} from "../../services/learningEventCollector";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -11,7 +18,7 @@ if (typeof window !== "undefined") {
 // Sample vocabulary data
 const vocabularyData = [
   {
-    id: 1,
+    id: "exercise-001",
     word: "Haus",
     translation: "خانه",
     example: "Ich gehe nach Hause.",
@@ -19,7 +26,7 @@ const vocabularyData = [
     difficulty: "easy",
   },
   {
-    id: 2,
+    id: "exercise-014",
     word: "Buch",
     translation: "کتاب",
     example: "Ich lese ein Buch.",
@@ -27,7 +34,7 @@ const vocabularyData = [
     difficulty: "easy",
   },
   {
-    id: 3,
+    id: "exercise-027",
     word: "Schule",
     translation: "مدرسه",
     example: "Die Schule beginnt um 8 Uhr.",
@@ -38,11 +45,14 @@ const vocabularyData = [
 ];
 
 export default function VocabularyPractice() {
+  const { t } = useTranslation();
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [difficulty, setDifficulty] = useState("easy");
+  const [eventStatus, setEventStatus] = useState(learningEventStatus.idle);
   const cardRef = useRef(null);
+  const attemptTimerRef = useRef(createAttemptTimer());
 
   // GSAP animations
   useEffect(() => {
@@ -69,11 +79,36 @@ export default function VocabularyPractice() {
     setShowAnswer(true);
   };
 
-  const handleDifficulty = (level) => {
+  const handleDifficulty = async (level) => {
+    const responseMs = attemptTimerRef.current.elapsedMs();
     setDifficulty(level);
+    setEventStatus(learningEventStatus.saving);
+
+    try {
+      await collectLearningEvent({
+        type: "answer_submitted",
+        exerciseId: currentVocabulary.id,
+        skillArea: "vocabulary-recall",
+        subskill: "daily verbs",
+        correct: level !== "hard",
+        responseMs,
+        retries: level === "medium" ? 1 : 0,
+        errorType:
+          level === "hard"
+            ? "vocabulary recall error"
+            : level === "medium"
+            ? "slow but correct response"
+            : null,
+      });
+      setEventStatus(learningEventStatus.saved);
+    } catch (error) {
+      setEventStatus(learningEventStatus.failed);
+    }
+
     setIsFlipped(false);
     setShowAnswer(false);
     setCurrentCard((prev) => (prev + 1) % vocabularyData.length);
+    attemptTimerRef.current.reset();
   };
 
   const currentVocabulary = vocabularyData[currentCard];
@@ -85,6 +120,11 @@ export default function VocabularyPractice() {
         <p className="mb-4 text-muted-foreground">
           سطح انتخاب شده: {difficulty === "easy" ? "آسان" : difficulty === "medium" ? "متوسط" : "سخت"}
         </p>
+        {eventStatusLabelKey(eventStatus) && (
+          <p className="mb-4 text-sm text-muted-foreground">
+            {t(eventStatusLabelKey(eventStatus))}
+          </p>
+        )}
 
         {/* Flashcard */}
         <div className="max-w-2xl mx-auto mb-8">
