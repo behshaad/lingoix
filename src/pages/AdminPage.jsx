@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Activity,
@@ -8,20 +8,38 @@ import {
   Database,
   GraduationCap,
   Layers,
+  Pencil,
+  Plus,
+  Save,
   Users,
 } from "lucide-react";
-import {
-  getClassCatalog,
-  getClassReport,
-  getExerciseBank,
-  getLearnerDetailReport,
-  getLearners,
-  getPlatformReport,
-  getResources,
-  getSkillAreas,
-} from "../services/learningDataService";
+import { apiClient } from "../services/apiClient";
+import { getSkillAreas } from "../services/learningDataService";
 
 const numberFormat = new Intl.NumberFormat("en-US");
+
+const emptyResource = {
+  id: "",
+  title: "",
+  type: "book",
+  cefrLevel: "A1",
+  skillArea: "reading-comprehension",
+  sourceUrl: "",
+  description: "",
+};
+
+const emptyExercise = {
+  id: "",
+  title: "",
+  titleKey: "customExercise",
+  sequence: 1,
+  cefrLevel: "A1",
+  difficulty: "easy",
+  skillArea: "vocabulary-recall",
+  subskill: "daily verbs",
+  resourceId: "",
+  estimatedMinutes: 10,
+};
 
 const StatCard = ({ icon: Icon, label, value, detail }) => (
   <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -40,40 +58,55 @@ const StatCard = ({ icon: Icon, label, value, detail }) => (
 
 const ProgressBar = ({ value }) => (
   <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
-    <div className="h-full rounded-full bg-emerald-500" style={{ width: `${value}%` }} />
+    <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.min(100, value)}%` }} />
   </div>
+);
+
+const TextInput = ({ label, value, onChange, type = "text" }) => (
+  <label className="block text-sm">
+    <span className="font-medium text-gray-600 dark:text-gray-300">{label}</span>
+    <input
+      type={type}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+    />
+  </label>
+);
+
+const SelectInput = ({ label, value, onChange, children }) => (
+  <label className="block text-sm">
+    <span className="font-medium text-gray-600 dark:text-gray-300">{label}</span>
+    <select
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+    >
+      {children}
+    </select>
+  </label>
 );
 
 const AdminPage = () => {
   const { t, i18n } = useTranslation();
-  const learners = getLearners();
-  const classes = getClassCatalog();
-  const resources = getResources();
-  const exerciseBank = getExerciseBank();
   const skillAreas = getSkillAreas();
-  const platformReport = getPlatformReport();
-
-  const [selectedLearnerId, setSelectedLearnerId] = useState(learners[0].id);
-  const [selectedClassId, setSelectedClassId] = useState(classes[0].id);
   const [activeView, setActiveView] = useState("overview");
+  const [account, setAccount] = useState(null);
+  const [learners, setLearners] = useState([]);
+  const [resources, setResources] = useState([]);
+  const [exerciseBank, setExerciseBank] = useState([]);
+  const [platformReport, setPlatformReport] = useState(null);
+  const [adaptiveDecisions, setAdaptiveDecisions] = useState([]);
+  const [selectedLearnerId, setSelectedLearnerId] = useState("");
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [learnerDetail, setLearnerDetail] = useState(null);
+  const [resourceDraft, setResourceDraft] = useState(emptyResource);
+  const [exerciseDraft, setExerciseDraft] = useState(emptyExercise);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const learnerReport = useMemo(
-    () => getLearnerDetailReport(selectedLearnerId),
-    [selectedLearnerId]
-  );
-  const classReport = useMemo(() => getClassReport(selectedClassId), [selectedClassId]);
-
-  const allDecisions = learners.flatMap((learner) =>
-    learner.adaptiveDecisions.map((decision) => ({
-      ...decision,
-      learnerName: learner.name,
-      cefrLevel: learner.cefrLevel,
-    }))
-  );
   const isRtl = i18n.language === "fa";
   const domainLabel = (value) => t(`domain.${value}`, value);
-  const decisionLabel = (decision) =>
-    `${domainLabel(decision.skillArea)} · ${domainLabel(decision.subskill)}`;
   const exerciseTitle = (exercise) =>
     t(`exerciseTemplates.${exercise.titleKey}`, {
       number: exercise.sequence,
@@ -83,6 +116,67 @@ const AdminPage = () => {
     t(`resourcesData.${resource.id}.title`, resource.title);
   const resourceDescription = (resource) =>
     t(`resourcesData.${resource.id}.description`, resource.description);
+  const decisionLabel = (decision) =>
+    `${domainLabel(decision.skillArea)} · ${domainLabel(decision.subskill)}`;
+
+  const classReports = useMemo(() => {
+    const grouped = learners.reduce((groups, learner) => {
+      groups[learner.classId] = groups[learner.classId] || {
+        classId: learner.classId,
+        className: learner.className,
+        students: [],
+      };
+      groups[learner.classId].students.push(learner);
+      return groups;
+    }, {});
+
+    return Object.values(grouped).map((classItem) => {
+      const average = (selector) =>
+        Math.round(
+          classItem.students.reduce((sum, learner) => sum + selector(learner), 0) /
+            classItem.students.length
+        );
+      return {
+        ...classItem,
+        studentCount: classItem.students.length,
+        averageProgress: average((learner) => learner.progressPercent),
+        averageAccuracy: average((learner) => learner.accuracy),
+        averageResponseMs: average((learner) => learner.averageResponseMs),
+      };
+    });
+  }, [learners]);
+
+  const classReport = classReports.find((item) => item.classId === selectedClassId) || classReports[0];
+  const learnersById = useMemo(
+    () => new Map(learners.map((learner) => [learner.id, learner])),
+    [learners]
+  );
+  const allDecisions = adaptiveDecisions.map((decision) => {
+    const learner = learnersById.get(decision.learnerId);
+    return {
+      ...decision,
+      learnerName: learner?.name || decision.learnerId,
+      cefrLevel: learner?.cefrLevel || "",
+    };
+  });
+  const learnerReport = useMemo(() => {
+    if (!learnerDetail) return null;
+    const events = learnerDetail.learningEvents || [];
+    const decisions = (learnerDetail.adaptiveDecisions || []).map((decision) => ({
+      ...decision,
+      targetedExercises: decision.targetedExerciseIds
+        .map((exerciseId) => exerciseBank.find((exercise) => exercise.id === exerciseId))
+        .filter(Boolean),
+    }));
+
+    return {
+      learner: learnerDetail,
+      latestEvents: events.slice(0, 8),
+      decisions,
+      eventCount: events.length,
+      weaknessCount: learnerDetail.skillWeaknesses?.length || 0,
+    };
+  }, [exerciseBank, learnerDetail]);
 
   const views = [
     { id: "overview", label: t("admin.overview"), icon: BarChart3 },
@@ -92,6 +186,89 @@ const AdminPage = () => {
     { id: "exercises", label: t("admin.exercises"), icon: Layers },
     { id: "adaptive", label: t("admin.adaptive"), icon: Brain },
   ];
+
+  const loadAdminData = async () => {
+    setIsLoading(true);
+    try {
+      const [me, learnersData, resourcesData, exercisesData, reportData, decisionsData] =
+        await Promise.all([
+          apiClient.me(),
+          apiClient.learners(),
+          apiClient.resources(),
+          apiClient.exercises(),
+          apiClient.platformReport(),
+          apiClient.adaptiveDecisions(),
+        ]);
+
+      setAccount(me.account);
+      setLearners(learnersData.learners);
+      setResources(resourcesData.resources);
+      setExerciseBank(exercisesData.exercises);
+      setPlatformReport(reportData.report);
+      setAdaptiveDecisions(decisionsData.decisions);
+      setSelectedLearnerId((current) => current || learnersData.learners[0]?.id || "");
+      setSelectedClassId((current) => current || learnersData.learners[0]?.classId || "");
+      setResourceDraft((current) => ({
+        ...current,
+        id: current.id || `resource-${Date.now()}`,
+      }));
+      setExerciseDraft((current) => ({
+        ...current,
+        id: current.id || `exercise-${Date.now()}`,
+        resourceId: current.resourceId || resourcesData.resources[0]?.id || "",
+      }));
+    } catch (error) {
+      setStatusMessage(t("admin.apiLoginRequired", "Please log in with a backend account first."));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAdminData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLearnerId) return;
+    apiClient
+      .learner(selectedLearnerId)
+      .then((data) => setLearnerDetail(data.learner))
+      .catch(() => setLearnerDetail(null));
+  }, [selectedLearnerId]);
+
+  const saveResource = async (event) => {
+    event.preventDefault();
+    const exists = resources.some((resource) => resource.id === resourceDraft.id);
+    if (exists) {
+      await apiClient.updateResource(resourceDraft.id, resourceDraft);
+      setStatusMessage(t("admin.resourceSaved", "Resource saved."));
+    } else {
+      await apiClient.createResource(resourceDraft);
+      setStatusMessage(t("admin.resourceCreated", "Resource created."));
+    }
+    await loadAdminData();
+  };
+
+  const saveExercise = async (event) => {
+    event.preventDefault();
+    const exists = exerciseBank.some((exercise) => exercise.id === exerciseDraft.id);
+    const payload = {
+      ...exerciseDraft,
+      sequence: Number(exerciseDraft.sequence),
+      estimatedMinutes: Number(exerciseDraft.estimatedMinutes),
+    };
+    if (exists) {
+      await apiClient.updateExercise(payload.id, payload);
+      setStatusMessage(t("admin.exerciseSaved", "Exercise saved."));
+    } else {
+      await apiClient.createExercise(payload);
+      setStatusMessage(t("admin.exerciseCreated", "Exercise created."));
+    }
+    await loadAdminData();
+  };
+
+  const canEditContent = account?.role === "platform_admin";
 
   return (
     <div
@@ -110,9 +287,17 @@ const AdminPage = () => {
             </p>
           </div>
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
-            {t("admin.syntheticNotice")}
+            {account
+              ? `${account.displayName} · ${domainLabel(account.role)}`
+              : t("admin.apiLoginRequired", "Please log in with a backend account first.")}
           </div>
         </header>
+
+        {statusMessage && (
+          <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100">
+            {statusMessage}
+          </div>
+        )}
 
         <nav className="mb-6 flex gap-2 overflow-x-auto pb-2">
           {views.map((view) => {
@@ -135,14 +320,20 @@ const AdminPage = () => {
           })}
         </nav>
 
-        {activeView === "overview" && (
+        {isLoading && (
+          <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+            {t("admin.loading", "Loading admin data...")}
+          </div>
+        )}
+
+        {!isLoading && activeView === "overview" && platformReport && (
           <div className="space-y-6">
             <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               <StatCard
                 icon={Users}
                 label={t("admin.syntheticLearners")}
                 value={platformReport.learnerCount}
-                detail={t("admin.classesCount", { count: platformReport.classCount })}
+                detail={t("admin.classesCount", { count: classReports.length })}
               />
               <StatCard
                 icon={Activity}
@@ -168,7 +359,7 @@ const AdminPage = () => {
               <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
                 <h2 className="mb-4 text-lg font-semibold">{t("admin.commonErrorPatterns")}</h2>
                 <div className="space-y-3">
-                  {platformReport.commonErrorPatterns.slice(0, 6).map((item) => (
+                  {(platformReport.commonErrorPatterns || []).slice(0, 6).map((item) => (
                     <div key={item.label}>
                       <div className="mb-1 flex justify-between text-sm">
                         <span>{item.label}</span>
@@ -183,7 +374,7 @@ const AdminPage = () => {
               <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
                 <h2 className="mb-4 text-lg font-semibold">{t("admin.skillWeaknessDistribution")}</h2>
                 <div className="space-y-3">
-                  {platformReport.weaknessDistribution.map((item) => (
+                  {(platformReport.weaknessDistribution || []).map((item) => (
                     <div key={item.skillArea}>
                       <div className="mb-1 flex justify-between text-sm">
                         <span>{domainLabel(item.skillArea)}</span>
@@ -198,7 +389,7 @@ const AdminPage = () => {
           </div>
         )}
 
-        {activeView === "learners" && (
+        {!isLoading && activeView === "learners" && learnerReport && (
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
             <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
               <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -211,7 +402,7 @@ const AdminPage = () => {
               >
                 {learners.map((learner) => (
                   <option key={learner.id} value={learner.id}>
-                      {learner.name} - {learner.cefrLevel}
+                    {learner.name} - {learner.cefrLevel}
                   </option>
                 ))}
               </select>
@@ -229,7 +420,8 @@ const AdminPage = () => {
                   >
                     <div className="font-semibold">{learner.name}</div>
                     <div className="text-gray-500 dark:text-gray-400">
-                      {learner.cefrLevel} · {learner.className} · {t("learnerDashboard.accuracy", { value: learner.accuracy })}
+                      {learner.cefrLevel} · {learner.className} ·{" "}
+                      {t("learnerDashboard.accuracy", { value: learner.accuracy })}
                     </div>
                   </button>
                 ))}
@@ -247,13 +439,20 @@ const AdminPage = () => {
                     </p>
                   </div>
                   <div className="rounded-md bg-gray-100 px-4 py-2 text-sm dark:bg-gray-800">
-                      {learnerReport.learner.cefrLevel} · {t("learnerDashboard.complete", { value: learnerReport.learner.progressPercent })}
+                    {learnerReport.learner.cefrLevel} ·{" "}
+                    {t("learnerDashboard.complete", {
+                      value: learnerReport.learner.progressPercent,
+                    })}
                   </div>
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
                   <StatCard icon={Activity} label={t("admin.events")} value={learnerReport.eventCount} />
-                  <StatCard icon={BarChart3} label={t("admin.accuracy")} value={`${learnerReport.learner.accuracy}%`} />
+                  <StatCard
+                    icon={BarChart3}
+                    label={t("admin.accuracy")}
+                    value={`${learnerReport.learner.accuracy}%`}
+                  />
                   <StatCard icon={Brain} label={t("admin.weaknesses")} value={learnerReport.weaknessCount} />
                 </div>
 
@@ -270,49 +469,11 @@ const AdminPage = () => {
                   ))}
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-                  <h3 className="mb-3 font-semibold">{t("admin.adaptiveDecisions")}</h3>
-                  <div className="space-y-3">
-                    {learnerReport.decisions.map((decision) => (
-                      <div key={decision.id} className="rounded-md border border-gray-200 p-3 dark:border-gray-800">
-                        <div className="flex justify-between gap-3 text-sm">
-                          <span className="font-semibold">{decisionLabel(decision)}</span>
-                          <span>{domainLabel(decision.status)}</span>
-                        </div>
-                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                          {t("admin.targetedInserted", { count: decision.targetedExercises.length })}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-                  <h3 className="mb-3 font-semibold">{t("admin.latestLearningEvents")}</h3>
-                  <div className="space-y-2">
-                    {learnerReport.latestEvents.map((event) => (
-                      <div key={event.id} className="rounded-md bg-gray-50 p-3 text-sm dark:bg-gray-950">
-                        <div className="flex justify-between">
-                          <span>{domainLabel(event.type)}</span>
-                          <span className={event.correct ? "text-emerald-600" : "text-red-600"}>
-                            {event.correct ? t("domain.correct") : t("domain.needsReview")}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-gray-500 dark:text-gray-400">
-                          {domainLabel(event.subskill)} · {(event.responseMs / 1000).toFixed(1)}s
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </section>
           </div>
         )}
 
-        {activeView === "classes" && (
+        {!isLoading && activeView === "classes" && classReport && (
           <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
@@ -326,9 +487,9 @@ const AdminPage = () => {
                 onChange={(event) => setSelectedClassId(event.target.value)}
                 className="rounded-md border border-gray-300 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-950"
               >
-                {classes.map((classItem) => (
-                  <option key={classItem.id} value={classItem.id}>
-                    {classItem.name}
+                {classReports.map((classItem) => (
+                  <option key={classItem.classId} value={classItem.classId}>
+                    {classItem.className}
                   </option>
                 ))}
               </select>
@@ -338,91 +499,272 @@ const AdminPage = () => {
               <StatCard icon={Users} label={t("admin.students")} value={classReport.studentCount} />
               <StatCard icon={BarChart3} label={t("admin.progress")} value={`${classReport.averageProgress}%`} />
               <StatCard icon={Activity} label={t("admin.accuracy")} value={`${classReport.averageAccuracy}%`} />
-              <StatCard icon={Database} label={t("admin.avgResponse")} value={`${(classReport.averageResponseMs / 1000).toFixed(1)}s`} />
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-b border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                  <tr>
-                    <th className="py-3">{t("admin.student")}</th>
-                    <th>{t("admin.cefr")}</th>
-                    <th>{t("admin.progress")}</th>
-                    <th>{t("admin.accuracy")}</th>
-                    <th>{t("admin.weaknesses")}</th>
-                    <th>{t("admin.teacher")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {classReport.students.map((student) => (
-                    <tr key={student.id} className="border-b border-gray-100 dark:border-gray-800">
-                      <td className="py-3 font-medium">{student.name}</td>
-                      <td>{student.cefrLevel}</td>
-                      <td>{student.progressPercent}%</td>
-                      <td>{student.accuracy}%</td>
-                      <td>{student.skillWeaknesses.map((weakness) => domainLabel(weakness.subskill)).join(", ")}</td>
-                      <td>{student.teacher}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <StatCard
+                icon={Database}
+                label={t("admin.avgResponse")}
+                value={`${(classReport.averageResponseMs / 1000).toFixed(1)}s`}
+              />
             </div>
           </section>
         )}
 
-        {activeView === "content" && (
-          <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {resources.map((resource) => (
-              <div key={resource.id} className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm uppercase text-gray-500">{resource.type}</p>
-                <h2 className="mt-1 text-lg font-semibold">{resourceTitle(resource)}</h2>
-                  </div>
-                  <span className="rounded-md bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-                    {resource.cefrLevel}
-                  </span>
-                </div>
-                <p className="mt-3 text-gray-600 dark:text-gray-300">{resourceDescription(resource)}</p>
-                <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">{domainLabel(resource.skillArea)}</p>
+        {!isLoading && activeView === "content" && (
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[420px_1fr]">
+            <form
+              onSubmit={saveResource}
+              className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+            >
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className="text-xl font-semibold">{t("admin.resourceEditor", "Resource editor")}</h2>
+                <button
+                  type="button"
+                  onClick={() => setResourceDraft({ ...emptyResource, id: `resource-${Date.now()}` })}
+                  className="rounded-md bg-gray-100 p-2 dark:bg-gray-800"
+                  disabled={!canEditContent}
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
               </div>
-            ))}
-          </section>
-        )}
-
-        {activeView === "exercises" && (
-          <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-            <h2 className="mb-4 text-xl font-semibold">{t("admin.exerciseBank")}</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[820px] text-left text-sm">
-                <thead className="border-b border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                  <tr>
-                    <th className="py-3">{t("admin.exercise")}</th>
-                    <th>{t("admin.cefr")}</th>
-                    <th>{t("admin.difficulty")}</th>
-                    <th>{t("admin.skill")}</th>
-                    <th>{t("admin.subskill")}</th>
-                    <th>{t("admin.minutes")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {exerciseBank.map((exercise) => (
-                    <tr key={exercise.id} className="border-b border-gray-100 dark:border-gray-800">
-                      <td className="py-3 font-medium">{exerciseTitle(exercise)}</td>
-                      <td>{exercise.cefrLevel}</td>
-                      <td>{t(`common.${exercise.difficulty}`, exercise.difficulty)}</td>
-                      <td>{domainLabel(exercise.skillArea)}</td>
-                      <td>{domainLabel(exercise.subskill)}</td>
-                      <td>{exercise.estimatedMinutes}</td>
-                    </tr>
+              <div className="space-y-3">
+                <TextInput
+                  label="ID"
+                  value={resourceDraft.id}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, id: value })}
+                />
+                <TextInput
+                  label={t("admin.titleField", "Title")}
+                  value={resourceDraft.title}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, title: value })}
+                />
+                <SelectInput
+                  label={t("admin.type")}
+                  value={resourceDraft.type}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, type: value })}
+                >
+                  {["book", "audio", "grammar", "vocabulary"].map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                </SelectInput>
+                <SelectInput
+                  label={t("admin.cefr")}
+                  value={resourceDraft.cefrLevel}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, cefrLevel: value })}
+                >
+                  {["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
+                  label={t("admin.skill")}
+                  value={resourceDraft.skillArea}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, skillArea: value })}
+                >
+                  {skillAreas.map((skill) => (
+                    <option key={skill.id} value={skill.id}>
+                      {domainLabel(skill.id)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <TextInput
+                  label={t("admin.sourceUrl", "Source URL")}
+                  value={resourceDraft.sourceUrl || ""}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, sourceUrl: value })}
+                />
+                <TextInput
+                  label={t("admin.descriptionField", "Description")}
+                  value={resourceDraft.description}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, description: value })}
+                />
+                <button
+                  type="submit"
+                  disabled={!canEditContent}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-gray-950 px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-gray-950"
+                >
+                  <Save className="h-4 w-4" />
+                  {t("admin.save", "Save")}
+                </button>
+              </div>
+            </form>
+
+            <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {resources.map((resource) => (
+                <button
+                  key={resource.id}
+                  onClick={() => setResourceDraft(resource)}
+                  className="rounded-lg border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-emerald-500 dark:border-gray-700 dark:bg-gray-900"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm uppercase text-gray-500">{resource.type}</p>
+                      <h2 className="mt-1 text-lg font-semibold">{resourceTitle(resource)}</h2>
+                    </div>
+                    <span className="rounded-md bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
+                      {resource.cefrLevel}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-gray-600 dark:text-gray-300">{resourceDescription(resource)}</p>
+                  <p className="mt-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Pencil className="h-4 w-4" />
+                    {domainLabel(resource.skillArea)}
+                  </p>
+                </button>
+              ))}
+            </section>
+          </div>
         )}
 
-        {activeView === "adaptive" && (
+        {!isLoading && activeView === "exercises" && (
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[420px_1fr]">
+            <form
+              onSubmit={saveExercise}
+              className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+            >
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className="text-xl font-semibold">{t("admin.exerciseEditor", "Exercise editor")}</h2>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExerciseDraft({
+                      ...emptyExercise,
+                      id: `exercise-${Date.now()}`,
+                      resourceId: resources[0]?.id || "",
+                    })
+                  }
+                  className="rounded-md bg-gray-100 p-2 dark:bg-gray-800"
+                  disabled={!canEditContent}
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <TextInput
+                  label="ID"
+                  value={exerciseDraft.id}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, id: value })}
+                />
+                <TextInput
+                  label={t("admin.titleField", "Title")}
+                  value={exerciseDraft.title}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, title: value })}
+                />
+                <TextInput
+                  label={t("admin.titleKey", "Title key")}
+                  value={exerciseDraft.titleKey}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, titleKey: value })}
+                />
+                <TextInput
+                  label={t("admin.sequence", "Sequence")}
+                  type="number"
+                  value={exerciseDraft.sequence}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, sequence: value })}
+                />
+                <SelectInput
+                  label={t("admin.cefr")}
+                  value={exerciseDraft.cefrLevel}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, cefrLevel: value })}
+                >
+                  {["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
+                  label={t("admin.difficulty")}
+                  value={exerciseDraft.difficulty}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, difficulty: value })}
+                >
+                  {["easy", "medium", "hard"].map((difficulty) => (
+                    <option key={difficulty} value={difficulty}>
+                      {t(`common.${difficulty}`, difficulty)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
+                  label={t("admin.skill")}
+                  value={exerciseDraft.skillArea}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, skillArea: value })}
+                >
+                  {skillAreas.map((skill) => (
+                    <option key={skill.id} value={skill.id}>
+                      {domainLabel(skill.id)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <TextInput
+                  label={t("admin.subskill")}
+                  value={exerciseDraft.subskill}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, subskill: value })}
+                />
+                <SelectInput
+                  label={t("admin.resources")}
+                  value={exerciseDraft.resourceId}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, resourceId: value })}
+                >
+                  {resources.map((resource) => (
+                    <option key={resource.id} value={resource.id}>
+                      {resourceTitle(resource)}
+                    </option>
+                  ))}
+                </SelectInput>
+                <TextInput
+                  label={t("admin.minutes")}
+                  type="number"
+                  value={exerciseDraft.estimatedMinutes}
+                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, estimatedMinutes: value })}
+                />
+                <button
+                  type="submit"
+                  disabled={!canEditContent}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-gray-950 px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-gray-950"
+                >
+                  <Save className="h-4 w-4" />
+                  {t("admin.save", "Save")}
+                </button>
+              </div>
+            </form>
+
+            <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+              <h2 className="mb-4 text-xl font-semibold">{t("admin.exerciseBank")}</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[820px] text-left text-sm">
+                  <thead className="border-b border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+                    <tr>
+                      <th className="py-3">{t("admin.exercise")}</th>
+                      <th>{t("admin.cefr")}</th>
+                      <th>{t("admin.difficulty")}</th>
+                      <th>{t("admin.skill")}</th>
+                      <th>{t("admin.subskill")}</th>
+                      <th>{t("admin.minutes")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {exerciseBank.map((exercise) => (
+                      <tr
+                        key={exercise.id}
+                        onClick={() => setExerciseDraft(exercise)}
+                        className="cursor-pointer border-b border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
+                      >
+                        <td className="py-3 font-medium">{exerciseTitle(exercise)}</td>
+                        <td>{exercise.cefrLevel}</td>
+                        <td>{t(`common.${exercise.difficulty}`, exercise.difficulty)}</td>
+                        <td>{domainLabel(exercise.skillArea)}</td>
+                        <td>{domainLabel(exercise.subskill)}</td>
+                        <td>{exercise.estimatedMinutes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {!isLoading && activeView === "adaptive" && (
           <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
             <h2 className="mb-1 text-xl font-semibold">{t("admin.adaptiveDecisions")}</h2>
             <p className="mb-4 text-gray-500 dark:text-gray-400">

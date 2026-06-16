@@ -134,7 +134,10 @@ const getSessionAccount = (token) => {
 };
 
 const requireAuth = (req, res, next) => {
-  const account = getSessionAccount(req.cookies[SESSION_COOKIE]);
+  const bearerToken = req.headers.authorization?.startsWith("Bearer ")
+    ? req.headers.authorization.slice("Bearer ".length)
+    : null;
+  const account = getSessionAccount(bearerToken || req.cookies[SESSION_COOKIE]);
   if (!account) {
     res.status(401).json({ error: "not_authenticated" });
     return;
@@ -310,7 +313,7 @@ app.post("/api/auth/login", (req, res) => {
     sameSite: "lax",
     maxAge: 7 * DAY_MS,
   });
-  res.json({ account: publicAccount(account) });
+  res.json({ account: publicAccount(account), sessionToken: token });
 });
 
 app.post("/api/auth/logout", requireAuth, (req, res) => {
@@ -369,6 +372,18 @@ app.post("/api/exercises", requireAuth, requireRoles("platform_admin"), (req, re
      VALUES (@id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea, @subskill, @resourceId, @estimatedMinutes)`
   ).run(exercise);
   res.status(201).json({ exercise });
+});
+
+app.put("/api/exercises/:exerciseId", requireAuth, requireRoles("platform_admin"), (req, res) => {
+  const exercise = { ...req.body, id: req.params.exerciseId };
+  db.prepare(
+    `UPDATE exercises
+     SET title=@title, title_key=@titleKey, sequence=@sequence, cefr_level=@cefrLevel,
+       difficulty=@difficulty, skill_area=@skillArea, subskill=@subskill,
+       resource_id=@resourceId, estimated_minutes=@estimatedMinutes
+     WHERE id=@id`
+  ).run(exercise);
+  res.json({ exercise });
 });
 
 app.post("/api/learning-events", requireAuth, (req, res) => {
