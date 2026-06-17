@@ -84,6 +84,10 @@ _Avoid_: Exercise, task
 A resource that is visible to learners in resource browsing and can be recommended or linked from learning paths according to learner profile fit.
 _Avoid_: Draft resource, admin-only resource, uploaded file
 
+**Resource Attachment**:
+A typed URL or path reference attached to a resource, such as a PDF, audio file, video, image, link, or text body that learners can consume.
+_Avoid_: Uploaded file, exercise asset, resource type
+
 **Exercise**:
 An activity that produces evidence about learner performance, such as a quiz, flashcard review, listening answer, writing submission, translation task, or pronunciation task.
 _Avoid_: Resource, content
