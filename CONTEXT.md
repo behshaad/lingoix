@@ -93,8 +93,20 @@ The role-scoped management and reporting area for learners, students, learning p
 _Avoid_: Dashboard when referring to platform-wide management
 
 **Language Performance**:
-A learner's measurable ability across skill areas, including vocabulary recall, grammar accuracy, listening comprehension, reading comprehension, writing quality, response speed, consistency over time, and error-pattern reduction.
+A learner's measurable ability across skill areas, including vocabulary recall, grammar accuracy, listening comprehension, reading comprehension, writing quality, translation direction, speaking ability, response speed, consistency over time, and error-pattern reduction.
 _Avoid_: Score, progress, grade
+
+**Language Performance Profile**:
+A visual or summarized view of a learner's language performance across multiple skill areas. It can be shown to learners for self-awareness and to teachers or admins when reviewing a student in an institutional context.
+_Avoid_: Adaptive evaluation metrics, grade chart, student ability score
+
+**Conversation Practice**:
+A speaking exercise where a learner responds to prompts within a practical topic, such as greetings, food, entertainment, travel, or daily life. Conversation practice can support speaking ability before pronunciation analysis is introduced.
+_Avoid_: Pronunciation analysis, audio scoring, speaking test
+
+**Conversation Practice Exercise**:
+An exercise in the exercise bank that presents a topic-based conversation prompt and collects a learner response as evidence for speaking ability.
+_Avoid_: Writing prompt, pronunciation exercise, speaking test
 
 **CEFR Level**:
 The learner's broad language level using the Common European Framework of Reference scale: A1, A2, B1, B2, C1, or C2. CEFR level is not the same as language performance; a learner can have uneven performance across skills within one level.
