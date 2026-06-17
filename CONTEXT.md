@@ -20,6 +20,10 @@ _Avoid_: Signup, account setup, student onboarding
 An authenticated learner account that does not yet have its required learner profile and must complete learner profile setup before accessing learner routes that depend on learning data.
 _Avoid_: Guest, logged-out user, broken learner
 
+**Learner Entry Intent**:
+The learner's intended destination when they enter the account and profile setup flow, such as starting free into the dashboard or viewing their learning path after setup.
+_Avoid_: Button action, redirect flag, generic onboarding source
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
