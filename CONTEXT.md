@@ -16,6 +16,10 @@ _Avoid_: Account, user profile, student profile
 The required onboarding step where a new learner provides enough language background, CEFR level, and goal information for Lingoix to create the learner profile before dashboard access.
 _Avoid_: Signup, account setup, student onboarding
 
+**Profile-Incomplete Learner Account**:
+An authenticated learner account that does not yet have its required learner profile and must complete learner profile setup before accessing learner routes that depend on learning data.
+_Avoid_: Guest, logged-out user, broken learner
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
