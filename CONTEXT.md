@@ -12,6 +12,10 @@ _Avoid_: Student, user
 The learning identity attached to a learner account, containing the learner's goals, CEFR level, language background, learning path, language performance, and adaptive-learning state.
 _Avoid_: Account, user profile, student profile
 
+**Learner Profile Setup**:
+The required onboarding step where a new learner provides enough language background, CEFR level, and goal information for Lingoix to create the learner profile before dashboard access.
+_Avoid_: Signup, account setup, student onboarding
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
