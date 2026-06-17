@@ -80,6 +80,18 @@ _Avoid_: Evidence snapshot, debug reason, reviewer evidence
 The adaptive decision evidence captured at the moment a proposed adaptive decision is created, so reviewers can see what the system knew when it made the proposal.
 _Avoid_: Live evidence, debug snapshot, audit log
 
+**Adaptive Evaluation Metrics**:
+Operational measures used to inspect adaptive learning behavior, such as proposed-decision approval rate, scoring reliability, learner improvement after targeted exercise insertion, time-to-mastery proxies, and exercise effectiveness. These metrics support research methodology but are not proof that the adaptive model is effective without a study design and real research data.
+_Avoid_: Research validation, proof, model accuracy
+
+**Scoring Reliability**:
+The confidence that an exercise's scoring rule provides useful evidence for adaptive learning. Scoring reliability is not the same as educational correctness or teacher assessment.
+_Avoid_: Correctness, grading accuracy, assessment validity
+
+**Time-to-Mastery Proxy**:
+An operational estimate of how many learning events or days it takes for a learner to show stable recent performance in a skill or subskill. It is a proxy for mastery, not proof of mastery.
+_Avoid_: Mastery, final proficiency, CEFR achievement
+
 **Synthetic Learner Dataset**:
 Generated learner profiles, simulated learning behavior, learning events, error patterns, adaptive decisions, and progress states used for development and demos before real learner data exists. Synthetic data can support product development, but it is not evidence that an adaptive model is accurate.
 _Avoid_: Real data, training data, research data
