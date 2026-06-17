@@ -65,7 +65,7 @@ The initial learning domain for Lingoix, focused on Persian-speaking learners st
 _Avoid_: Generic language learning when referring to the first dataset
 
 **Admin Panel**:
-The management and reporting area for learners, students, learning paths, learning events, skill weaknesses, error patterns, targeted exercises, adaptive decisions, resources, exercises, teachers, schools, and performance summaries.
+The role-scoped management and reporting area for learners, students, learning paths, learning events, skill weaknesses, error patterns, targeted exercises, adaptive decisions, resources, exercises, teachers, schools, and performance summaries.
 _Avoid_: Dashboard when referring to platform-wide management
 
 **Language Performance**:
