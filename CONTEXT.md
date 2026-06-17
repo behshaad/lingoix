@@ -8,6 +8,10 @@ Lingoix is a language-learning platform centered on adaptive learning, learner p
 A person whose language-learning path is personalized based on their behavior, performance, weaknesses, and progress.
 _Avoid_: Student, user
 
+**Learner Profile**:
+The learning identity attached to a learner account, containing the learner's goals, CEFR level, language background, learning path, language performance, and adaptive-learning state.
+_Avoid_: Account, user profile, student profile
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
