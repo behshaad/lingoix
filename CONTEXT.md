@@ -52,9 +52,29 @@ _Avoid_: Error, mistake, wrong answer
 An exercise selected or generated specifically to address a learner's current skill weakness, using recent learning events and error patterns. A targeted exercise is matched to the weakness; it is not necessarily easier.
 _Avoid_: Practice, task, assignment
 
+**Targeted Exercise Insertion**:
+The act of adding targeted exercises to a learner's learning path to address a specific skill weakness.
+_Avoid_: Assignment, task insertion, generic practice
+
 **Adaptive Decision**:
 A system decision that changes a learner's learning path, difficulty, exercise type, review schedule, or feedback based on learning events and inferred skill weaknesses.
 _Avoid_: Recommendation, adjustment, personalization
+
+**Proposed Adaptive Decision**:
+A system-suggested adaptive decision that has not yet changed the learner's learning path and requires review before it can be applied.
+_Avoid_: Active decision, applied decision
+
+**Adaptive Decision Review**:
+The teacher or school-admin evaluation of a proposed adaptive decision, resulting in approval, rejection, or an override before the decision is applied.
+_Avoid_: Audit, status update, teacher review queue
+
+**Adaptive Decision Evidence**:
+The learning events, error patterns, response speed, hint usage, retries, and targeted-exercise matches used to justify a proposed adaptive decision.
+_Avoid_: Explanation, metadata, debug data
+
+**Evidence Snapshot**:
+The adaptive decision evidence captured at the moment a proposed adaptive decision is created, so reviewers can see what the system knew when it made the proposal.
+_Avoid_: Live evidence, debug snapshot, audit log
 
 **Synthetic Learner Dataset**:
 Generated learner profiles, simulated learning behavior, learning events, error patterns, adaptive decisions, and progress states used for development and demos before real learner data exists. Synthetic data can support product development, but it is not evidence that an adaptive model is accurate.
