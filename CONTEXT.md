@@ -72,6 +72,10 @@ _Avoid_: Audit, status update, teacher review queue
 The learning events, error patterns, response speed, hint usage, retries, and targeted-exercise matches used to justify a proposed adaptive decision.
 _Avoid_: Explanation, metadata, debug data
 
+**Adaptive Decision Explanation**:
+A plain-language learner-facing summary of why an approved adaptive decision affected the learner's path, without exposing raw evidence snapshots or review internals.
+_Avoid_: Evidence snapshot, debug reason, reviewer evidence
+
 **Evidence Snapshot**:
 The adaptive decision evidence captured at the moment a proposed adaptive decision is created, so reviewers can see what the system knew when it made the proposal.
 _Avoid_: Live evidence, debug snapshot, audit log
