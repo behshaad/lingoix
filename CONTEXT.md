@@ -80,6 +80,10 @@ _Avoid_: Level when discussing skill-specific performance
 Learning material the learner consumes, such as a PDF, audio file, video, vocabulary list, or grammar explanation.
 _Avoid_: Exercise, task
 
+**Published Resource**:
+A resource that is visible to learners in resource browsing and can be recommended or linked from learning paths according to learner profile fit.
+_Avoid_: Draft resource, admin-only resource, uploaded file
+
 **Exercise**:
 An activity that produces evidence about learner performance, such as a quiz, flashcard review, listening answer, writing submission, translation task, or pronunciation task.
 _Avoid_: Resource, content
