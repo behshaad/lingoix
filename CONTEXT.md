@@ -9,7 +9,7 @@ A person whose language-learning path is personalized based on their behavior, p
 _Avoid_: Student, user
 
 **Learner Profile**:
-The learning identity attached to a learner account, containing the learner's goals, CEFR level, language background, learning path, language performance, and adaptive-learning state.
+The learning identity attached to a learner account, containing the learner's goals, CEFR level, language background, learning path, language performance, and adaptive-learning state. In the current product scope, each learner account has exactly one learner profile.
 _Avoid_: Account, user profile, student profile
 
 **Learner Profile Setup**:
