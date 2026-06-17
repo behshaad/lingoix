@@ -92,6 +92,10 @@ _Avoid_: Uploaded file, exercise asset, resource type
 An activity that produces evidence about learner performance, such as a quiz, flashcard review, listening answer, writing submission, translation task, or pronunciation task.
 _Avoid_: Resource, content
 
+**Exercise Interaction Type**:
+The learner-facing response format of an exercise, such as multiple choice, flashcard, listening check, writing prompt, or conversation practice.
+_Avoid_: Resource type, skill area, exercise category
+
 **Exercise Bank**:
 A structured collection of exercises tagged by CEFR level, skill, subskill, difficulty, and source resource. Targeted exercises should be selected from the exercise bank before dynamic generation is introduced.
 _Avoid_: Dataset, question list, content bank
