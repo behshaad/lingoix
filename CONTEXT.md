@@ -36,6 +36,10 @@ _Avoid_: Roadmap, training structure, educational structure
 One structured step inside a learner's learning path, such as a lesson, exercise, review, assessment, or targeted exercise insertion, with a status that supports roadmap progress.
 _Avoid_: Path string, roadmap card, task
 
+**Path Progress**:
+The learner's completion through their learning path based on finished learning path items. Path progress is separate from language performance and exercise accuracy.
+_Avoid_: Accuracy, score, language performance
+
 **Roadmap**:
 The visual representation of a learner's learning path.
 _Avoid_: Learning Path when referring only to the UI
