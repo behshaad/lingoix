@@ -32,6 +32,10 @@ _Avoid_: Learner when discussing class administration
 The ordered and adjustable sequence of lessons, exercises, reviews, and assessments assigned to a learner.
 _Avoid_: Roadmap, training structure, educational structure
 
+**Learning Path Item**:
+One structured step inside a learner's learning path, such as a lesson, exercise, review, assessment, or targeted exercise insertion, with a status that supports roadmap progress.
+_Avoid_: Path string, roadmap card, task
+
 **Roadmap**:
 The visual representation of a learner's learning path.
 _Avoid_: Learning Path when referring only to the UI
