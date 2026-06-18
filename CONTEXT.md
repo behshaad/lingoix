@@ -52,6 +52,10 @@ _Avoid_: Today's path, assignment, targeted exercise insertion
 The visual representation of a learner's learning path.
 _Avoid_: Learning Path when referring only to the UI
 
+**Gamified Roadmap**:
+A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
+_Avoid_: Dashboard, generic course list, lesson menu
+
 **Learning Event**:
 A timestamped record of one meaningful learner action, such as answering a question, requesting a hint, replaying audio, searching a word, submitting writing, or completing an exercise.
 _Avoid_: Log, activity, interaction data
