@@ -6,6 +6,7 @@ const errorTypesBySkill = {
   "listening-comprehension": "listening misrecognition",
   "writing-quality": "spelling error",
   "translation-direction": "translation direction error",
+  "speaking-ability": "conversation response error",
 };
 
 export const loadPracticeExercises = async (skillArea) => {
@@ -49,5 +50,6 @@ export const choicesForExercise = (exercise) => {
 
 export const eventTypeForInteraction = (exercise) => {
   if (exercise.interactionType === "writing_prompt") return "writing_submitted";
+  if (exercise.interactionType === "conversation_practice") return "conversation_submitted";
   return "answer_submitted";
 };

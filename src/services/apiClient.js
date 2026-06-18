@@ -34,6 +34,17 @@ export const apiClient = {
     return data;
   },
 
+  async signup(email, password) {
+    const data = await request("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    if (data.sessionToken) {
+      localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
+    }
+    return data;
+  },
+
   async logout() {
     try {
       return await request("/auth/logout", { method: "POST" });
@@ -52,6 +63,13 @@ export const apiClient = {
 
   learner(learnerId) {
     return request(`/learners/${learnerId}`);
+  },
+
+  createLearnerProfile(profile) {
+    return request("/learners/profile", {
+      method: "POST",
+      body: JSON.stringify(profile),
+    });
   },
 
   resources() {
@@ -94,14 +112,18 @@ export const apiClient = {
     return request("/reports/platform");
   },
 
+  adaptiveMetrics() {
+    return request("/reports/adaptive-metrics");
+  },
+
   adaptiveDecisions() {
     return request("/adaptive-decisions");
   },
 
-  reviewAdaptiveDecision(decisionId, status, teacherNote) {
+  reviewAdaptiveDecision(decisionId, status, teacherNote, options = {}) {
     return request(`/adaptive-decisions/${decisionId}/review`, {
       method: "PUT",
-      body: JSON.stringify({ status, teacherNote }),
+      body: JSON.stringify({ status, teacherNote, ...options }),
     });
   },
 

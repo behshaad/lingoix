@@ -68,6 +68,17 @@ const defaultExerciseContent = (exercise) => {
     };
   }
 
+  if (exercise.skillArea === "speaking-ability") {
+    return {
+      interactionType: "conversation_practice",
+      prompt: `Answer a short German conversation prompt about ${exercise.subskill}.`,
+      expectedAnswer: "Respond with a relevant German phrase or short sentence.",
+      choices: [],
+      scoringRule: { type: "contains_keywords", keywords: [] },
+      supportText: "Focus on useful conversation language; pronunciation analysis will come later.",
+    };
+  }
+
   if (exercise.skillArea === "translation-direction") {
     return {
       interactionType: "flashcard",
@@ -113,6 +124,12 @@ const ensureContentColumns = () => {
     ["response_value", "TEXT"],
     ["score", "REAL"],
   ]);
+  ensureColumns("adaptive_decisions", [
+    ["evidence_snapshot", "TEXT NOT NULL DEFAULT '{}'"],
+    ["override_targeted_exercise_ids", "TEXT NOT NULL DEFAULT '[]'"],
+    ["priority", "TEXT NOT NULL DEFAULT 'medium'"],
+    ["applied_at", "TEXT"],
+  ]);
 };
 
 const backfillExerciseContent = () => {
@@ -155,6 +172,93 @@ const backfillExerciseContent = () => {
   });
 
   transaction();
+};
+
+const ensureSpeakingSeedData = () => {
+  const resource = {
+    id: "resource-conversation-topics",
+    title: "A1 Conversation Topics",
+    type: "conversation",
+    cefrLevel: "A1",
+    skillArea: "speaking-ability",
+    sourceUrl: "",
+    description: "Topic-based speaking prompts for greetings, food, entertainment, and daily life.",
+  };
+  db.prepare(`
+    INSERT OR IGNORE INTO resources (
+      id, title, type, cefr_level, skill_area, source_url, description
+    ) VALUES (
+      @id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description
+    )
+  `).run(resource);
+
+  const exercises = [
+    {
+      id: "exercise-speaking-greetings",
+      title: "Conversation greetings 1",
+      titleKey: "conversationGreetings",
+      sequence: 1,
+      cefrLevel: "A1",
+      difficulty: "easy",
+      skillArea: "speaking-ability",
+      subskill: "greetings",
+      resourceId: resource.id,
+      estimatedMinutes: 6,
+      interactionType: "conversation_practice",
+      prompt: "A classmate says: Hallo! Wie heisst du? Answer in German.",
+      expectedAnswer: "Hallo, ich heisse ...",
+      choices: [],
+      scoringRule: { type: "contains_keywords", keywords: ["ich", "heisse"] },
+      supportText: "Use a short greeting and introduce yourself.",
+    },
+    {
+      id: "exercise-speaking-food",
+      title: "Conversation food 1",
+      titleKey: "conversationFood",
+      sequence: 1,
+      cefrLevel: "A1",
+      difficulty: "easy",
+      skillArea: "speaking-ability",
+      subskill: "food",
+      resourceId: resource.id,
+      estimatedMinutes: 8,
+      interactionType: "conversation_practice",
+      prompt: "Answer in German: Was isst du gern?",
+      expectedAnswer: "Ich esse gern ...",
+      choices: [],
+      scoringRule: { type: "contains_keywords", keywords: ["ich", "esse", "gern"] },
+      supportText: "Name one food and keep the sentence conversational.",
+    },
+  ];
+
+  const insertExercise = db.prepare(`
+    INSERT OR IGNORE INTO exercises (
+      id, title, title_key, sequence, cefr_level, difficulty, skill_area,
+      subskill, resource_id, estimated_minutes, interaction_type, prompt,
+      expected_answer, choices, scoring_rule, support_text
+    ) VALUES (
+      @id, @title, @titleKey, @sequence, @cefrLevel, @difficulty, @skillArea,
+      @subskill, @resourceId, @estimatedMinutes, @interactionType, @prompt,
+      @expectedAnswer, @choices, @scoringRule, @supportText
+    )
+  `);
+
+  const transaction = db.transaction(() => {
+    exercises.forEach((exercise) => insertExercise.run({
+      ...exercise,
+      choices: JSON.stringify(exercise.choices),
+      scoringRule: JSON.stringify(exercise.scoringRule),
+    }));
+  });
+  transaction();
+};
+
+const normalizeAdaptiveDecisionStatuses = () => {
+  db.prepare(`
+    UPDATE adaptive_decisions
+    SET status = 'proposed'
+    WHERE status IN ('active', 'teacher_review')
+  `).run();
 };
 
 const seedAccounts = () => {
@@ -267,10 +371,10 @@ const seedDomainData = () => {
   const insertDecision = db.prepare(`
     INSERT INTO adaptive_decisions (
       id, learner_id, type, status, reason, skill_area, subskill,
-      targeted_exercise_ids, created_at
+      targeted_exercise_ids, evidence_snapshot, priority, created_at
     ) VALUES (
       @id, @learnerId, @type, @status, @reason, @skillArea, @subskill,
-      @targetedExerciseIds, @createdAt
+      @targetedExerciseIds, '{}', 'medium', @createdAt
     )
   `);
 
@@ -298,6 +402,7 @@ const seedDomainData = () => {
       }));
       learner.adaptiveDecisions.forEach((decision) => insertDecision.run({
         ...decision,
+        status: decision.status === "active" || decision.status === "teacher_review" ? "proposed" : decision.status,
         targetedExerciseIds: JSON.stringify(decision.targetedExerciseIds),
       }));
     });
@@ -311,6 +416,8 @@ const initializeDatabase = () => {
   ensureContentColumns();
   seedAccounts();
   seedDomainData();
+  ensureSpeakingSeedData();
+  normalizeAdaptiveDecisionStatuses();
   backfillExerciseContent();
 };
 

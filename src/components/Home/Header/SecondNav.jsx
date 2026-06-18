@@ -1,6 +1,7 @@
 
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"; // وارد کردن Link از react-router-dom
+import { saveLearnerEntryIntent } from "../../../services/authSession";
 
 const SecondNav = () => {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ const SecondNav = () => {
               <div className="hidden lg:flex lg:items-center lg:space-x-8">
                 <Link
                   to="/signup" // مسیر ثبت‌نام
+                  onClick={() => saveLearnerEntryIntent("/dashboard")}
                   className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   {t("createAccount")}

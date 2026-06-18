@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { apiClient } from "../../services/apiClient";
+import { saveAccountSession } from "../../services/authSession";
 
 
 const SignUp = () => {
@@ -49,17 +51,20 @@ const SignUp = () => {
     return isValid;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validateForm()) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email,
-          name: email.split("@")[0],
-          profilePic: `https://i.pravatar.cc/150?u=${email}`,
-        })
-      );
-      navigate("/dashboard");
+      try {
+        const { account } = await apiClient.signup(email, password);
+        saveAccountSession(account);
+        navigate("/profile-setup");
+      } catch (error) {
+        setErrors({
+          email:
+            error.message === "account_exists"
+              ? t("auth.accountExists", "An account already exists for this email.")
+              : t("auth.signupFailed", "Could not create your account."),
+        });
+      }
     }
   };
 
@@ -142,7 +147,7 @@ const SignUp = () => {
                 {t("auth.goToLogin")}
               </a> */}
               <Link to="/login" className="font-medium hover:underline">
-                وارد شوید
+                {t("auth.goToLogin")}
               </Link>
             </span>
           </div>

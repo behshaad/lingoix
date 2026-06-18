@@ -6,7 +6,7 @@
   "resources": "Resources",
   "welcome_dashboard": "Welcome to your dashboard!",
   "title": "Courses In Progress",
-  "moto": "Explore all artwork",
+  "moto": "View learning path",
   "lastActive": "Last Active",
   "progress": "Progress",
   "continue": "Continue Learning",
@@ -74,6 +74,42 @@
     "explore": "Explore Roadmap"
   },
   "features": "Our Features",
+  "featureStats": {
+    "skillAxes": "Skill axes",
+    "exercises": "Exercises",
+    "demoLearners": "Demo learners",
+    "roles": "Account roles"
+  },
+  "productSection": {
+    "title": "A learning system built around evidence",
+    "subtitle": "Lingoix connects resources, practice, learner performance, and teacher review into one adaptive learning workflow.",
+    "items": {
+      "path": {
+        "title": "Learning Path",
+        "description": "Learners follow an adjustable path shaped by goals, CEFR level, practice results, and targeted exercise insertions."
+      },
+      "profile": {
+        "title": "Performance Profile",
+        "description": "Vocabulary, grammar, listening, reading, writing, translation, and speaking are visible in one language profile."
+      },
+      "resources": {
+        "title": "Resource Library",
+        "description": "Books, audio, grammar notes, vocabulary lists, and conversation topics support the learner's path."
+      },
+      "exercises": {
+        "title": "Exercise Bank",
+        "description": "Structured exercises collect Learning Events through flashcards, choices, listening, writing, and conversation practice."
+      },
+      "review": {
+        "title": "Teacher Review",
+        "description": "Teachers and admins review proposed adaptive decisions with evidence before targeted exercises are applied."
+      },
+      "conversation": {
+        "title": "Conversation Practice",
+        "description": "Topic-based prompts build speaking ability now, with pronunciation analysis ready to become a later layer."
+      }
+    }
+  },
   "featureCards": [
     {
       "title": "Interactive Lessons",
@@ -165,7 +201,30 @@
     "passwordRequired": "Password cannot be empty.",
     "passwordMin": "Password must be at least 6 characters.",
     "passwordMismatch": "Passwords do not match.",
-    "invalidCredentials": "Invalid email or password."
+    "invalidCredentials": "Invalid email or password.",
+    "googleLogin": "Continue with Google",
+    "googleComingSoon": "Google sign-in will be connected soon."
+  },
+  "learningPath": {
+    "eyebrow": "Learning path",
+    "title": "Your path from first lesson to confident communication",
+    "subtitle": "Lingoix starts with your goals, builds a language performance profile, and adds targeted exercises when Learning Events show a skill weakness.",
+    "steps": {
+      "profile": "Create your learner profile",
+      "resources": "Study matched resources",
+      "practice": "Practice through the Exercise Bank",
+      "profileChart": "Watch your skill profile change",
+      "conversation": "Build conversation ability",
+      "review": "Get reviewed targeted practice"
+    },
+    "details": {
+      "profile": "Choose your target language, current CEFR level, and learning goal.",
+      "resources": "Use books, audio, grammar notes, vocabulary lists, and conversation topics.",
+      "practice": "Complete flashcards, multiple choice, listening checks, writing prompts, and conversation practice.",
+      "profileChart": "See vocabulary, grammar, listening, reading, writing, translation, and speaking in one profile.",
+      "conversation": "Answer practical topic prompts first; audio pronunciation analysis can come later.",
+      "review": "Teachers and admins can approve, reject, or override proposed targeted exercise insertions."
+    }
   },
   "dictionary": {
     "sourceAuto": "Auto Detect",
@@ -241,6 +300,8 @@
     "learningPath": "Learning Path",
     "languagePerformance": "Language Performance",
     "adaptiveDecisions": "Adaptive Decisions",
+    "performanceProfile": "Language Performance Profile",
+    "loadFailed": "Could not load your dashboard.",
     "complete": "{{value}}% complete",
     "accuracy": "{{value}}% accuracy",
     "averageResponse": "{{value}}s average response",
@@ -267,7 +328,7 @@
   "admin": {
     "title": "Adaptive learning operations",
     "eyebrow": "Platform Admin",
-    "description": "Manage synthetic learners, inspect language performance, review targeted exercises, and monitor the rules-first adaptive system.",
+    "description": "Manage learners, inspect language performance, review targeted exercise insertions, and monitor the rules-first adaptive system.",
     "syntheticNotice": "Synthetic dataset only. Not research validation data.",
     "overview": "Overview",
     "learners": "Learners",
@@ -275,7 +336,7 @@
     "content": "Resources",
     "exercises": "Exercises",
     "adaptive": "Adaptive",
-    "syntheticLearners": "Synthetic learners",
+    "syntheticLearners": "Learners",
     "learningEvents": "Learning events",
     "resources": "Resources",
     "averageAccuracy": "Average accuracy",
@@ -302,7 +363,7 @@
     "skill": "Skill",
     "subskill": "Subskill",
     "minutes": "Minutes",
-    "adaptiveDescription": "Rules-first remediation and practice boosts generated from synthetic learning events.",
+    "adaptiveDescription": "Review proposed adaptive decisions generated from Learning Events and evidence snapshots.",
     "learner": "Learner",
     "type": "Type",
     "reason": "Reason",
@@ -313,8 +374,29 @@
     "classesCount": "{{count}} classes",
     "decisionsCount": "{{count}} adaptive decisions",
     "exerciseCount": "{{count}} tagged exercises",
-    "averageProgress": "{{value}}% average progress"
-    ,"apiLoginRequired": "Please log in with a backend account first.",
+    "averageProgress": "{{value}}% average progress",
+    "proposedDecisions": "Proposed decisions",
+    "reviewedDecisions": "{{count}} reviewed",
+    "approvalRate": "Approval rate",
+    "predictionAccuracy": "Approval is the current prediction-accuracy proxy.",
+    "improvementRate": "Improvement rate",
+    "afterInsertion": "After targeted exercise insertion",
+    "scoringReliability": "Scoring reliability",
+    "incorrectEvents": "Incorrect events",
+    "supportingSignals": "Supporting signals",
+    "hintsUsed": "Hints used",
+    "retries": "Retries",
+    "evidenceSnapshot": "Evidence snapshot",
+    "priority": "Priority",
+    "teacherNote": "Reviewer note",
+    "approve": "Approve",
+    "override": "Override",
+    "reject": "Reject",
+    "reviewSaved": "Adaptive decision review saved.",
+    "conversationPrompt": "Conversation prompt",
+    "expectedResponse": "Expected response",
+    "conversationKeywords": "Conversation keywords",
+    "apiLoginRequired": "Please log in with a backend account first.",
     "resourceSaved": "Resource saved.",
     "resourceCreated": "Resource created.",
     "exerciseSaved": "Exercise saved.",
@@ -346,12 +428,14 @@
     "reading-comprehension": "Reading comprehension",
     "writing-quality": "Writing quality",
     "translation-direction": "Translation direction",
+    "speaking-ability": "Speaking ability",
     "remediation": "Remediation",
     "practice_boost": "Practice boost",
     "flashcard": "Flashcard",
     "multiple_choice": "Multiple choice",
     "writing_prompt": "Writing prompt",
     "listening_check": "Listening check",
+    "conversation_practice": "Conversation practice",
     "self_assessed": "Self-assessed",
     "exact_choice": "Exact choice",
     "exact_text": "Exact text",
@@ -359,6 +443,10 @@
     "min_length_keywords": "Minimum length + keywords",
     "active": "Active",
     "teacher_review": "Teacher review",
+    "proposed": "Proposed",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "overridden": "Overridden",
     "correct": "correct",
     "needsReview": "needs review",
     "answer_submitted": "answer submitted",
@@ -366,6 +454,7 @@
     "audio_replayed": "audio replayed",
     "word_searched": "word searched",
     "writing_submitted": "writing submitted",
+    "conversation_submitted": "conversation submitted",
     "learner": "Learner",
     "teacher": "Teacher",
     "school_admin": "School Admin",
@@ -393,8 +482,13 @@
     "German to Persian": "German to Persian",
     "Persian to German": "Persian to German",
     "false friends": "false friends",
+    "greetings": "greetings",
+    "food": "food",
+    "entertainment": "entertainment",
+    "daily life": "daily life",
     "high": "high",
-    "medium": "medium"
+    "medium": "medium",
+    "low": "low"
   },
   "languages": [
     {

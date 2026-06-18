@@ -9,6 +9,17 @@ const app = express();
 const PORT = process.env.API_PORT || 4000;
 const SESSION_COOKIE = "lingoix_session";
 const DAY_MS = 24 * 60 * 60 * 1000;
+const SKILL_AREAS = [
+  "vocabulary-recall",
+  "grammar-accuracy",
+  "listening-comprehension",
+  "reading-comprehension",
+  "writing-quality",
+  "translation-direction",
+  "speaking-ability",
+];
+const REVIEW_STATUSES = ["approved", "rejected", "overridden"];
+const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 initializeDatabase();
 
@@ -50,6 +61,7 @@ const normalizeScoringRule = (rule, interactionType) => {
     return { type: "min_length_keywords", minLength: 80, keywords: [] };
   }
   if (interactionType === "listening_check") return { type: "exact_text" };
+  if (interactionType === "conversation_practice") return { type: "contains_keywords", keywords: [] };
   return { type: "self_assessed" };
 };
 
@@ -202,9 +214,13 @@ const serializeDecision = (row) => ({
   skillArea: row.skill_area,
   subskill: row.subskill,
   targetedExerciseIds: jsonParse(row.targeted_exercise_ids, []),
+  evidenceSnapshot: jsonParse(row.evidence_snapshot, {}),
+  overrideTargetedExerciseIds: jsonParse(row.override_targeted_exercise_ids, []),
+  priority: row.priority,
   teacherNote: row.teacher_note,
   reviewedBy: row.reviewed_by,
   reviewedAt: row.reviewed_at,
+  appliedAt: row.applied_at,
   createdAt: row.created_at,
 });
 
@@ -242,6 +258,38 @@ const requireRoles = (...roles) => (req, res, next) => {
   next();
 };
 
+const normalizeEmail = (email) => String(email || "").trim().toLowerCase();
+
+const isValidEmail = (email) => /^\S+@\S+\.\S+$/.test(email);
+
+const createSession = (account, res) => {
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 7 * DAY_MS).toISOString();
+  db.prepare("INSERT INTO sessions (token, account_id, expires_at) VALUES (?, ?, ?)").run(
+    token,
+    account.id,
+    expiresAt
+  );
+
+  res.cookie(SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 7 * DAY_MS,
+  });
+
+  return token;
+};
+
+const buildInitialPerformance = () => ({
+  "vocabulary-recall": 0,
+  "grammar-accuracy": 0,
+  "listening-comprehension": 0,
+  "reading-comprehension": 0,
+  "writing-quality": 0,
+  "translation-direction": 0,
+  "speaking-ability": 0,
+});
+
 const learnerScopeClause = (account) => {
   if (account.role === "platform_admin") return { sql: "", params: [] };
   if (account.role === "school_admin") return { sql: "WHERE school = ?", params: [account.school_name] };
@@ -278,11 +326,15 @@ const getLearnerBundle = (learnerId) => {
     .prepare("SELECT * FROM adaptive_decisions WHERE learner_id = ? ORDER BY created_at DESC")
     .all(learnerId)
     .map(serializeDecision);
-  return {
+  const bundle = {
     ...learner,
     skillWeaknesses,
     learningEvents,
     adaptiveDecisions,
+  };
+  return {
+    ...bundle,
+    dashboardSummary: buildDashboardSummary(bundle),
   };
 };
 
@@ -337,32 +389,252 @@ const getPlatformReport = (account) => {
   };
 };
 
+const scoringReliabilityForRule = (rule, exercise) => {
+  const type = rule?.type || normalizeScoringRule(rule, exercise?.interactionType).type;
+  if ((type === "exact_choice" || type === "exact_text") && exercise?.expectedAnswer) return "high";
+  if (type === "contains_keywords") return normalizeChoices(rule?.keywords || []).length > 0 ? "medium" : "low";
+  if (type === "min_length_keywords") return normalizeChoices(rule?.keywords || []).length > 0 ? "medium" : "low";
+  return "low";
+};
+
+const average = (items, selector) => {
+  if (!items.length) return 0;
+  return Math.round(items.reduce((sum, item) => sum + selector(item), 0) / items.length);
+};
+
+const buildLanguagePerformanceProfile = (learner, events = []) =>
+  SKILL_AREAS.map((skillArea) => {
+    const skillEvents = events.filter((event) => event.skillArea === skillArea).slice(0, 12);
+    const fallback = learner.performance?.[skillArea] ?? null;
+    if (skillEvents.length < 3) {
+      return {
+        skillArea,
+        value: fallback,
+        eventCount: skillEvents.length,
+        source: fallback === null ? "not_enough_evidence" : "seeded_fallback",
+      };
+    }
+    const eventValue = average(skillEvents, (event) => {
+      if (typeof event.score === "number") return event.score * 100;
+      return event.correct ? 100 : 0;
+    });
+    return {
+      skillArea,
+      value: eventValue,
+      eventCount: skillEvents.length,
+      source: "learning_events",
+    };
+  });
+
+const deriveErrorPatterns = (events) => {
+  const grouped = events.reduce((groups, event) => {
+    if (!event.errorType) return groups;
+    const key = `${event.skillArea}|${event.subskill}|${event.errorType}`;
+    groups[key] = groups[key] || {
+      skillArea: event.skillArea,
+      subskill: event.subskill,
+      errorType: event.errorType,
+      count: 0,
+      eventIds: [],
+    };
+    groups[key].count += 1;
+    groups[key].eventIds.push(event.id);
+    return groups;
+  }, {});
+  return Object.values(grouped)
+    .filter((pattern) => pattern.count >= 2)
+    .sort((a, b) => b.count - a.count);
+};
+
+const buildEvidenceSnapshot = (learnerId, skillArea, subskill, targetedExercises) => {
+  const learnerEvents = db
+    .prepare("SELECT * FROM learning_events WHERE learner_id = ? ORDER BY occurred_at DESC")
+    .all(learnerId)
+    .map(serializeEvent);
+  const matchingEvents = learnerEvents
+    .filter((event) => event.skillArea === skillArea && event.subskill === subskill)
+    .slice(0, 12);
+  const incorrectEvents = matchingEvents.filter((event) => !event.correct);
+  const supportingSignalEvents = matchingEvents.filter(
+    (event) => event.hintsUsed > 0 || event.retries > 0 || event.responseMs >= 10000
+  );
+  const learnerAverageResponseMs = average(learnerEvents, (event) => event.responseMs);
+  const responseAverageMs = average(matchingEvents, (event) => event.responseMs);
+
+  return {
+    createdAt: new Date().toISOString(),
+    trigger: {
+      incorrectCount: incorrectEvents.length,
+      supportingSignalCount: supportingSignalEvents.length,
+      threshold: "3 incorrect events or 2 incorrect events plus supporting signals",
+    },
+    eventIds: matchingEvents.map((event) => event.id),
+    events: matchingEvents.map((event) => ({
+      id: event.id,
+      type: event.type,
+      exerciseId: event.exerciseId,
+      correct: event.correct,
+      score: event.score,
+      responseMs: event.responseMs,
+      hintsUsed: event.hintsUsed,
+      retries: event.retries,
+      errorType: event.errorType,
+      occurredAt: event.occurredAt,
+    })),
+    errorPatterns: deriveErrorPatterns(matchingEvents),
+    responseSpeed: {
+      averageMs: responseAverageMs,
+      learnerAverageMs: learnerAverageResponseMs,
+      slowResponseCount: matchingEvents.filter((event) => event.responseMs > learnerAverageResponseMs * 1.2).length,
+    },
+    hintUsage: matchingEvents.reduce((sum, event) => sum + event.hintsUsed, 0),
+    retries: matchingEvents.reduce((sum, event) => sum + event.retries, 0),
+    targetedExercises: targetedExercises.map((exercise) => ({
+      id: exercise.id,
+      title: exercise.title,
+      skillArea: exercise.skillArea,
+      subskill: exercise.subskill,
+      difficulty: exercise.difficulty,
+      estimatedMinutes: exercise.estimatedMinutes,
+      matchReason: exercise.subskill === subskill ? "same subskill" : "same skill area",
+    })),
+  };
+};
+
+const buildDashboardSummary = (learner) => {
+  const recentEvents = learner.learningEvents || [];
+  const approvedDecisions = (learner.adaptiveDecisions || []).filter((decision) =>
+    ["approved", "overridden"].includes(decision.status)
+  );
+  return {
+    languagePerformanceProfile: buildLanguagePerformanceProfile(learner, recentEvents),
+    recentLearningEvents: recentEvents.slice(0, 8),
+    activeAdaptiveDecisions: approvedDecisions,
+    proposedAdaptiveDecisions: (learner.adaptiveDecisions || []).filter((decision) => decision.status === "proposed"),
+    targetedExerciseInsertions: approvedDecisions.map((decision) => ({
+      decisionId: decision.id,
+      skillArea: decision.skillArea,
+      subskill: decision.subskill,
+      targetedExerciseIds:
+        decision.status === "overridden" && decision.overrideTargetedExerciseIds.length
+          ? decision.overrideTargetedExerciseIds
+          : decision.targetedExerciseIds,
+      appliedAt: decision.appliedAt,
+    })),
+  };
+};
+
+const buildAdaptiveEvaluationMetrics = (account) => {
+  const learnerIds = getLearnerRowsForAccount(account).map((learner) => learner.id);
+  if (!learnerIds.length) {
+    return {
+      proposedDecisionCount: 0,
+      approvalRate: 0,
+      scoringReliability: [],
+      improvementRate: 0,
+      timeToMasteryProxy: [],
+      exerciseEffectiveness: [],
+    };
+  }
+  const placeholders = learnerIds.map(() => "?").join(",");
+  const decisions = db
+    .prepare(`SELECT * FROM adaptive_decisions WHERE learner_id IN (${placeholders})`)
+    .all(...learnerIds)
+    .map(serializeDecision);
+  const events = db
+    .prepare(`SELECT * FROM learning_events WHERE learner_id IN (${placeholders})`)
+    .all(...learnerIds)
+    .map(serializeEvent);
+  const exercises = db.prepare("SELECT * FROM exercises").all().map(serializeExercise);
+  const reviewed = decisions.filter((decision) => decision.reviewedAt);
+  const approved = reviewed.filter((decision) => ["approved", "overridden"].includes(decision.status));
+
+  const scoringReliabilityCounts = exercises.reduce((counts, exercise) => {
+    const reliability = scoringReliabilityForRule(exercise.scoringRule, exercise);
+    counts[reliability] = (counts[reliability] || 0) + 1;
+    return counts;
+  }, {});
+
+  const improvementSamples = approved.map((decision) => {
+    const createdAt = new Date(decision.createdAt).getTime();
+    const related = events.filter((event) => event.learnerId === decision.learnerId && event.skillArea === decision.skillArea);
+    const before = related.filter((event) => new Date(event.occurredAt).getTime() < createdAt).slice(-5);
+    const after = related.filter((event) => new Date(event.occurredAt).getTime() >= createdAt).slice(0, 5);
+    if (!before.length || !after.length) return null;
+    const beforeScore = average(before, (event) => (typeof event.score === "number" ? event.score * 100 : event.correct ? 100 : 0));
+    const afterScore = average(after, (event) => (typeof event.score === "number" ? event.score * 100 : event.correct ? 100 : 0));
+    return afterScore - beforeScore;
+  }).filter((value) => value !== null);
+
+  const timeToMasteryProxy = SKILL_AREAS.map((skillArea) => {
+    const skillEvents = events.filter((event) => event.skillArea === skillArea);
+    const learnerGroups = learnerIds.map((learnerId) => skillEvents.filter((event) => event.learnerId === learnerId));
+    const mastered = learnerGroups.filter((group) => {
+      const recent = group.slice(-5);
+      if (recent.length < 5) return false;
+      const correctRate = recent.filter((event) => event.correct).length / recent.length;
+      const scoreAverage = recent.reduce((sum, event) => sum + (typeof event.score === "number" ? event.score : event.correct ? 1 : 0), 0) / recent.length;
+      const hints = recent.reduce((sum, event) => sum + event.hintsUsed, 0);
+      const retries = recent.reduce((sum, event) => sum + event.retries, 0);
+      return correctRate >= 0.8 && scoreAverage >= 0.8 && hints <= 1 && retries <= 1;
+    });
+    return { skillArea, masteredCount: mastered.length, learnerCount: learnerGroups.filter((group) => group.length > 0).length };
+  });
+
+  const exerciseEffectiveness = exercises.slice(0, 12).map((exercise) => {
+    const exerciseEvents = events.filter((event) => event.exerciseId === exercise.id);
+    return {
+      exerciseId: exercise.id,
+      title: exercise.title,
+      skillArea: exercise.skillArea,
+      eventCount: exerciseEvents.length,
+      averageScore: average(exerciseEvents, (event) => (typeof event.score === "number" ? event.score * 100 : event.correct ? 100 : 0)),
+      reliability: scoringReliabilityForRule(exercise.scoringRule, exercise),
+    };
+  }).sort((a, b) => b.eventCount - a.eventCount);
+
+  return {
+    proposedDecisionCount: decisions.filter((decision) => decision.status === "proposed").length,
+    reviewedDecisionCount: reviewed.length,
+    approvalRate: reviewed.length ? Math.round((approved.length / reviewed.length) * 100) : 0,
+    scoringReliability: Object.entries(scoringReliabilityCounts).map(([label, count]) => ({ label, count })),
+    improvementRate: improvementSamples.length ? average(improvementSamples, (value) => value) : 0,
+    timeToMasteryProxy,
+    exerciseEffectiveness,
+  };
+};
+
 const runAdaptiveRulesForLearner = (learnerId) => {
   const rows = db
     .prepare(
-      `SELECT skill_area, subskill, COUNT(*) AS misses
+      `SELECT skill_area, subskill,
+        SUM(CASE WHEN correct = 0 THEN 1 ELSE 0 END) AS misses,
+        SUM(CASE WHEN hints_used > 0 OR retries > 0 OR response_ms >= 10000 THEN 1 ELSE 0 END) AS supporting_signals
        FROM learning_events
-       WHERE learner_id = ? AND correct = 0
+       WHERE learner_id = ?
        GROUP BY skill_area, subskill
-       HAVING misses >= 3`
+       HAVING misses >= 3 OR (misses >= 2 AND supporting_signals >= 1)`
     )
     .all(learnerId);
 
   const insertDecision = db.prepare(`
     INSERT OR IGNORE INTO adaptive_decisions (
       id, learner_id, type, status, reason, skill_area, subskill,
-      targeted_exercise_ids, created_at
+      targeted_exercise_ids, evidence_snapshot, priority, created_at
     ) VALUES (
-      @id, @learnerId, 'remediation', 'active', @reason, @skillArea, @subskill,
-      @targetedExerciseIds, @createdAt
+      @id, @learnerId, 'remediation', 'proposed', @reason, @skillArea, @subskill,
+      @targetedExerciseIds, @evidenceSnapshot, @priority, @createdAt
     )
   `);
 
   rows.forEach((row) => {
     const targeted = db
-      .prepare("SELECT id FROM exercises WHERE skill_area = ? ORDER BY estimated_minutes LIMIT 4")
-      .all(row.skill_area)
-      .map((exercise) => exercise.id);
+      .prepare("SELECT * FROM exercises WHERE skill_area = ? ORDER BY CASE WHEN subskill = ? THEN 0 ELSE 1 END, estimated_minutes LIMIT 4")
+      .all(row.skill_area, row.subskill)
+      .map(serializeExercise);
+    const targetedExerciseIds = targeted.map((exercise) => exercise.id);
+    const evidenceSnapshot = buildEvidenceSnapshot(learnerId, row.skill_area, row.subskill, targeted);
+    const priority = row.misses >= 5 || row.supporting_signals >= 4 ? "high" : row.misses >= 3 ? "medium" : "low";
 
     insertDecision.run({
       id: `${learnerId}-rule-${row.skill_area}-${row.subskill}`.replace(/\s+/g, "-"),
@@ -370,10 +642,24 @@ const runAdaptiveRulesForLearner = (learnerId) => {
       reason: `${row.misses} repeated misses in ${row.subskill}`,
       skillArea: row.skill_area,
       subskill: row.subskill,
-      targetedExerciseIds: JSON.stringify(targeted),
+      targetedExerciseIds: JSON.stringify(targetedExerciseIds),
+      evidenceSnapshot: JSON.stringify(evidenceSnapshot),
+      priority,
       createdAt: new Date().toISOString(),
     });
   });
+};
+
+const applyAdaptiveDecision = (decision) => {
+  const learner = getLearnerBundle(decision.learner_id);
+  if (!learner) return;
+  const currentPath = Array.isArray(learner.learningPath) ? learner.learningPath : [];
+  const insertionLabel = `Targeted exercise insertion: ${decision.subskill}`;
+  if (currentPath.includes(insertionLabel)) return;
+  db.prepare("UPDATE learners SET learning_path = ? WHERE id = ?").run(
+    JSON.stringify([...currentPath, insertionLabel]),
+    decision.learner_id
+  );
 };
 
 app.get("/api/health", (req, res) => {
@@ -381,31 +667,67 @@ app.get("/api/health", (req, res) => {
 });
 
 app.post("/api/auth/login", (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  const email = normalizeEmail(req.body.email);
   const account = db.prepare("SELECT * FROM accounts WHERE email = ?").get(email);
   if (!account || !bcrypt.compareSync(password || "", account.password_hash)) {
     res.status(401).json({ error: "invalid_credentials" });
     return;
   }
 
-  const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + 7 * DAY_MS).toISOString();
-  db.prepare("INSERT INTO sessions (token, account_id, expires_at) VALUES (?, ?, ?)").run(
-    token,
-    account.id,
-    expiresAt
-  );
-
-  res.cookie(SESSION_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    maxAge: 7 * DAY_MS,
-  });
+  const token = createSession(account, res);
   res.json({ account: publicAccount(account), sessionToken: token });
 });
 
+app.post("/api/auth/signup", (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = String(req.body.password || "");
+
+  if (!isValidEmail(email)) {
+    res.status(400).json({ error: "invalid_email" });
+    return;
+  }
+
+  if (password.length < 6) {
+    res.status(400).json({ error: "password_too_short" });
+    return;
+  }
+
+  const existing = db.prepare("SELECT id FROM accounts WHERE email = ?").get(email);
+  if (existing) {
+    res.status(409).json({ error: "account_exists" });
+    return;
+  }
+
+  const account = {
+    id: `account-${crypto.randomUUID()}`,
+    email,
+    passwordHash: bcrypt.hashSync(password, 10),
+    role: "learner",
+    displayName: email.split("@")[0],
+    learnerId: null,
+    teacherName: null,
+    schoolName: null,
+  };
+
+  db.prepare(`
+    INSERT INTO accounts (
+      id, email, password_hash, role, display_name, learner_id, teacher_name, school_name
+    ) VALUES (
+      @id, @email, @passwordHash, @role, @displayName, @learnerId, @teacherName, @schoolName
+    )
+  `).run(account);
+
+  const savedAccount = db.prepare("SELECT * FROM accounts WHERE id = ?").get(account.id);
+  const token = createSession(savedAccount, res);
+  res.status(201).json({ account: publicAccount(savedAccount), sessionToken: token });
+});
+
 app.post("/api/auth/logout", requireAuth, (req, res) => {
-  db.prepare("DELETE FROM sessions WHERE token = ?").run(req.cookies[SESSION_COOKIE]);
+  const bearerToken = req.headers.authorization?.startsWith("Bearer ")
+    ? req.headers.authorization.slice("Bearer ".length)
+    : null;
+  db.prepare("DELETE FROM sessions WHERE token = ?").run(bearerToken || req.cookies[SESSION_COOKIE]);
   res.clearCookie(SESSION_COOKIE);
   res.json({ ok: true });
 });
@@ -416,6 +738,75 @@ app.get("/api/auth/me", requireAuth, (req, res) => {
 
 app.get("/api/learners", requireAuth, (req, res) => {
   res.json({ learners: getLearnerRowsForAccount(req.account).map(serializeLearner) });
+});
+
+app.post("/api/learners/profile", requireAuth, requireRoles("learner"), (req, res) => {
+  if (req.account.learner_id) {
+    const learner = getLearnerBundle(req.account.learner_id);
+    res.status(409).json({ error: "profile_already_exists", learner });
+    return;
+  }
+
+  const cefrLevel = CEFR_LEVELS.includes(req.body.cefrLevel) ? req.body.cefrLevel : "A1";
+  const nativeLanguage = String(req.body.nativeLanguage || "Persian").trim() || "Persian";
+  const targetLanguage = String(req.body.targetLanguage || "German").trim() || "German";
+  const goal = String(req.body.goal || "general").trim() || "general";
+  const displayName = String(req.body.name || req.account.display_name || req.account.email.split("@")[0]).trim();
+  const learnerId = `learner-${crypto.randomUUID()}`;
+  const now = new Date().toISOString();
+  const learningPath = [
+    "Learner profile setup",
+    `${cefrLevel} orientation`,
+    "Matched resources",
+    "First practice session",
+  ];
+
+  const transaction = db.transaction(() => {
+    db.prepare(`
+      INSERT INTO learners (
+        id, name, email, cefr_level, native_language, target_language, goal,
+        class_id, class_name, teacher, school, current_lesson, learning_path,
+        performance, progress_percent, completed_exercises, accuracy, average_response_ms
+      ) VALUES (
+        @id, @name, @email, @cefrLevel, @nativeLanguage, @targetLanguage, @goal,
+        @classId, @className, @teacher, @school, @currentLesson, @learningPath,
+        @performance, @progressPercent, @completedExercises, @accuracy, @averageResponseMs
+      )
+    `).run({
+      id: learnerId,
+      name: displayName,
+      email: req.account.email,
+      cefrLevel,
+      nativeLanguage,
+      targetLanguage,
+      goal,
+      classId: "self-guided",
+      className: "Self-guided learners",
+      teacher: "Self-guided",
+      school: "Lingoix",
+      currentLesson: `${cefrLevel} orientation`,
+      learningPath: JSON.stringify(learningPath),
+      performance: JSON.stringify(buildInitialPerformance()),
+      progressPercent: 0,
+      completedExercises: 0,
+      accuracy: 0,
+      averageResponseMs: 0,
+    });
+
+    db.prepare("UPDATE accounts SET learner_id = ?, display_name = ? WHERE id = ?").run(
+      learnerId,
+      displayName,
+      req.account.id
+    );
+  });
+
+  transaction();
+
+  const account = db.prepare("SELECT * FROM accounts WHERE id = ?").get(req.account.id);
+  res.status(201).json({
+    account: publicAccount(account),
+    learner: getLearnerBundle(learnerId),
+  });
 });
 
 app.get("/api/learners/:learnerId", requireAuth, (req, res) => {
@@ -602,24 +993,47 @@ app.put(
       res.status(403).json({ error: "forbidden" });
       return;
     }
+    if (!REVIEW_STATUSES.includes(req.body.status)) {
+      res.status(400).json({ error: "invalid_review_status" });
+      return;
+    }
+    const overrideTargetedExerciseIds = normalizeChoices(req.body.overrideTargetedExerciseIds || []);
+    const priority = ["low", "medium", "high"].includes(req.body.priority) ? req.body.priority : decision.priority || "medium";
+    const reviewedAt = new Date().toISOString();
+    const appliedAt = ["approved", "overridden"].includes(req.body.status) ? reviewedAt : null;
 
     db.prepare(
       `UPDATE adaptive_decisions
-       SET status = @status, teacher_note = @teacherNote, reviewed_by = @reviewedBy, reviewed_at = @reviewedAt
+       SET status = @status,
+         teacher_note = @teacherNote,
+         reviewed_by = @reviewedBy,
+         reviewed_at = @reviewedAt,
+         applied_at = @appliedAt,
+         override_targeted_exercise_ids = @overrideTargetedExerciseIds,
+         priority = @priority
        WHERE id = @id`
     ).run({
       id: req.params.decisionId,
       status: req.body.status,
       teacherNote: req.body.teacherNote || null,
       reviewedBy: req.account.id,
-      reviewedAt: new Date().toISOString(),
+      reviewedAt,
+      appliedAt,
+      overrideTargetedExerciseIds: JSON.stringify(overrideTargetedExerciseIds),
+      priority,
     });
+    const updated = db.prepare("SELECT * FROM adaptive_decisions WHERE id = ?").get(req.params.decisionId);
+    if (appliedAt) applyAdaptiveDecision(updated);
     res.json({ decision: serializeDecision(db.prepare("SELECT * FROM adaptive_decisions WHERE id = ?").get(req.params.decisionId)) });
   }
 );
 
 app.get("/api/reports/platform", requireAuth, (req, res) => {
   res.json({ report: getPlatformReport(req.account) });
+});
+
+app.get("/api/reports/adaptive-metrics", requireAuth, requireRoles("teacher", "school_admin", "platform_admin"), (req, res) => {
+  res.json({ metrics: buildAdaptiveEvaluationMetrics(req.account) });
 });
 
 app.listen(PORT, () => {

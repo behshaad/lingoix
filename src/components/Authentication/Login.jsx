@@ -1,23 +1,40 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../services/apiClient";
+import {
+  accountHomePath,
+  getLearnerEntryIntent,
+  saveAccountSession,
+} from "../../services/authSession";
 
 const Login = () => {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [statusMessage, setStatusMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    apiClient
+      .me()
+      .then(({ account }) => {
+        const homePath =
+          account.role === "learner" && account.learnerId
+            ? getLearnerEntryIntent()
+            : accountHomePath(account);
+        navigate(homePath, { replace: true });
+      })
+      .catch(() => {});
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [navigate]);
 
   const validateForm = () => {
     let errors = {};
@@ -47,17 +64,13 @@ const Login = () => {
     if (validateForm()) {
       try {
         const { account } = await apiClient.login(username, password);
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            email: account.email,
-            name: account.displayName,
-            role: account.role,
-            learnerId: account.learnerId,
-            profilePic: `https://i.pravatar.cc/150?u=${account.email}`,
-          })
-        );
-        navigate(account.role === "learner" ? "/dashboard" : "/admin");
+        saveAccountSession(account);
+        const fallbackPath = location.state?.from || accountHomePath(account);
+        const homePath =
+          account.role === "learner" && account.learnerId
+            ? getLearnerEntryIntent()
+            : fallbackPath;
+        navigate(homePath);
       } catch (error) {
         setErrors({ password: t("auth.invalidCredentials", "Invalid email or password.") });
       }
@@ -121,10 +134,35 @@ const Login = () => {
               <input type="checkbox" id="remember" className="mr-2" />
               <label htmlFor="remember">{t("auth.rememberMe")}</label>
             </div>
-            <button type="button" className="hover:underline">
+            <button
+              type="button"
+              className="hover:underline"
+              onClick={() =>
+                setStatusMessage(
+                  t(
+                    "auth.passwordResetComingSoon",
+                    "Password reset is coming soon. Contact an admin for access."
+                  )
+                )
+              }
+            >
               {t("auth.forgotPassword")}
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setStatusMessage(t("auth.googleComingSoon", "Google sign-in will be connected soon."))}
+            className="w-full h-12 border border-gray-300 text-white font-semibold rounded-full hover:bg-white/10 transition"
+          >
+            {t("auth.googleLogin", "Continue with Google")}
+          </button>
+
+          {statusMessage && (
+            <p className="rounded-md bg-white/10 px-3 py-2 text-sm text-gray-100">
+              {statusMessage}
+            </p>
+          )}
 
           {/* دکمه ورود */}
           <button

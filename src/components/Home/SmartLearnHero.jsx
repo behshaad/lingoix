@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import { FaArrowRight } from "react-icons/fa";
 import { GiBrain } from "react-icons/gi";
@@ -9,9 +10,15 @@ import { BsBook, BsLightningFill } from "react-icons/bs";
 import { FiMessageCircle } from "react-icons/fi";
 import { RiSparklingLine, RiLightbulbFlashFill } from "react-icons/ri";
 import { IoMdChatbubbles } from "react-icons/io";
+import {
+  accountHomePath,
+  loadStoredUser,
+  saveLearnerEntryIntent,
+} from "../../services/authSession";
 
 export default function SmartLearnHero() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
 
   const heroRef = useRef(null);
@@ -51,6 +58,16 @@ export default function SmartLearnHero() {
     });
   }, []);
 
+  const enterLearnerFlow = (destination) => {
+    const storedUser = loadStoredUser();
+    saveLearnerEntryIntent(destination);
+    if (!storedUser) {
+      navigate("/signup");
+      return;
+    }
+    navigate(accountHomePath(storedUser));
+  };
+
   return (
     <section
       ref={heroRef}
@@ -73,10 +90,18 @@ export default function SmartLearnHero() {
           ref={buttonsRef}
           className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <button className="text-lg px-8 py-3 rounded-lg shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:scale-105 active:scale-95 transition transform">
+          <button
+            type="button"
+            onClick={() => enterLearnerFlow("/dashboard")}
+            className="text-lg px-8 py-3 rounded-lg shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:scale-105 active:scale-95 transition transform"
+          >
             {t("hero.start")}
           </button>
-          <button className="text-lg px-8 py-3 border dark:text-gray-900 border-gray-300 rounded-lg shadow-md flex items-center gap-2 bg-white hover:bg-gray-100 transition">
+          <button
+            type="button"
+            onClick={() => enterLearnerFlow("/learning-path")}
+            className="text-lg px-8 py-3 border dark:text-gray-900 border-gray-300 rounded-lg shadow-md flex items-center gap-2 bg-white hover:bg-gray-100 transition"
+          >
             {t("hero.explore")} <FaArrowRight className="h-5 w-5" />
           </button>
         </div>

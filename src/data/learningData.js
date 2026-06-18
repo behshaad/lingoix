@@ -52,6 +52,11 @@ export const skillAreas = [
     label: "Translation direction",
     subskills: ["German to Persian", "Persian to German", "false friends"],
   },
+  {
+    id: "speaking-ability",
+    label: "Speaking ability",
+    subskills: ["greetings", "food", "entertainment", "daily life"],
+  },
 ];
 
 export const resources = [
@@ -109,6 +114,15 @@ export const resources = [
     sourceUrl: "",
     description: "Short explanations for verb position, present tense, cases, and modal verbs.",
   },
+  {
+    id: "resource-conversation-topics",
+    title: "A1 Conversation Topics",
+    type: "conversation",
+    cefrLevel: "A1",
+    skillArea: "speaking-ability",
+    sourceUrl: "",
+    description: "Topic-based speaking prompts for greetings, food, entertainment, and daily life.",
+  },
 ];
 
 export const germanVerbBank = [
@@ -154,6 +168,8 @@ const exerciseTemplates = [
   ["writing-quality", "email writing", "guidedEmailSubmission"],
   ["translation-direction", "Persian to German", "translationProduction"],
   ["translation-direction", "German to Persian", "translationRecognition"],
+  ["speaking-ability", "greetings", "conversationGreetings"],
+  ["speaking-ability", "food", "conversationFood"],
 ];
 
 export const exerciseBank = Array.from({ length: 39 }, (_, index) => {

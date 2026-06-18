@@ -5,12 +5,15 @@ import ResourcesPage from "./pages/ResourcesPage"; // به جای Resources
 import Dashboard from "./pages/StudentDashboard.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp";
+import ProtectedRoute from "./components/Authentication/ProtectedRoute";
 import LehrePage from "./pages/LehrePage.jsx";
 import Dictionary from "./components/Dictionary/Dictionary.jsx";
 import Product from "./components/Home/Product/Product.jsx";
 import BookPlayer from "./components/Resource/BookPlayer/BookPlayer.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import PracticePage from "./pages/PracticePage.jsx";
+import LearningPathPage from "./pages/LearningPathPage.jsx";
+import ProfileSetupPage from "./pages/ProfileSetupPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -19,10 +22,40 @@ const AppRouter = () => {
       <div className="content pt-20">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/learning-path" element={<LearningPathPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/practice" element={<PracticePage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/practice"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <PracticePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile-setup"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]} requireLearnerProfile={false}>
+                <ProfileSetupPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["teacher", "school_admin", "platform_admin"]}>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/SignUp" element={<SignUp />} />

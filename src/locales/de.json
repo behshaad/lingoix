@@ -7,7 +7,7 @@
   "welcome_dashboard": "Willkommen in deinem Dashboard!",
   "logout": "Ausloggen",
   "title": "Laufende Kurse",
-  "moto": "Explore all artwork",
+  "moto": "Lernpfad ansehen",
 
   "lastActive": "Zuletzt aktiv",
   "progress": "Fortschritt",
@@ -75,6 +75,42 @@
     "explore": "Lernpfad erkunden"
   },
   "features": "Unsere Funktionen",
+  "featureStats": {
+    "skillAxes": "Kompetenzachsen",
+    "exercises": "Übungen",
+    "demoLearners": "Demo-Lernende",
+    "roles": "Kontorollen"
+  },
+  "productSection": {
+    "title": "Ein Lernsystem rund um Evidenz",
+    "subtitle": "Lingoix verbindet Ressourcen, Übungen, Sprachleistung und Lehrkraftprüfung zu einem adaptiven Lernablauf.",
+    "items": {
+      "path": {
+        "title": "Lernpfad",
+        "description": "Lernende folgen einem anpassbaren Pfad, geprägt durch Ziele, GER-Niveau, Übungsergebnisse und gezielte Übungseinfügungen."
+      },
+      "profile": {
+        "title": "Leistungsprofil",
+        "description": "Wortschatz, Grammatik, Hören, Lesen, Schreiben, Übersetzung und Sprechen sind in einem Sprachprofil sichtbar."
+      },
+      "resources": {
+        "title": "Ressourcenbibliothek",
+        "description": "Bücher, Audio, Grammatiknotizen, Wortschatzlisten und Gesprächsthemen unterstützen den Lernpfad."
+      },
+      "exercises": {
+        "title": "Übungsbank",
+        "description": "Strukturierte Übungen sammeln Lernereignisse über Karteikarten, Auswahlfragen, Hören, Schreiben und Gesprächspraxis."
+      },
+      "review": {
+        "title": "Lehrkraftprüfung",
+        "description": "Lehrkräfte und Admins prüfen vorgeschlagene adaptive Entscheidungen mit Evidenz, bevor gezielte Übungen angewendet werden."
+      },
+      "conversation": {
+        "title": "Gesprächspraxis",
+        "description": "Themenbasierte Impulse stärken jetzt die Sprechfähigkeit; Ausspracheanalyse kann später ergänzt werden."
+      }
+    }
+  },
   "featureCards": [
     {
       "title": "Interaktive Lektionen",
@@ -166,7 +202,30 @@
     "passwordRequired": "Passwort darf nicht leer sein.",
     "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
-    "invalidCredentials": "Ungültige E-Mail oder ungültiges Passwort."
+    "invalidCredentials": "Ungültige E-Mail oder ungültiges Passwort.",
+    "googleLogin": "Mit Google fortfahren",
+    "googleComingSoon": "Google-Anmeldung wird bald verbunden."
+  },
+  "learningPath": {
+    "eyebrow": "Lernpfad",
+    "title": "Dein Weg von der ersten Lektion zu sicherer Kommunikation",
+    "subtitle": "Lingoix startet mit deinen Zielen, erstellt ein Sprachleistungsprofil und fügt gezielte Übungen hinzu, wenn Lernereignisse eine Kompetenzschwäche zeigen.",
+    "steps": {
+      "profile": "Lernendenprofil erstellen",
+      "resources": "Passende Ressourcen lernen",
+      "practice": "Mit der Übungsbank üben",
+      "profileChart": "Kompetenzprofil verfolgen",
+      "conversation": "Gesprächsfähigkeit aufbauen",
+      "review": "Gezielte Übungen prüfen lassen"
+    },
+    "details": {
+      "profile": "Wähle Zielsprache, aktuelles GER-Niveau und Lernziel.",
+      "resources": "Nutze Bücher, Audio, Grammatiknotizen, Wortschatzlisten und Gesprächsthemen.",
+      "practice": "Bearbeite Karteikarten, Multiple Choice, Hörchecks, Schreibaufgaben und Gesprächspraxis.",
+      "profileChart": "Sieh Wortschatz, Grammatik, Hören, Lesen, Schreiben, Übersetzung und Sprechen in einem Profil.",
+      "conversation": "Beantworte zuerst praktische Themenimpulse; Ausspracheanalyse per Audio kann später folgen.",
+      "review": "Lehrkräfte und Admins können vorgeschlagene gezielte Übungseinfügungen genehmigen, ablehnen oder überschreiben."
+    }
   },
   "dictionary": {
     "sourceAuto": "Automatisch erkennen",
@@ -242,6 +301,8 @@
     "learningPath": "Lernpfad",
     "languagePerformance": "Sprachleistung",
     "adaptiveDecisions": "Adaptive Entscheidungen",
+    "performanceProfile": "Sprachleistungsprofil",
+    "loadFailed": "Dashboard konnte nicht geladen werden.",
     "complete": "{{value}}% abgeschlossen",
     "accuracy": "{{value}}% Genauigkeit",
     "averageResponse": "{{value}}s durchschnittliche Antwortzeit",
@@ -268,7 +329,7 @@
   "admin": {
     "title": "Adaptive Lernoperationen",
     "eyebrow": "Plattform-Administration",
-    "description": "Verwalten Sie synthetische Lernende, prüfen Sie Sprachleistung, kontrollieren Sie gezielte Übungen und überwachen Sie das regelbasierte adaptive System.",
+    "description": "Verwalten Sie Lernende, prüfen Sie Sprachleistung, kontrollieren Sie gezielte Übungseinfügungen und überwachen Sie das regelbasierte adaptive System.",
     "syntheticNotice": "Nur synthetischer Datensatz. Keine Validierungsdaten für Forschung.",
     "overview": "Übersicht",
     "learners": "Lernende",
@@ -276,7 +337,7 @@
     "content": "Ressourcen",
     "exercises": "Übungen",
     "adaptive": "Adaptiv",
-    "syntheticLearners": "Synthetische Lernende",
+    "syntheticLearners": "Lernende",
     "learningEvents": "Lernereignisse",
     "resources": "Ressourcen",
     "averageAccuracy": "Durchschnittliche Genauigkeit",
@@ -303,7 +364,7 @@
     "skill": "Kompetenz",
     "subskill": "Teilkompetenz",
     "minutes": "Minuten",
-    "adaptiveDescription": "Regelbasierte Förderung und Übungsimpulse aus synthetischen Lernereignissen.",
+    "adaptiveDescription": "Vorgeschlagene adaptive Entscheidungen aus Lernereignissen und Evidenz-Snapshots prüfen.",
     "learner": "Lernende/r",
     "type": "Typ",
     "reason": "Grund",
@@ -315,6 +376,27 @@
     "decisionsCount": "{{count}} adaptive Entscheidungen",
     "exerciseCount": "{{count}} markierte Übungen",
     "averageProgress": "{{value}}% durchschnittlicher Fortschritt",
+    "proposedDecisions": "Vorgeschlagene Entscheidungen",
+    "reviewedDecisions": "{{count}} geprüft",
+    "approvalRate": "Genehmigungsrate",
+    "predictionAccuracy": "Genehmigung ist derzeit der Proxy für Vorhersagegenauigkeit.",
+    "improvementRate": "Verbesserungsrate",
+    "afterInsertion": "Nach Einfügen gezielter Übungen",
+    "scoringReliability": "Bewertungsverlässlichkeit",
+    "incorrectEvents": "Falsche Ereignisse",
+    "supportingSignals": "Unterstützende Signale",
+    "hintsUsed": "Hinweise genutzt",
+    "retries": "Wiederholungen",
+    "evidenceSnapshot": "Evidenz-Snapshot",
+    "priority": "Priorität",
+    "teacherNote": "Prüfnotiz",
+    "approve": "Genehmigen",
+    "override": "Überschreiben",
+    "reject": "Ablehnen",
+    "reviewSaved": "Adaptive Entscheidungsprüfung gespeichert.",
+    "conversationPrompt": "Gesprächsimpuls",
+    "expectedResponse": "Erwartete Antwort",
+    "conversationKeywords": "Gesprächsschlüsselwörter",
     "apiLoginRequired": "Bitte melden Sie sich zuerst mit einem Backend-Konto an.",
     "resourceSaved": "Ressource gespeichert.",
     "resourceCreated": "Ressource erstellt.",
@@ -347,12 +429,14 @@
     "reading-comprehension": "Leseverstehen",
     "writing-quality": "Schreibqualität",
     "translation-direction": "Übersetzungsrichtung",
+    "speaking-ability": "Sprechfähigkeit",
     "remediation": "Förderung",
     "practice_boost": "Übungsimpuls",
     "flashcard": "Karteikarte",
     "multiple_choice": "Multiple Choice",
     "writing_prompt": "Schreibaufgabe",
     "listening_check": "Hör-Check",
+    "conversation_practice": "Gesprächspraxis",
     "self_assessed": "Selbsteinschätzung",
     "exact_choice": "Exakte Auswahl",
     "exact_text": "Exakter Text",
@@ -360,6 +444,10 @@
     "min_length_keywords": "Mindestlänge + Schlüsselwörter",
     "active": "Aktiv",
     "teacher_review": "Lehrkraftprüfung",
+    "proposed": "Vorgeschlagen",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt",
+    "overridden": "Überschrieben",
     "correct": "richtig",
     "needsReview": "prüfen",
     "answer_submitted": "Antwort eingereicht",
@@ -367,6 +455,7 @@
     "audio_replayed": "Audio wiederholt",
     "word_searched": "Wort gesucht",
     "writing_submitted": "Text eingereicht",
+    "conversation_submitted": "Gespräch eingereicht",
     "learner": "Lernende/r",
     "teacher": "Lehrkraft",
     "school_admin": "Schuladmin",
@@ -394,8 +483,13 @@
     "German to Persian": "Deutsch zu Persisch",
     "Persian to German": "Persisch zu Deutsch",
     "false friends": "falsche Freunde",
+    "greetings": "Begrüßungen",
+    "food": "Essen",
+    "entertainment": "Freizeit",
+    "daily life": "Alltag",
     "high": "hoch",
-    "medium": "mittel"
+    "medium": "mittel",
+    "low": "niedrig"
   },
   "languages": [
     {

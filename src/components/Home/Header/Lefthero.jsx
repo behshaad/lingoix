@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";  // Import Link
+import { saveLearnerEntryIntent } from "../../../services/authSession";
 
 const Lefthero = () => {
   const { t } = useTranslation();
@@ -18,7 +19,8 @@ const Lefthero = () => {
 
         <div className="mt-8 lg:mt-12 text-center">
           <Link
-            to="/Product"
+            to="/learning-path"
+            onClick={() => saveLearnerEntryIntent("/learning-path")}
             title=""
             className="inline-flex items-center justify-center px-8 py-3 text-base font-bold leading-7 text-white bg-gray-900 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-all duration-200"
             role="button"

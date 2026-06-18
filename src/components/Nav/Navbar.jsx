@@ -7,6 +7,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
+import { AUTH_SESSION_EVENT, adminRoles, loadStoredUser } from "../../services/authSession";
 
 // import { FiSun, FiMoon } from "react-icons/fi";
 // import { FaUserCircle } from "react-icons/fa";
@@ -21,13 +22,15 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // چک کردن وضعیت کاربر هنگام بارگذاری کامپوننت
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    setUser(loadStoredUser());
+    const handleAuthChange = (event) => setUser(event.detail || loadStoredUser());
+    window.addEventListener(AUTH_SESSION_EVENT, handleAuthChange);
+    return () => window.removeEventListener(AUTH_SESSION_EVENT, handleAuthChange);
   }, []);
+
+  const isLearner = user?.role === "learner";
+  const isAdminRole = adminRoles.includes(user?.role);
 
   return (
     <nav className="w-full py-5 bg-white/80 dark:bg-gray-900/80  fixed top-0 left-0 z-50">
@@ -37,18 +40,24 @@ const Navbar = () => {
           <Link to="/dictionary" className="hover:text-gray-600 dark:hover:text-gray-300">
             {t("Translator")}
           </Link>
-          <Link to="/dashboard" className="hover:text-gray-600 dark:hover:text-gray-300">
-            {t("Dashboard")}
-          </Link>
-          <Link to="/practice" className="hover:text-gray-600 dark:hover:text-gray-300">
-            {t("nav.practice")}
-          </Link>
+          {isLearner && (
+            <>
+              <Link to="/dashboard" className="hover:text-gray-600 dark:hover:text-gray-300">
+                {t("Dashboard")}
+              </Link>
+              <Link to="/practice" className="hover:text-gray-600 dark:hover:text-gray-300">
+                {t("nav.practice")}
+              </Link>
+            </>
+          )}
           <Link to="/resources" className="hover:text-gray-600 dark:hover:text-gray-300">
             {t("Resources")}
           </Link>
-          <Link to="/admin" className="hover:text-gray-600 dark:hover:text-gray-300">
-            {t("nav.admin")}
-          </Link>
+          {isAdminRole && (
+            <Link to="/admin" className="hover:text-gray-600 dark:hover:text-gray-300">
+              {t("nav.admin")}
+            </Link>
+          )}
         </div>
         <div className="flex items-center gap-4">
           {/* دکمه تغییر تم */}
@@ -61,7 +70,7 @@ const Navbar = () => {
           </div>
           {/* سوییچر زبان */}
           {/* نمایش دکمه‌های ورود/ثبت‌نام یا پروفایل کاربر */}
-          ‍<UserMenu />
+          <UserMenu />
           {/* دکمه همبرگری برای موبایل */}
           <button onClick={toggleMobileMenu} className="lg:hidden text-2xl">
             ☰

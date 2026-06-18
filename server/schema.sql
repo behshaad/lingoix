@@ -109,9 +109,13 @@ CREATE TABLE IF NOT EXISTS adaptive_decisions (
   skill_area TEXT NOT NULL,
   subskill TEXT NOT NULL,
   targeted_exercise_ids TEXT NOT NULL,
+  evidence_snapshot TEXT NOT NULL DEFAULT '{}',
+  override_targeted_exercise_ids TEXT NOT NULL DEFAULT '[]',
+  priority TEXT NOT NULL DEFAULT 'medium',
   teacher_note TEXT,
   reviewed_by TEXT,
   reviewed_at TEXT,
+  applied_at TEXT,
   created_at TEXT NOT NULL,
   FOREIGN KEY (learner_id) REFERENCES learners(id) ON DELETE CASCADE
 );
