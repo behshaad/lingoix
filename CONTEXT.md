@@ -40,6 +40,14 @@ _Avoid_: Path string, roadmap card, task
 The learner's completion through their learning path based on finished learning path items. Path progress is separate from language performance and exercise accuracy.
 _Avoid_: Accuracy, score, language performance
 
+**Today's Path**:
+The learner's current set of next learning path items for daily work. Today's path is the primary learner dashboard flow.
+_Avoid_: Free practice, recommended exercises, task list
+
+**Free Practice**:
+Optional learner-initiated practice from the exercise bank that can create learning events and affect language performance, but does not advance path progress unless linked to a learning path item.
+_Avoid_: Today's path, assignment, targeted exercise insertion
+
 **Roadmap**:
 The visual representation of a learner's learning path.
 _Avoid_: Learning Path when referring only to the UI
