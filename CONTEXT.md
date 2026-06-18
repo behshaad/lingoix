@@ -56,6 +56,10 @@ _Avoid_: Learning Path when referring only to the UI
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
 
+**Roadmap Station**:
+An interactive visual station in the gamified roadmap that represents one learning path item and opens the learner's next lesson, exercise, review, or assessment for that item.
+_Avoid_: Section, card, generic lesson button
+
 **Learning Event**:
 A timestamped record of one meaningful learner action, such as answering a question, requesting a hint, replaying audio, searching a word, submitting writing, or completing an exercise.
 _Avoid_: Log, activity, interaction data
