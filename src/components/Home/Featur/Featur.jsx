@@ -1,9 +1,17 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
-const targets = [200, 150, 300, 250]; // اهداف مختلف برای هر شمارنده
+const targets = [7, 40, 100, 4];
+const labelKeys = [
+  "featureStats.skillAxes",
+  "featureStats.exercises",
+  "featureStats.demoLearners",
+  "featureStats.roles",
+];
 const duration = 3; // مدت زمان انیمیشن به ثانیه
 
 const Featur = () => {
+  const { t } = useTranslation();
   const [hasStarted, setHasStarted] = useState(false);
   const counterRefs = useRef([null, null, null, null]);
 
@@ -64,7 +72,7 @@ const Featur = () => {
           >
             <div className="flex flex-col justify-center items-center">
               <h4 className="text-4xl font-semibold">{count}+</h4>
-              <p className="text-sm mt-2">Trusted Clients</p>
+              <p className="text-sm mt-2">{t(labelKeys[index])}</p>
             </div>
           </li>
         ))}

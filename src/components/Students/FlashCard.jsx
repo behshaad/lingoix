@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Check, Headphones, PenLine, X } from "lucide-react";
+import { ChevronLeft, Check, Headphones, MessageCircle, PenLine, X } from "lucide-react";
 import {
   collectLearningEvent,
   createAttemptTimer,
@@ -154,11 +154,12 @@ export default function FlashcardApp() {
       );
     }
 
-    if (interactionType === "writing_prompt") {
+    if (interactionType === "writing_prompt" || interactionType === "conversation_practice") {
+      const Icon = interactionType === "conversation_practice" ? MessageCircle : PenLine;
       return (
         <div className="flex h-full flex-col">
           <div className="mb-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <PenLine className="h-4 w-4" />
+            <Icon className="h-4 w-4" />
             <span>{exerciseTitle(exercise, t)}</span>
           </div>
           <p className="mb-2 text-base font-medium">{exercisePrompt(exercise, t)}</p>

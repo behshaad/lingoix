@@ -6,12 +6,12 @@ import {
   MdAutorenew,
   MdTrendingUp,
 } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 const items = [
   {
-    title: "پشتیبانی",
-    description:
-      "تیم ما همیشه آماده پاسخ‌گویی به سوالات و مشکلات شماست. پشتیبانی سریع و موثر را تجربه کنید.",
+    titleKey: "productSection.items.path.title",
+    descriptionKey: "productSection.items.path.description",
     icon: (
       <MdHeadsetMic
         size={46}
@@ -20,25 +20,22 @@ const items = [
     ),
   },
   {
-    title: "فروش",
-    description:
-      "ما به شما کمک می‌کنیم تا فروش خود را افزایش دهید و بازار هدف خود را بهتر بشناسید.",
+    titleKey: "productSection.items.profile.title",
+    descriptionKey: "productSection.items.profile.description",
     icon: (
       <MdBarChart size={46} className="mx-auto text-gray-900 dark:text-white" />
     ),
   },
   {
-    title: "آموزش اولیه",
-    description:
-      "فرآیند آشنایی با پلتفرم ما ساده و سریع است. با ما همراه شوید و شروعی حرفه‌ای داشته باشید.",
+    titleKey: "productSection.items.resources.title",
+    descriptionKey: "productSection.items.resources.description",
     icon: (
       <MdMenuBook size={46} className="mx-auto text-gray-900 dark:text-white" />
     ),
   },
   {
-    title: "محصول",
-    description:
-      "محصولات ما با کیفیت بالا و طراحی کاربرمحور ساخته شده‌اند تا بهترین تجربه را ارائه دهند.",
+    titleKey: "productSection.items.exercises.title",
+    descriptionKey: "productSection.items.exercises.description",
     icon: (
       <MdInventory
         size={46}
@@ -47,9 +44,8 @@ const items = [
     ),
   },
   {
-    title: "نگه‌داری کاربران",
-    description:
-      "با استراتژی‌های هوشمند، مشتریان وفادار خود را حفظ کنید و تعامل آن‌ها را افزایش دهید.",
+    titleKey: "productSection.items.review.title",
+    descriptionKey: "productSection.items.review.description",
     icon: (
       <MdAutorenew
         size={46}
@@ -58,9 +54,8 @@ const items = [
     ),
   },
   {
-    title: "رشد",
-    description:
-      "ما مسیر رشد شما را هموار می‌کنیم. از داده‌ها استفاده کنید و رشد پایدار را تجربه کنید.",
+    titleKey: "productSection.items.conversation.title",
+    descriptionKey: "productSection.items.conversation.description",
     icon: (
       <MdTrendingUp
         size={46}
@@ -71,16 +66,17 @@ const items = [
 ];
 
 const Product = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-white dark:bg-gray-800">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold leading-tight text-gray-900 dark:text-white sm:text-4xl xl:text-5xl font-pj">
-            هر مرحله را کاربرمحور طراحی کنید
+            {t("productSection.title")}
           </h2>
           <p className="mt-4 text-base leading-7 text-gray-600 dark:text-gray-300 sm:mt-8 font-pj">
-            با خدمات و امکانات ما، تجربه‌ای حرفه‌ای و رضایت‌بخش برای کاربران خود
-            بسازید.
+            {t("productSection.subtitle")}
           </p>
         </div>
 
@@ -100,10 +96,10 @@ const Product = () => {
             >
               {item.icon}
               <h3 className="mt-12 text-xl font-bold text-gray-900 dark:text-white font-pj">
-                {item.title}
+                {t(item.titleKey)}
               </h3>
               <p className="mt-5 text-base text-gray-600 dark:text-gray-300 font-pj">
-                {item.description}
+                {t(item.descriptionKey)}
               </p>
             </div>
           ))}

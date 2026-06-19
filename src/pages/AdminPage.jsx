@@ -5,16 +5,20 @@ import {
   BarChart3,
   BookOpen,
   Brain,
+  Check,
   Database,
   GraduationCap,
   Layers,
   Pencil,
   Plus,
+  RotateCcw,
   Save,
   Users,
+  X,
 } from "lucide-react";
 import { apiClient } from "../services/apiClient";
 import { getSkillAreas } from "../services/learningDataService";
+import LanguagePerformanceProfile from "../components/Dashboard/LanguagePerformanceProfile";
 
 const numberFormat = new Intl.NumberFormat("en-US");
 
@@ -47,8 +51,7 @@ const emptyExercise = {
   supportText: "",
 };
 
-const interactionTypes = ["flashcard", "multiple_choice", "writing_prompt", "listening_check"];
-const scoringRuleTypes = ["self_assessed", "exact_choice", "exact_text", "contains_keywords", "min_length_keywords"];
+const interactionTypes = ["flashcard", "multiple_choice", "writing_prompt", "listening_check", "conversation_practice"];
 
 const choicesDraftValue = (choices) => {
   if (Array.isArray(choices)) return choices.join("\n");
@@ -70,6 +73,22 @@ const normalizeDraftRule = (rule) => ({
         .map((keyword) => keyword.trim())
         .filter(Boolean),
 });
+
+const defaultRuleForInteraction = (interactionType) => {
+  if (interactionType === "multiple_choice") return { type: "exact_choice", minLength: 0, keywords: [] };
+  if (interactionType === "listening_check") return { type: "exact_text", minLength: 0, keywords: [] };
+  if (interactionType === "writing_prompt") return { type: "min_length_keywords", minLength: 80, keywords: [] };
+  if (interactionType === "conversation_practice") return { type: "contains_keywords", minLength: 0, keywords: [] };
+  return { type: "self_assessed", minLength: 0, keywords: [] };
+};
+
+const scoringRulesForInteraction = (interactionType) => {
+  if (interactionType === "multiple_choice") return ["exact_choice"];
+  if (interactionType === "listening_check") return ["exact_text", "exact_choice"];
+  if (interactionType === "writing_prompt") return ["min_length_keywords", "contains_keywords"];
+  if (interactionType === "conversation_practice") return ["contains_keywords", "min_length_keywords"];
+  return ["self_assessed", "exact_text"];
+};
 
 const StatCard = ({ icon: Icon, label, value, detail }) => (
   <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -138,12 +157,17 @@ const AdminPage = () => {
   const [resources, setResources] = useState([]);
   const [exerciseBank, setExerciseBank] = useState([]);
   const [platformReport, setPlatformReport] = useState(null);
+  const [adaptiveMetrics, setAdaptiveMetrics] = useState(null);
   const [adaptiveDecisions, setAdaptiveDecisions] = useState([]);
+  const [selectedDecisionId, setSelectedDecisionId] = useState("");
   const [selectedLearnerId, setSelectedLearnerId] = useState("");
   const [selectedClassId, setSelectedClassId] = useState("");
   const [learnerDetail, setLearnerDetail] = useState(null);
   const [resourceDraft, setResourceDraft] = useState(emptyResource);
   const [exerciseDraft, setExerciseDraft] = useState(emptyExercise);
+  const [reviewNote, setReviewNote] = useState("");
+  const [overrideExerciseIds, setOverrideExerciseIds] = useState([]);
+  const [reviewPriority, setReviewPriority] = useState("medium");
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -201,6 +225,13 @@ const AdminPage = () => {
       cefrLevel: learner?.cefrLevel || "",
     };
   });
+  const selectedDecision = allDecisions.find((decision) => decision.id === selectedDecisionId) || allDecisions[0];
+  const selectedDecisionEvidence = selectedDecision?.evidenceSnapshot || {};
+  const selectedDecisionExercises = selectedDecision
+    ? selectedDecision.targetedExerciseIds
+        .map((exerciseId) => exerciseBank.find((exercise) => exercise.id === exerciseId))
+        .filter(Boolean)
+    : [];
   const learnerReport = useMemo(() => {
     if (!learnerDetail) return null;
     const events = learnerDetail.learningEvents || [];
@@ -232,13 +263,14 @@ const AdminPage = () => {
   const loadAdminData = async () => {
     setIsLoading(true);
     try {
-      const [me, learnersData, resourcesData, exercisesData, reportData, decisionsData] =
+      const [me, learnersData, resourcesData, exercisesData, reportData, metricsData, decisionsData] =
         await Promise.all([
           apiClient.me(),
           apiClient.learners(),
           apiClient.resources(),
           apiClient.exercises(),
           apiClient.platformReport(),
+          apiClient.adaptiveMetrics(),
           apiClient.adaptiveDecisions(),
         ]);
 
@@ -247,7 +279,9 @@ const AdminPage = () => {
       setResources(resourcesData.resources);
       setExerciseBank(exercisesData.exercises);
       setPlatformReport(reportData.report);
+      setAdaptiveMetrics(metricsData.metrics);
       setAdaptiveDecisions(decisionsData.decisions);
+      setSelectedDecisionId((current) => current || decisionsData.decisions[0]?.id || "");
       setSelectedLearnerId((current) => current || learnersData.learners[0]?.id || "");
       setSelectedClassId((current) => current || learnersData.learners[0]?.classId || "");
       setResourceDraft((current) => ({
@@ -279,6 +313,16 @@ const AdminPage = () => {
       .catch(() => setLearnerDetail(null));
   }, [selectedLearnerId]);
 
+  useEffect(() => {
+    const decision = adaptiveDecisions.find((item) => item.id === selectedDecisionId);
+    if (!decision) return;
+    setReviewNote(decision.teacherNote || "");
+    setOverrideExerciseIds(decision.overrideTargetedExerciseIds?.length
+      ? decision.overrideTargetedExerciseIds
+      : decision.targetedExerciseIds || []);
+    setReviewPriority(decision.priority || "medium");
+  }, [adaptiveDecisions, selectedDecisionId]);
+
   const saveResource = async (event) => {
     event.preventDefault();
     const exists = resources.some((resource) => resource.id === resourceDraft.id);
@@ -295,19 +339,29 @@ const AdminPage = () => {
   const saveExercise = async (event) => {
     event.preventDefault();
     const exists = exerciseBank.some((exercise) => exercise.id === exerciseDraft.id);
+    const scoringRule = normalizeDraftRule(exerciseDraft.scoringRule);
+    const allowedRules = scoringRulesForInteraction(exerciseDraft.interactionType);
+    const normalizedRule = allowedRules.includes(scoringRule.type)
+      ? scoringRule
+      : defaultRuleForInteraction(exerciseDraft.interactionType);
+    const shouldKeepChoices =
+      exerciseDraft.interactionType === "multiple_choice" ||
+      (exerciseDraft.interactionType === "listening_check" && normalizedRule.type === "exact_choice");
     const payload = {
       ...exerciseDraft,
       sequence: Number(exerciseDraft.sequence),
       estimatedMinutes: Number(exerciseDraft.estimatedMinutes),
       prompt: exerciseDraft.prompt || "",
       expectedAnswer: exerciseDraft.expectedAnswer || "",
-      choices: Array.isArray(exerciseDraft.choices)
-        ? exerciseDraft.choices
-        : String(exerciseDraft.choices || "")
-            .split("\n")
-            .map((choice) => choice.trim())
-            .filter(Boolean),
-      scoringRule: normalizeDraftRule(exerciseDraft.scoringRule),
+      choices: shouldKeepChoices
+        ? Array.isArray(exerciseDraft.choices)
+          ? exerciseDraft.choices
+          : String(exerciseDraft.choices || "")
+              .split("\n")
+              .map((choice) => choice.trim())
+              .filter(Boolean)
+        : [],
+      scoringRule: normalizedRule,
       supportText: exerciseDraft.supportText || "",
     };
     if (exists) {
@@ -320,7 +374,25 @@ const AdminPage = () => {
     await loadAdminData();
   };
 
+  const reviewDecision = async (status) => {
+    if (!selectedDecision) return;
+    await apiClient.reviewAdaptiveDecision(selectedDecision.id, status, reviewNote, {
+      overrideTargetedExerciseIds: status === "overridden" ? overrideExerciseIds : [],
+      priority: reviewPriority,
+    });
+    setStatusMessage(t("admin.reviewSaved", "Adaptive decision review saved."));
+    await loadAdminData();
+  };
+
   const canEditContent = account?.role === "platform_admin";
+  const visibleScoringRuleTypes = scoringRulesForInteraction(exerciseDraft.interactionType);
+  const showChoices =
+    exerciseDraft.interactionType === "multiple_choice" ||
+    (exerciseDraft.interactionType === "listening_check" && exerciseDraft.scoringRule?.type === "exact_choice");
+  const showMinLength = ["writing_prompt", "conversation_practice"].includes(exerciseDraft.interactionType);
+  const showKeywords = ["writing_prompt", "conversation_practice"].includes(exerciseDraft.interactionType);
+  const isConversationPractice = exerciseDraft.interactionType === "conversation_practice";
+  const canReviewAdaptiveDecision = ["teacher", "school_admin", "platform_admin"].includes(account?.role);
 
   return (
     <div
@@ -508,15 +580,20 @@ const AdminPage = () => {
                   <StatCard icon={Brain} label={t("admin.weaknesses")} value={learnerReport.weaknessCount} />
                 </div>
 
+                <h3 className="mt-6 font-semibold">{t("learnerDashboard.performanceProfile", "Language Performance Profile")}</h3>
+                <div className="mt-3 rounded-md bg-gray-50 p-3 dark:bg-gray-950">
+                  <LanguagePerformanceProfile profile={learnerReport.learner.dashboardSummary?.languagePerformanceProfile || []} />
+                </div>
+
                 <h3 className="mt-6 font-semibold">{t("admin.languagePerformance")}</h3>
                 <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
                   {skillAreas.map((skill) => (
                     <div key={skill.id} className="rounded-md bg-gray-50 p-3 dark:bg-gray-950">
                       <div className="mb-2 flex justify-between text-sm">
                         <span>{domainLabel(skill.id)}</span>
-                        <span>{learnerReport.learner.performance[skill.id]}%</span>
+                        <span>{learnerReport.learner.performance[skill.id] ?? 0}%</span>
                       </div>
-                      <ProgressBar value={learnerReport.learner.performance[skill.id]} />
+                      <ProgressBar value={learnerReport.learner.performance[skill.id] || 0} />
                     </div>
                   ))}
                 </div>
@@ -739,7 +816,14 @@ const AdminPage = () => {
                 <SelectInput
                   label={t("admin.interactionType", "Interaction type")}
                   value={exerciseDraft.interactionType}
-                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, interactionType: value })}
+                  onChange={(value) =>
+                    setExerciseDraft({
+                      ...exerciseDraft,
+                      interactionType: value,
+                      scoringRule: defaultRuleForInteraction(value),
+                      choices: value === "multiple_choice" ? exerciseDraft.choices : [],
+                    })
+                  }
                 >
                   {interactionTypes.map((interactionType) => (
                     <option key={interactionType} value={interactionType}>
@@ -757,7 +841,7 @@ const AdminPage = () => {
                     })
                   }
                 >
-                  {scoringRuleTypes.map((ruleType) => (
+                  {visibleScoringRuleTypes.map((ruleType) => (
                     <option key={ruleType} value={ruleType}>
                       {t(`domain.${ruleType}`, ruleType)}
                     </option>
@@ -797,47 +881,53 @@ const AdminPage = () => {
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, estimatedMinutes: value })}
                 />
                 <TextAreaInput
-                  label={t("admin.promptField", "Prompt")}
+                  label={isConversationPractice ? t("admin.conversationPrompt", "Conversation prompt") : t("admin.promptField", "Prompt")}
                   value={exerciseDraft.prompt}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, prompt: value })}
                 />
                 <TextAreaInput
-                  label={t("admin.expectedAnswer", "Expected answer")}
+                  label={isConversationPractice ? t("admin.expectedResponse", "Expected response") : t("admin.expectedAnswer", "Expected answer")}
                   value={exerciseDraft.expectedAnswer}
                   onChange={(value) => setExerciseDraft({ ...exerciseDraft, expectedAnswer: value })}
                 />
-                <TextAreaInput
-                  label={t("admin.choices", "Choices")}
-                  value={choicesDraftValue(exerciseDraft.choices)}
-                  onChange={(value) => setExerciseDraft({ ...exerciseDraft, choices: value })}
-                />
-                <TextInput
-                  label={t("admin.minLength", "Minimum length")}
-                  type="number"
-                  value={exerciseDraft.scoringRule?.minLength || 0}
-                  onChange={(value) =>
-                    setExerciseDraft({
-                      ...exerciseDraft,
-                      scoringRule: {
-                        ...(exerciseDraft.scoringRule || {}),
-                        minLength: value,
-                      },
-                    })
-                  }
-                />
-                <TextAreaInput
-                  label={t("admin.keywords", "Keywords")}
-                  value={keywordsDraftValue(exerciseDraft.scoringRule)}
-                  onChange={(value) =>
-                    setExerciseDraft({
-                      ...exerciseDraft,
-                      scoringRule: {
-                        ...(exerciseDraft.scoringRule || {}),
-                        keywords: value,
-                      },
-                    })
-                  }
-                />
+                {showChoices && (
+                  <TextAreaInput
+                    label={t("admin.choices", "Choices")}
+                    value={choicesDraftValue(exerciseDraft.choices)}
+                    onChange={(value) => setExerciseDraft({ ...exerciseDraft, choices: value })}
+                  />
+                )}
+                {showMinLength && (
+                  <TextInput
+                    label={t("admin.minLength", "Minimum length")}
+                    type="number"
+                    value={exerciseDraft.scoringRule?.minLength || 0}
+                    onChange={(value) =>
+                      setExerciseDraft({
+                        ...exerciseDraft,
+                        scoringRule: {
+                          ...(exerciseDraft.scoringRule || {}),
+                          minLength: value,
+                        },
+                      })
+                    }
+                  />
+                )}
+                {showKeywords && (
+                  <TextAreaInput
+                    label={isConversationPractice ? t("admin.conversationKeywords", "Conversation keywords") : t("admin.keywords", "Keywords")}
+                    value={keywordsDraftValue(exerciseDraft.scoringRule)}
+                    onChange={(value) =>
+                      setExerciseDraft({
+                        ...exerciseDraft,
+                        scoringRule: {
+                          ...(exerciseDraft.scoringRule || {}),
+                          keywords: value,
+                        },
+                      })
+                    }
+                  />
+                )}
                 <TextAreaInput
                   label={t("admin.supportText", "Support text")}
                   value={exerciseDraft.supportText}
@@ -893,38 +983,204 @@ const AdminPage = () => {
         )}
 
         {!isLoading && activeView === "adaptive" && (
-          <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-            <h2 className="mb-1 text-xl font-semibold">{t("admin.adaptiveDecisions")}</h2>
-            <p className="mb-4 text-gray-500 dark:text-gray-400">
-              {t("admin.adaptiveDescription")}
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] text-left text-sm">
-                <thead className="border-b border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                  <tr>
-                    <th className="py-3">{t("admin.learner")}</th>
-                    <th>{t("admin.cefr")}</th>
-                    <th>{t("admin.type")}</th>
-                    <th>{t("admin.reason")}</th>
-                    <th>{t("admin.status")}</th>
-                    <th>{t("admin.targetedExercises")}</th>
-                  </tr>
-                </thead>
-                <tbody>
+          <div className="space-y-4">
+            <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <StatCard
+                icon={Brain}
+                label={t("admin.proposedDecisions", "Proposed decisions")}
+                value={adaptiveMetrics?.proposedDecisionCount || 0}
+                detail={t("admin.reviewedDecisions", {
+                  count: adaptiveMetrics?.reviewedDecisionCount || 0,
+                  defaultValue: `${adaptiveMetrics?.reviewedDecisionCount || 0} reviewed`,
+                })}
+              />
+              <StatCard
+                icon={Check}
+                label={t("admin.approvalRate", "Approval rate")}
+                value={`${adaptiveMetrics?.approvalRate || 0}%`}
+                detail={t("admin.predictionAccuracy", "Approval is the current prediction-accuracy proxy.")}
+              />
+              <StatCard
+                icon={BarChart3}
+                label={t("admin.improvementRate", "Improvement rate")}
+                value={`${adaptiveMetrics?.improvementRate || 0}%`}
+                detail={t("admin.afterInsertion", "After targeted exercise insertion")}
+              />
+              <StatCard
+                icon={Database}
+                label={t("admin.scoringReliability", "Scoring reliability")}
+                value={(adaptiveMetrics?.scoringReliability || [])
+                  .map((item) => `${item.label}: ${item.count}`)
+                  .join(" · ")}
+              />
+            </section>
+
+            <section className="grid grid-cols-1 gap-4 xl:grid-cols-[420px_1fr]">
+              <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                <h2 className="mb-1 text-xl font-semibold">{t("admin.adaptiveDecisions")}</h2>
+                <p className="mb-4 text-gray-500 dark:text-gray-400">
+                  {t("admin.adaptiveDescription")}
+                </p>
+                <div className="space-y-2">
                   {allDecisions.slice(0, 80).map((decision) => (
-                    <tr key={decision.id} className="border-b border-gray-100 dark:border-gray-800">
-                      <td className="py-3 font-medium">{decision.learnerName}</td>
-                      <td>{decision.cefrLevel}</td>
-                      <td>{domainLabel(decision.type)}</td>
-                      <td>{decisionLabel(decision)}</td>
-                      <td>{domainLabel(decision.status)}</td>
-                      <td>{decision.targetedExerciseIds.length}</td>
-                    </tr>
+                    <button
+                      key={decision.id}
+                      type="button"
+                      onClick={() => setSelectedDecisionId(decision.id)}
+                      className={`w-full rounded-md border p-3 text-left text-sm transition ${
+                        selectedDecision?.id === decision.id
+                          ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950"
+                          : "border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold">{decision.learnerName}</p>
+                          <p className="text-gray-500 dark:text-gray-400">{decisionLabel(decision)}</p>
+                        </div>
+                        <span className="rounded-md bg-gray-100 px-2 py-1 text-xs dark:bg-gray-800">
+                          {domainLabel(decision.status)}
+                        </span>
+                      </div>
+                    </button>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                </div>
+              </div>
+
+              {selectedDecision && (
+                <div className="space-y-4">
+                  <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <h2 className="text-xl font-semibold">{selectedDecision.learnerName}</h2>
+                        <p className="text-gray-500 dark:text-gray-400">
+                          {decisionLabel(selectedDecision)} · {domainLabel(selectedDecision.priority)}
+                        </p>
+                      </div>
+                      <span className="rounded-md bg-gray-100 px-3 py-2 text-sm dark:bg-gray-800">
+                        {domainLabel(selectedDecision.status)}
+                      </span>
+                    </div>
+                    <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">{selectedDecision.reason}</p>
+
+                    <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+                      <StatCard
+                        icon={X}
+                        label={t("admin.incorrectEvents", "Incorrect events")}
+                        value={selectedDecisionEvidence.trigger?.incorrectCount || 0}
+                      />
+                      <StatCard
+                        icon={Activity}
+                        label={t("admin.supportingSignals", "Supporting signals")}
+                        value={selectedDecisionEvidence.trigger?.supportingSignalCount || 0}
+                      />
+                      <StatCard
+                        icon={Database}
+                        label={t("admin.hintsUsed", "Hints used")}
+                        value={selectedDecisionEvidence.hintUsage || 0}
+                      />
+                      <StatCard
+                        icon={RotateCcw}
+                        label={t("admin.retries", "Retries")}
+                        value={selectedDecisionEvidence.retries || 0}
+                      />
+                    </div>
+                  </section>
+
+                  <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                      <h3 className="mb-3 font-semibold">{t("admin.evidenceSnapshot", "Evidence snapshot")}</h3>
+                      <div className="space-y-3 text-sm">
+                        {(selectedDecisionEvidence.events || []).slice(0, 8).map((event) => (
+                          <div key={event.id} className="rounded-md bg-gray-50 p-3 dark:bg-gray-950">
+                            <div className="flex justify-between gap-3">
+                              <span>{domainLabel(event.type)}</span>
+                              <span>{event.correct ? t("domain.correct") : event.errorType}</span>
+                            </div>
+                            <p className="mt-1 text-gray-500 dark:text-gray-400">
+                              {(event.responseMs / 1000).toFixed(1)}s · {event.hintsUsed} {t("admin.hintsUsed", "hints")} · {event.retries} {t("admin.retries", "retries")}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                      <h3 className="mb-3 font-semibold">{t("admin.targetedExercises")}</h3>
+                      <div className="space-y-2">
+                        {selectedDecisionExercises.map((exercise) => (
+                          <label key={exercise.id} className="flex gap-3 rounded-md bg-gray-50 p-3 text-sm dark:bg-gray-950">
+                            <input
+                              type="checkbox"
+                              checked={overrideExerciseIds.includes(exercise.id)}
+                              onChange={(event) =>
+                                setOverrideExerciseIds((current) =>
+                                  event.target.checked
+                                    ? [...new Set([...current, exercise.id])]
+                                    : current.filter((id) => id !== exercise.id)
+                                )
+                              }
+                            />
+                            <span>
+                              <span className="block font-medium">{exerciseTitle(exercise)}</span>
+                              <span className="text-gray-500 dark:text-gray-400">
+                                {domainLabel(exercise.skillArea)} · {domainLabel(exercise.subskill)}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <SelectInput label={t("admin.priority", "Priority")} value={reviewPriority} onChange={setReviewPriority}>
+                          {["low", "medium", "high"].map((priority) => (
+                            <option key={priority} value={priority}>
+                              {domainLabel(priority)}
+                            </option>
+                          ))}
+                        </SelectInput>
+                      </div>
+                      <div className="mt-3">
+                        <TextAreaInput
+                          label={t("admin.teacherNote", "Reviewer note")}
+                          value={reviewNote}
+                          onChange={setReviewNote}
+                        />
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={!canReviewAdaptiveDecision}
+                          onClick={() => reviewDecision("approved")}
+                          className="flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                        >
+                          <Check className="h-4 w-4" />
+                          {t("admin.approve", "Approve")}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!canReviewAdaptiveDecision}
+                          onClick={() => reviewDecision("overridden")}
+                          className="flex items-center gap-2 rounded-md bg-gray-950 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-white dark:text-gray-950"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          {t("admin.override", "Override")}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!canReviewAdaptiveDecision}
+                          onClick={() => reviewDecision("rejected")}
+                          className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                        >
+                          <X className="h-4 w-4" />
+                          {t("admin.reject", "Reject")}
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+            </section>
+          </div>
         )}
       </div>
     </div>
