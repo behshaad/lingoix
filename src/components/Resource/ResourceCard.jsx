@@ -1,101 +1,101 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { Book, Headphones, Video } from "lucide-react";
-import { gsap } from "gsap";
+import { Book, FileText, Headphones, Image, Link as LinkIcon, PlaySquare, Type } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const typeIcons = {
+  audio: Headphones,
+  book: Book,
+  pdf: FileText,
+  video: PlaySquare,
+  image: Image,
+  text: Type,
+  link: LinkIcon,
+};
 
-import { Link } from "react-router-dom";
-
+const openableAttachmentTypes = new Set(["pdf", "audio", "video", "image", "link"]);
 
 export default function ResourceCard({ resource }) {
   const { t } = useTranslation();
-  const cardRef = useRef(null);
-  const resourceTitle = t(`resourcesData.${resource.id}.title`, resource.title);
-  const resourceDescription = t(
-    `resourcesData.${resource.id}.description`,
-    resource.description
-  );
-
-  // GSAP hover animations
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    const card = cardRef.current;
-    const image = card.querySelector(".card-image");
-    const title = card.querySelector(".card-title");
-
-    const handleMouseEnter = () => {
-      gsap.to(card, { y: -10, duration: 0.3, ease: "power2.out" });
-      gsap.to(image, { scale: 1.05, duration: 0.5, ease: "power2.out" });
-      gsap.to(title, { color: "var(--color-primary)", duration: 0.3 });
-    };
-
-    const handleMouseLeave = () => {
-      gsap.to(card, { y: 0, duration: 0.5, ease: "power2.out" });
-      gsap.to(image, { scale: 1, duration: 0.5, ease: "power2.out" });
-      gsap.to(title, { color: "var(--color-foreground)", duration: 0.3 });
-    };
-
-    card.addEventListener("mouseenter", handleMouseEnter);
-    card.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      card.removeEventListener("mouseenter", handleMouseEnter);
-      card.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
-  const getTypeIcon = () => {
-    switch (resource.type) {
-      case "book":
-        return <Book className="h-4 w-4" />;
-      case "audio":
-        return <Headphones className="h-4 w-4" />;
-      case "video":
-        return <Video className="h-4 w-4" />;
-      default:
-        return null;
-    }
-  };
+  const Icon = typeIcons[resource.type] || Book;
+  const title = t(`resourcesData.${resource.id}.title`, resource.title);
+  const description = t(`resourcesData.${resource.id}.description`, resource.description);
+  const attachments = resource.attachments || [];
 
   return (
-    <div
-      ref={cardRef}
-      className="resource-card bg-card rounded-lg overflow-hidden shadow-md border border-border hover:shadow-lg transition-shadow duration-300 flex flex-col min-w-[300px]"
-    >
-      <div className="overflow-hidden">
-        <img
-          src={resource.thumbnail || "/placeholder.svg"}
-          alt={resourceTitle}
-          className="card-image w-full h-48 object-contain transition-transform duration-300"
-        />
-      </div>
-      <div className="card-content p-5 flex-1 flex flex-col">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-          <span className="flex items-center gap-1 bg-muted px-2 py-1 rounded-full">
-            {getTypeIcon()}
-            <span className="capitalize">{resource.type}</span>
-          </span>
-          <span>{resource.date}</span>
+    <article className="flex min-h-[320px] flex-col rounded-[22px] border border-white/80 bg-white p-5 shadow-[0_18px_48px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_22px_64px_rgba(15,23,42,0.12)] dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
+          <Icon className="h-6 w-6" />
         </div>
-        <h3 className="card-title text-xl font-semibold mb-2 transition-colors duration-300">
-          {resourceTitle}
-        </h3>
-        <p className="text-muted-foreground text-sm mb-4 flex-1">
-          {resourceDescription}
-        </p>
-        {/* <button className="mt-auto self-start px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-300">
-          View Resource
-        </button> */}
-        <Link
-          to={`/book-player?resourceId=${resource.id}`}
-          className="mt-auto self-start px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-300 "
-        >
-          View Resource
-        </Link>
+        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+          {resource.cefrLevel}
+        </span>
       </div>
-    </div>
+
+      <div className="mt-5 flex-1">
+        <p className="text-xs font-semibold uppercase tracking-wide text-cyan-700">
+          {t(`resourcePage.types.${resource.type}`, resource.type)}
+        </p>
+        <h2 className="mt-2 text-xl font-semibold tracking-tight text-gray-950 dark:text-white">
+          {title}
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
+          {description}
+        </p>
+      </div>
+
+      <div className="mt-5 space-y-2">
+        {resource.sourceUrl && (
+          <a
+            href={resource.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-between rounded-xl bg-gray-950 px-3 py-2 text-sm font-semibold text-white dark:bg-white dark:text-gray-950"
+          >
+            <span>{t("resourcePage.openMain", "Open main resource")}</span>
+            <LinkIcon className="h-4 w-4" />
+          </a>
+        )}
+
+        {attachments.slice(0, 4).map((attachment) => {
+          const AttachmentIcon = typeIcons[attachment.type] || LinkIcon;
+          const canOpen = openableAttachmentTypes.has(attachment.type);
+          const content = (
+            <>
+              <span className="flex items-center gap-2 truncate">
+                <AttachmentIcon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{attachment.label}</span>
+              </span>
+              <span className="text-xs uppercase text-gray-400">{attachment.type}</span>
+            </>
+          );
+
+          if (canOpen) {
+            return (
+              <a
+                key={attachment.id}
+                href={attachment.value}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between gap-3 rounded-xl bg-gray-100 px-3 py-2 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+              >
+                {content}
+              </a>
+            );
+          }
+
+          return (
+            <div
+              key={attachment.id}
+              className="rounded-xl bg-gray-100 px-3 py-2 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+            >
+              <div className="mb-1 flex items-center justify-between gap-3">{content}</div>
+              <p className="line-clamp-3 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                {attachment.value}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </article>
   );
 }

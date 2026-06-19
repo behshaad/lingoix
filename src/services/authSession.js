@@ -21,22 +21,27 @@ export const publicUserFromAccount = (account) => ({
 
 export const loadStoredUser = () => {
   try {
-    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const storedUser =
+      localStorage.getItem(USER_STORAGE_KEY) || sessionStorage.getItem(USER_STORAGE_KEY);
     return storedUser ? JSON.parse(storedUser) : null;
   } catch {
     return null;
   }
 };
 
-export const saveAccountSession = (account) => {
+export const saveAccountSession = (account, remember = true) => {
   const user = publicUserFromAccount(account);
-  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+  const storage = remember ? localStorage : sessionStorage;
+  const otherStorage = remember ? sessionStorage : localStorage;
+  otherStorage.removeItem(USER_STORAGE_KEY);
+  storage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
   window.dispatchEvent(new CustomEvent(AUTH_SESSION_EVENT, { detail: user }));
   return user;
 };
 
 export const clearAccountSession = () => {
   localStorage.removeItem(USER_STORAGE_KEY);
+  sessionStorage.removeItem(USER_STORAGE_KEY);
   window.dispatchEvent(new CustomEvent(AUTH_SESSION_EVENT, { detail: null }));
 };
 

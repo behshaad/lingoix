@@ -1,14 +1,17 @@
 "use client";
 
-import { Book, Headphones, Library, Search, WholeWord } from "lucide-react";
+import { Book, FileText, Headphones, Library, Link as LinkIcon, PlaySquare, Search, WholeWord } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const filters = [
   { id: "all", labelKey: "resourcePage.all", icon: Library },
   { id: "book", labelKey: "resourcePage.books", icon: Book },
   { id: "audio", labelKey: "resourcePage.audio", icon: Headphones },
+  { id: "video", labelKey: "resourcePage.video", icon: PlaySquare },
+  { id: "pdf", labelKey: "resourcePage.pdf", icon: FileText },
   { id: "grammar", labelKey: "resourcePage.grammar", icon: Library },
   { id: "vocabulary", labelKey: "resourcePage.vocabulary", icon: WholeWord },
+  { id: "link", labelKey: "resourcePage.link", icon: LinkIcon },
 ];
 
 export default function ResourceFilter({

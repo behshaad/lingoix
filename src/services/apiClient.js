@@ -1,8 +1,23 @@
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:4000/api";
 const SESSION_TOKEN_KEY = "lingoixSessionToken";
 
+const getSessionToken = () =>
+  localStorage.getItem(SESSION_TOKEN_KEY) || sessionStorage.getItem(SESSION_TOKEN_KEY);
+
+const saveSessionToken = (token, remember = true) => {
+  const storage = remember ? localStorage : sessionStorage;
+  const otherStorage = remember ? sessionStorage : localStorage;
+  otherStorage.removeItem(SESSION_TOKEN_KEY);
+  storage.setItem(SESSION_TOKEN_KEY, token);
+};
+
+const clearSessionToken = () => {
+  localStorage.removeItem(SESSION_TOKEN_KEY);
+  sessionStorage.removeItem(SESSION_TOKEN_KEY);
+};
+
 const request = async (path, options = {}) => {
-  const sessionToken = localStorage.getItem(SESSION_TOKEN_KEY);
+  const sessionToken = getSessionToken();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     credentials: "include",
     headers: {
@@ -23,13 +38,13 @@ const request = async (path, options = {}) => {
 };
 
 export const apiClient = {
-  async login(email, password) {
+  async login(email, password, remember = true) {
     const data = await request("/auth/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember }),
     });
     if (data.sessionToken) {
-      localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
+      saveSessionToken(data.sessionToken, remember);
     }
     return data;
   },
@@ -40,7 +55,7 @@ export const apiClient = {
       body: JSON.stringify({ email, password }),
     });
     if (data.sessionToken) {
-      localStorage.setItem(SESSION_TOKEN_KEY, data.sessionToken);
+      saveSessionToken(data.sessionToken, true);
     }
     return data;
   },
@@ -49,7 +64,7 @@ export const apiClient = {
     try {
       return await request("/auth/logout", { method: "POST" });
     } finally {
-      localStorage.removeItem(SESSION_TOKEN_KEY);
+      clearSessionToken();
     }
   },
 
@@ -87,6 +102,12 @@ export const apiClient = {
     return request(`/resources/${resourceId}`, {
       method: "PUT",
       body: JSON.stringify(resource),
+    });
+  },
+
+  archiveResource(resourceId) {
+    return request(`/resources/${resourceId}`, {
+      method: "DELETE",
     });
   },
 

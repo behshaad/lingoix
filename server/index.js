@@ -20,6 +20,8 @@ const SKILL_AREAS = [
 ];
 const REVIEW_STATUSES = ["approved", "rejected", "overridden"];
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const RESOURCE_STATUSES = ["draft", "published", "archived"];
+const RESOURCE_ATTACHMENT_TYPES = ["pdf", "audio", "video", "image", "link", "text"];
 
 initializeDatabase();
 
@@ -170,7 +172,36 @@ const serializeResource = (row) => ({
   skillArea: row.skill_area,
   sourceUrl: row.source_url,
   description: row.description,
+  status: row.status || "published",
+  attachments: jsonParse(row.attachments, []),
 });
+
+const normalizeResourceAttachments = (attachments) => {
+  const items = Array.isArray(attachments) ? attachments : [];
+  return items
+    .map((attachment, index) => ({
+      id: attachment.id || `attachment-${index + 1}`,
+      type: RESOURCE_ATTACHMENT_TYPES.includes(attachment.type) ? attachment.type : "link",
+      label: String(attachment.label || attachment.type || `Attachment ${index + 1}`).trim(),
+      value: String(attachment.value || attachment.url || attachment.path || attachment.content || "").trim(),
+    }))
+    .filter((attachment) => attachment.label && attachment.value);
+};
+
+const normalizeResourcePayload = (body, id) => {
+  const status = RESOURCE_STATUSES.includes(body.status) ? body.status : "published";
+  return {
+    id: id || body.id,
+    title: String(body.title || "").trim(),
+    type: String(body.type || "book").trim(),
+    cefrLevel: CEFR_LEVELS.includes(body.cefrLevel) ? body.cefrLevel : "A1",
+    skillArea: String(body.skillArea || "reading-comprehension").trim(),
+    sourceUrl: String(body.sourceUrl || "").trim(),
+    description: String(body.description || "").trim(),
+    status,
+    attachments: normalizeResourceAttachments(body.attachments),
+  };
+};
 
 const serializeExercise = (row) => ({
   id: row.id,
@@ -275,20 +306,22 @@ const normalizeEmail = (email) => String(email || "").trim().toLowerCase();
 
 const isValidEmail = (email) => /^\S+@\S+\.\S+$/.test(email);
 
-const createSession = (account, res) => {
+const createSession = (account, res, remember = true) => {
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + 7 * DAY_MS).toISOString();
+  const durationMs = remember ? 30 * DAY_MS : 1 * DAY_MS;
+  const expiresAt = new Date(Date.now() + durationMs).toISOString();
   db.prepare("INSERT INTO sessions (token, account_id, expires_at) VALUES (?, ?, ?)").run(
     token,
     account.id,
     expiresAt
   );
 
-  res.cookie(SESSION_COOKIE, token, {
+  const cookieOptions = {
     httpOnly: true,
     sameSite: "lax",
-    maxAge: 7 * DAY_MS,
-  });
+  };
+  if (remember) cookieOptions.maxAge = durationMs;
+  res.cookie(SESSION_COOKIE, token, cookieOptions);
 
   return token;
 };
@@ -800,6 +833,7 @@ app.get("/api/health", (req, res) => {
 
 app.post("/api/auth/login", (req, res) => {
   const { password } = req.body;
+  const remember = req.body.remember !== false;
   const email = normalizeEmail(req.body.email);
   const account = db.prepare("SELECT * FROM accounts WHERE email = ?").get(email);
   if (!account || !bcrypt.compareSync(password || "", account.password_hash)) {
@@ -807,7 +841,7 @@ app.post("/api/auth/login", (req, res) => {
     return;
   }
 
-  const token = createSession(account, res);
+  const token = createSession(account, res, remember);
   res.json({ account: publicAccount(account), sessionToken: token });
 });
 
@@ -945,25 +979,47 @@ app.get("/api/learners/:learnerId", requireAuth, (req, res) => {
 });
 
 app.get("/api/resources", requireAuth, (req, res) => {
-  res.json({ resources: db.prepare("SELECT * FROM resources ORDER BY title").all().map(serializeResource) });
+  const includeArchived = req.account.role === "platform_admin";
+  const rows = includeArchived
+    ? db.prepare("SELECT * FROM resources ORDER BY status, title").all()
+    : db.prepare("SELECT * FROM resources WHERE status = 'published' ORDER BY title").all();
+  res.json({ resources: rows.map(serializeResource) });
 });
 
 app.post("/api/resources", requireAuth, requireRoles("platform_admin"), (req, res) => {
-  const resource = req.body;
+  const resource = normalizeResourcePayload(req.body);
   db.prepare(
-    `INSERT INTO resources (id, title, type, cefr_level, skill_area, source_url, description)
-     VALUES (@id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description)`
-  ).run(resource);
+    `INSERT INTO resources (id, title, type, cefr_level, skill_area, source_url, description, status, attachments)
+     VALUES (@id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description, @status, @attachments)`
+  ).run({
+    ...resource,
+    attachments: JSON.stringify(resource.attachments),
+  });
   res.status(201).json({ resource });
 });
 
 app.put("/api/resources/:resourceId", requireAuth, requireRoles("platform_admin"), (req, res) => {
-  const resource = { ...req.body, id: req.params.resourceId };
+  const resource = normalizeResourcePayload(req.body, req.params.resourceId);
   db.prepare(
     `UPDATE resources SET title=@title, type=@type, cefr_level=@cefrLevel,
-     skill_area=@skillArea, source_url=@sourceUrl, description=@description WHERE id=@id`
-  ).run(resource);
+     skill_area=@skillArea, source_url=@sourceUrl, description=@description,
+     status=@status, attachments=@attachments WHERE id=@id`
+  ).run({
+    ...resource,
+    attachments: JSON.stringify(resource.attachments),
+  });
   res.json({ resource });
+});
+
+app.delete("/api/resources/:resourceId", requireAuth, requireRoles("platform_admin"), (req, res) => {
+  const existing = db.prepare("SELECT * FROM resources WHERE id = ?").get(req.params.resourceId);
+  if (!existing) {
+    res.status(404).json({ error: "resource_not_found" });
+    return;
+  }
+  db.prepare("UPDATE resources SET status = 'archived' WHERE id = ?").run(req.params.resourceId);
+  const resource = db.prepare("SELECT * FROM resources WHERE id = ?").get(req.params.resourceId);
+  res.json({ resource: serializeResource(resource) });
 });
 
 app.get("/api/exercises", requireAuth, (req, res) => {

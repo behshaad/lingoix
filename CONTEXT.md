@@ -156,6 +156,14 @@ _Avoid_: Exercise, task
 A resource that is visible to learners in resource browsing and can be recommended or linked from learning paths according to learner profile fit.
 _Avoid_: Draft resource, admin-only resource, uploaded file
 
+**Draft Resource**:
+A resource being prepared or reviewed inside the admin panel that is not visible to learners.
+_Avoid_: Published resource, hidden file, incomplete upload
+
+**Archived Resource**:
+A resource removed from learner visibility while being kept for history, references, or later recovery.
+_Avoid_: Deleted resource, destroyed file, published resource
+
 **Resource Attachment**:
 A typed URL or path reference attached to a resource, such as a PDF, audio file, video, image, link, or text body that learners can consume.
 _Avoid_: Uploaded file, exercise asset, resource type

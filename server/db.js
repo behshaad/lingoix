@@ -120,6 +120,10 @@ const ensureContentColumns = () => {
   ];
 
   ensureColumns("exercises", additions);
+  ensureColumns("resources", [
+    ["status", "TEXT NOT NULL DEFAULT 'published'"],
+    ["attachments", "TEXT NOT NULL DEFAULT '[]'"],
+  ]);
   ensureColumns("learning_events", [
     ["response_value", "TEXT"],
     ["score", "REAL"],
@@ -183,12 +187,14 @@ const ensureSpeakingSeedData = () => {
     skillArea: "speaking-ability",
     sourceUrl: "",
     description: "Topic-based speaking prompts for greetings, food, entertainment, and daily life.",
+    status: "published",
+    attachments: JSON.stringify([]),
   };
   db.prepare(`
     INSERT OR IGNORE INTO resources (
-      id, title, type, cefr_level, skill_area, source_url, description
+      id, title, type, cefr_level, skill_area, source_url, description, status, attachments
     ) VALUES (
-      @id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description
+      @id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description, @status, @attachments
     )
   `).run(resource);
 
@@ -336,9 +342,9 @@ const seedDomainData = () => {
   `);
   const insertResource = db.prepare(`
     INSERT INTO resources (
-      id, title, type, cefr_level, skill_area, source_url, description
+      id, title, type, cefr_level, skill_area, source_url, description, status, attachments
     ) VALUES (
-      @id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description
+      @id, @title, @type, @cefrLevel, @skillArea, @sourceUrl, @description, 'published', '[]'
     )
   `);
   const insertExercise = db.prepare(`

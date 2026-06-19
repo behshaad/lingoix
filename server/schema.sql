@@ -48,7 +48,9 @@ CREATE TABLE IF NOT EXISTS resources (
   cefr_level TEXT NOT NULL,
   skill_area TEXT NOT NULL,
   source_url TEXT,
-  description TEXT NOT NULL
+  description TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'published',
+  attachments TEXT NOT NULL DEFAULT '[]'
 );
 
 CREATE TABLE IF NOT EXISTS exercises (

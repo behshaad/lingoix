@@ -23,7 +23,14 @@ const AppRouter = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/learning-path" element={<LearningPathPage />} />
-          <Route path="/resources" element={<ResourcesPage />} />
+          <Route
+            path="/resources"
+            element={
+              <ProtectedRoute allowedRoles={["learner", "teacher", "school_admin", "platform_admin"]}>
+                <ResourcesPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

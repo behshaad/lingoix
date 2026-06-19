@@ -1,129 +1,65 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useMobile } from "../../hooks/use-mobile";
-
+import { apiClient } from "../../services/apiClient";
 import ResourceFilter from "./ResourceFilter";
 import ResourceCard from "./ResourceCard";
-import SliderNavigation from "./SliderNavigation";
-import { getResources } from "../../services/learningDataService";
-import bookThumbnail from "../../assets/logo/GLOGO.png";
-import audioThumbnail from "../../assets/Headercards/playfulcat.svg";
-import grammarThumbnail from "../../assets/logo/logo.png";
-
-const thumbnailByType = {
-  audio: audioThumbnail,
-  book: bookThumbnail,
-  grammar: grammarThumbnail,
-  vocabulary: grammarThumbnail,
-};
-
-const resources = getResources().map((resource) => ({
-  ...resource,
-  thumbnail: thumbnailByType[resource.type] || grammarThumbnail,
-  date: resource.cefrLevel,
-}));
 
 export default function ResourcesPage() {
   const { t } = useTranslation();
+  const [resources, setResources] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredResources, setFilteredResources] = useState(resources);
-  const cardsRef = useRef(null);
-  const sliderRef = useRef(null);
-  const isMobile = useMobile();
-  const [sliderPosition, setSliderPosition] = useState(0);
+  const [status, setStatus] = useState("loading");
 
-  // Filter resources based on type and search query
   useEffect(() => {
-    const filtered = resources.filter((resource) => {
-      const matchesType =
-        activeFilter === "all" || resource.type === activeFilter;
-      const matchesSearch =
-        resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        resource.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesType && matchesSearch;
-    });
-    setFilteredResources(filtered);
-  }, [activeFilter, searchQuery]);
-
-  // GSAP animations
-  useEffect(() => {
-    if (!cardsRef.current) return;
-
-    // Clear any existing animations
-    gsap.killTweensOf(".resource-card");
-
-    // Animate cards on initial load and filter change
-    gsap.fromTo(
-      ".resource-card",
-      {
-        opacity: 0,
-        y: 50,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: "power2.out",
-      }
-    );
-
-    // Set up scroll animations
-    if (!isMobile) {
-      ScrollTrigger.batch(".resource-card", {
-        onEnter: (elements) => {
-          gsap.to(elements, {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "power2.out",
-          });
-        },
-        once: true,
+    let isMounted = true;
+    apiClient
+      .resources()
+      .then((data) => {
+        if (!isMounted) return;
+        setResources((data.resources || []).filter((resource) => resource.status === "published"));
+        setStatus("ready");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setStatus("failed");
       });
-    }
-  }, [filteredResources, isMobile]);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  // Handle slider navigation
-  const handleSliderNav = (direction) => {
-    if (!sliderRef.current) return;
-
-    const cardWidth =
-      sliderRef.current.querySelector(".resource-card")?.clientWidth || 300;
-    const gap = 16; // gap between cards
-    const containerWidth = sliderRef.current.clientWidth;
-    const maxPosition = -(
-      filteredResources.length * (cardWidth + gap) -
-      containerWidth
-    );
-
-    let newPosition =
-      direction === "next"
-        ? sliderPosition - (cardWidth + gap)
-        : sliderPosition + (cardWidth + gap);
-
-    // Clamp the position
-    newPosition = Math.max(Math.min(newPosition, 0), maxPosition);
-    setSliderPosition(newPosition);
-
-    gsap.to(".slider-container", {
-      x: newPosition,
-      duration: 0.5,
-      ease: "power2.out",
+  const filteredResources = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return resources.filter((resource) => {
+      const matchesType = activeFilter === "all" || resource.type === activeFilter;
+      const searchable = [resource.title, resource.description, resource.cefrLevel, resource.skillArea]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return matchesType && (!query || searchable.includes(query));
     });
-  };
+  }, [activeFilter, resources, searchQuery]);
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-2">{t("resourcePage.title")}</h1>
-        <p className="text-muted-foreground mb-8">
-          {t("resourcePage.subtitle")}
-        </p>
+    <main className="min-h-screen bg-[#f5f5f7] px-4 py-10 text-gray-950 dark:bg-gray-950 dark:text-white sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
+              {t("resourcePage.eyebrow", "Resource Library")}
+            </p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight">
+              {t("resourcePage.title")}
+            </h1>
+            <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-300">
+              {t("resourcePage.subtitle")}
+            </p>
+          </div>
+          <div className="rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm dark:bg-gray-900 dark:text-gray-300">
+            {filteredResources.length} {t("admin.resources", "Resources")}
+          </div>
+        </div>
 
         <ResourceFilter
           activeFilter={activeFilter}
@@ -132,44 +68,32 @@ export default function ResourcesPage() {
           setSearchQuery={setSearchQuery}
         />
 
-        {filteredResources.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-muted-foreground">
-              No resources found matching your criteria.
-            </p>
+        {status === "loading" && (
+          <div className="rounded-2xl bg-white p-6 text-sm text-gray-500 shadow-sm dark:bg-gray-900">
+            {t("practice.loading")}
           </div>
-        ) : isMobile ? (
-          <div className="relative">
-            <div ref={sliderRef} className="overflow-hidden">
-              <div
-                className="slider-container flex gap-4"
-                style={{ transform: `translateX(${sliderPosition}px)` }}
-              >
-                {filteredResources.map((resource) => (
-                  <ResourceCard key={resource.id} resource={resource} />
-                ))}
-              </div>
-            </div>
+        )}
 
-            {/* استفاده از کامپوننت SliderNavigation */}
-            <SliderNavigation
-              sliderPosition={sliderPosition}
-              handleSliderNav={handleSliderNav}
-              filteredResources={filteredResources}
-              sliderRef={sliderRef}
-            />
+        {status === "failed" && (
+          <div className="rounded-2xl bg-white p-6 text-sm text-gray-500 shadow-sm dark:bg-gray-900">
+            {t("resourcePage.loadFailed", "Could not load resources. Please sign in again.")}
           </div>
-        ) : (
-          <div
-            ref={cardsRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+        )}
+
+        {status === "ready" && filteredResources.length === 0 && (
+          <div className="rounded-2xl bg-white p-10 text-center text-gray-500 shadow-sm dark:bg-gray-900">
+            {t("resourcePage.empty", "No published resources match your filters.")}
+          </div>
+        )}
+
+        {status === "ready" && filteredResources.length > 0 && (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredResources.map((resource) => (
               <ResourceCard key={resource.id} resource={resource} />
             ))}
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

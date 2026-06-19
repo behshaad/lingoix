@@ -13,6 +13,7 @@ import {
   Plus,
   RotateCcw,
   Save,
+  Trash2,
   Users,
   X,
 } from "lucide-react";
@@ -30,6 +31,8 @@ const emptyResource = {
   skillArea: "reading-comprehension",
   sourceUrl: "",
   description: "",
+  status: "published",
+  attachments: [],
 };
 
 const emptyExercise = {
@@ -52,6 +55,9 @@ const emptyExercise = {
 };
 
 const interactionTypes = ["flashcard", "multiple_choice", "writing_prompt", "listening_check", "conversation_practice"];
+const resourceTypes = ["book", "audio", "video", "grammar", "vocabulary", "conversation", "pdf", "link"];
+const resourceStatuses = ["draft", "published", "archived"];
+const attachmentTypes = ["pdf", "audio", "video", "image", "link", "text"];
 
 const choicesDraftValue = (choices) => {
   if (Array.isArray(choices)) return choices.join("\n");
@@ -81,6 +87,13 @@ const defaultRuleForInteraction = (interactionType) => {
   if (interactionType === "conversation_practice") return { type: "contains_keywords", minLength: 0, keywords: [] };
   return { type: "self_assessed", minLength: 0, keywords: [] };
 };
+
+const normalizeResourceDraft = (resource) => ({
+  ...emptyResource,
+  ...resource,
+  status: resource?.status || "published",
+  attachments: Array.isArray(resource?.attachments) ? resource.attachments : [],
+});
 
 const scoringRulesForInteraction = (interactionType) => {
   if (interactionType === "multiple_choice") return ["exact_choice"];
@@ -326,14 +339,49 @@ const AdminPage = () => {
   const saveResource = async (event) => {
     event.preventDefault();
     const exists = resources.some((resource) => resource.id === resourceDraft.id);
+    const payload = normalizeResourceDraft(resourceDraft);
     if (exists) {
-      await apiClient.updateResource(resourceDraft.id, resourceDraft);
+      await apiClient.updateResource(payload.id, payload);
       setStatusMessage(t("admin.resourceSaved", "Resource saved."));
     } else {
-      await apiClient.createResource(resourceDraft);
+      await apiClient.createResource(payload);
       setStatusMessage(t("admin.resourceCreated", "Resource created."));
     }
     await loadAdminData();
+  };
+
+  const archiveResource = async () => {
+    if (!resourceDraft.id || !resources.some((resource) => resource.id === resourceDraft.id)) return;
+    await apiClient.archiveResource(resourceDraft.id);
+    setStatusMessage(t("admin.resourceArchived", "Resource deleted from learner resources."));
+    setResourceDraft({ ...emptyResource, id: `resource-${Date.now()}` });
+    await loadAdminData();
+  };
+
+  const updateAttachment = (index, patch) => {
+    setResourceDraft((current) => ({
+      ...current,
+      attachments: (current.attachments || []).map((attachment, attachmentIndex) =>
+        attachmentIndex === index ? { ...attachment, ...patch } : attachment
+      ),
+    }));
+  };
+
+  const addAttachment = () => {
+    setResourceDraft((current) => ({
+      ...current,
+      attachments: [
+        ...(current.attachments || []),
+        { id: `attachment-${Date.now()}`, type: "link", label: "", value: "" },
+      ],
+    }));
+  };
+
+  const removeAttachment = (index) => {
+    setResourceDraft((current) => ({
+      ...current,
+      attachments: (current.attachments || []).filter((_, attachmentIndex) => attachmentIndex !== index),
+    }));
   };
 
   const saveExercise = async (event) => {
@@ -645,14 +693,26 @@ const AdminPage = () => {
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <h2 className="text-xl font-semibold">{t("admin.resourceEditor", "Resource editor")}</h2>
-                <button
-                  type="button"
-                  onClick={() => setResourceDraft({ ...emptyResource, id: `resource-${Date.now()}` })}
-                  className="rounded-md bg-gray-100 p-2 dark:bg-gray-800"
-                  disabled={!canEditContent}
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setResourceDraft({ ...emptyResource, id: `resource-${Date.now()}` })}
+                    className="rounded-md bg-gray-100 p-2 dark:bg-gray-800"
+                    disabled={!canEditContent}
+                    title={t("admin.newResource", "New resource")}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={archiveResource}
+                    className="rounded-md bg-red-50 p-2 text-red-600 disabled:opacity-40 dark:bg-red-950"
+                    disabled={!canEditContent || !resources.some((resource) => resource.id === resourceDraft.id)}
+                    title={t("admin.deleteResource", "Delete resource")}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
               <div className="space-y-3">
                 <TextInput
@@ -670,9 +730,20 @@ const AdminPage = () => {
                   value={resourceDraft.type}
                   onChange={(value) => setResourceDraft({ ...resourceDraft, type: value })}
                 >
-                  {["book", "audio", "grammar", "vocabulary"].map((type) => (
+                  {resourceTypes.map((type) => (
                     <option key={type} value={type}>
                       {type}
+                    </option>
+                  ))}
+                </SelectInput>
+                <SelectInput
+                  label={t("admin.status", "Status")}
+                  value={resourceDraft.status || "published"}
+                  onChange={(value) => setResourceDraft({ ...resourceDraft, status: value })}
+                >
+                  {resourceStatuses.map((status) => (
+                    <option key={status} value={status}>
+                      {domainLabel(status)}
                     </option>
                   ))}
                 </SelectInput>
@@ -708,6 +779,60 @@ const AdminPage = () => {
                   value={resourceDraft.description}
                   onChange={(value) => setResourceDraft({ ...resourceDraft, description: value })}
                 />
+                <div className="rounded-md border border-gray-200 p-3 dark:border-gray-800">
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                      {t("admin.attachments", "Attachments")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={addAttachment}
+                      disabled={!canEditContent}
+                      className="rounded-md bg-gray-100 p-2 dark:bg-gray-800"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="space-y-3">
+                    {(resourceDraft.attachments || []).map((attachment, index) => (
+                      <div key={attachment.id || index} className="rounded-md bg-gray-50 p-3 dark:bg-gray-950">
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-[120px_1fr_auto]">
+                          <select
+                            value={attachment.type || "link"}
+                            onChange={(event) => updateAttachment(index, { type: event.target.value })}
+                            className="rounded-md border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+                          >
+                            {attachmentTypes.map((type) => (
+                              <option key={type} value={type}>
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            value={attachment.label || ""}
+                            onChange={(event) => updateAttachment(index, { label: event.target.value })}
+                            placeholder={t("admin.attachmentLabel", "Label")}
+                            className="rounded-md border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeAttachment(index)}
+                            className="rounded-md bg-red-50 p-2 text-red-600 dark:bg-red-950"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          value={attachment.value || ""}
+                          onChange={(event) => updateAttachment(index, { value: event.target.value })}
+                          placeholder={t("admin.attachmentValue", "URL, path, or text content")}
+                          rows={attachment.type === "text" ? 3 : 1}
+                          className="mt-2 w-full rounded-md border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <button
                   type="submit"
                   disabled={!canEditContent}
@@ -723,7 +848,7 @@ const AdminPage = () => {
               {resources.map((resource) => (
                 <button
                   key={resource.id}
-                  onClick={() => setResourceDraft(resource)}
+                  onClick={() => setResourceDraft(normalizeResourceDraft(resource))}
                   className="rounded-lg border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-emerald-500 dark:border-gray-700 dark:bg-gray-900"
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -732,7 +857,7 @@ const AdminPage = () => {
                       <h2 className="mt-1 text-lg font-semibold">{resourceTitle(resource)}</h2>
                     </div>
                     <span className="rounded-md bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-                      {resource.cefrLevel}
+                      {resource.cefrLevel} · {domainLabel(resource.status || "published")}
                     </span>
                   </div>
                   <p className="mt-3 text-gray-600 dark:text-gray-300">{resourceDescription(resource)}</p>
@@ -740,6 +865,11 @@ const AdminPage = () => {
                     <Pencil className="h-4 w-4" />
                     {domainLabel(resource.skillArea)}
                   </p>
+                  {!!resource.attachments?.length && (
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      {resource.attachments.length} {t("admin.attachments", "attachments")}
+                    </p>
+                  )}
                 </button>
               ))}
             </section>

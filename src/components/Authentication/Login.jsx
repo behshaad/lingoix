@@ -16,6 +16,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,8 +64,8 @@ const Login = () => {
   const handleLogin = async () => {
     if (validateForm()) {
       try {
-        const { account } = await apiClient.login(username, password);
-        saveAccountSession(account);
+        const { account } = await apiClient.login(username, password, rememberMe);
+        saveAccountSession(account, rememberMe);
         const fallbackPath = location.state?.from || accountHomePath(account);
         const homePath =
           account.role === "learner" && account.learnerId
@@ -131,7 +132,13 @@ const Login = () => {
           {/* گزینه‌های اضافی */}
           <div className="flex justify-between text-sm">
             <div className="flex items-center">
-              <input type="checkbox" id="remember" className="mr-2" />
+              <input
+                type="checkbox"
+                id="remember"
+                className="mr-2"
+                checked={rememberMe}
+                onChange={(event) => setRememberMe(event.target.checked)}
+              />
               <label htmlFor="remember">{t("auth.rememberMe")}</label>
             </div>
             <button
