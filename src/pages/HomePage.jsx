@@ -17,6 +17,7 @@ const HomePage = () => {
       <StepbyStep />
       <Product />
       <Footer />
+      
     </div>
   );
 };
