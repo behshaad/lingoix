@@ -9,6 +9,7 @@ import LearningStatistics from "../components/Students/LearningStatistics";
 import StudyReminder from "../components/Students/StudyReminder";
 import FlashCard from "../components/Students/FlashCard";
 import LanguagePerformanceProfile from "../components/Dashboard/LanguagePerformanceProfile";
+import GamifiedRoadmap from "../components/Roadmap/GamifiedRoadmap";
 import { apiClient } from "../services/apiClient";
 
 const Dashboard = () => {
@@ -63,9 +64,12 @@ const Dashboard = () => {
       <p className="text-base text-gray-700 dark:text-gray-300">
         {t("welcome_dashboard")} {learner.name} · {learner.cefrLevel}
       </p>
+      <div className="mt-6">
+        <GamifiedRoadmap items={learner.learningPath || []} variant="dashboard" />
+      </div>
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t("learnerDashboard.learningPath")}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{t("roadmap.pathProgress", "Path Progress")}</p>
           <p className="mt-2 text-xl font-semibold">{learner.currentLesson}</p>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {t("learnerDashboard.complete", { value: learner.progressPercent })}
@@ -111,6 +115,9 @@ const Dashboard = () => {
         <StudyReminder />
       </div>
       <div className="max-w-6xl mx-auto px-6 py-8">
+        <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+          {t("roadmap.freePractice", "Free Practice")}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <FlashCard />

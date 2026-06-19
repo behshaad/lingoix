@@ -128,26 +128,39 @@ const publicAccount = (account) => {
   };
 };
 
-const serializeLearner = (row) => ({
-  id: row.id,
-  name: row.name,
-  email: row.email,
-  cefrLevel: row.cefr_level,
-  nativeLanguage: row.native_language,
-  targetLanguage: row.target_language,
-  goal: row.goal,
-  classId: row.class_id,
-  className: row.class_name,
-  teacher: row.teacher,
-  school: row.school,
-  currentLesson: row.current_lesson,
-  learningPath: jsonParse(row.learning_path, []),
-  performance: jsonParse(row.performance, {}),
-  progressPercent: row.progress_percent,
-  completedExercises: row.completed_exercises,
-  accuracy: row.accuracy,
-  averageResponseMs: row.average_response_ms,
-});
+const serializeLearner = (row) => {
+  const base = {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    cefrLevel: row.cefr_level,
+    nativeLanguage: row.native_language,
+    targetLanguage: row.target_language,
+    goal: row.goal,
+    classId: row.class_id,
+    className: row.class_name,
+    teacher: row.teacher,
+    school: row.school,
+    currentLesson: row.current_lesson,
+    performance: jsonParse(row.performance, {}),
+    progressPercent: row.progress_percent,
+    completedExercises: row.completed_exercises,
+    accuracy: row.accuracy,
+    averageResponseMs: row.average_response_ms,
+  };
+  const learningPath = normalizeLearningPathItems(jsonParse(row.learning_path, []), base);
+  const nextItem =
+    learningPath.find((item) => item.status === "next") ||
+    learningPath.find((item) => item.status === "in_progress") ||
+    learningPath.find((item) => item.status !== "done");
+
+  return {
+    ...base,
+    currentLesson: nextItem?.title || row.current_lesson,
+    learningPath,
+    progressPercent: pathProgressPercent(learningPath),
+  };
+};
 
 const serializeResource = (row) => ({
   id: row.id,
@@ -289,6 +302,109 @@ const buildInitialPerformance = () => ({
   "translation-direction": 0,
   "speaking-ability": 0,
 });
+
+const slugify = (value) =>
+  String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const buildLearningPathItem = ({
+  id,
+  type = "lesson",
+  title,
+  status = "locked",
+  cefrLevel = "A1",
+  skillArea = "vocabulary-recall",
+  exerciseIds = [],
+}) => ({
+  id: id || `path-${slugify(title)}`,
+  type,
+  title: title || "Learning path item",
+  status,
+  cefrLevel,
+  skillArea,
+  exerciseIds,
+});
+
+const buildInitialLearningPath = (cefrLevel) => [
+  buildLearningPathItem({
+    id: `setup-${cefrLevel.toLowerCase()}`,
+    type: "lesson",
+    title: "Learner profile setup",
+    status: "done",
+    cefrLevel,
+    skillArea: "vocabulary-recall",
+  }),
+  buildLearningPathItem({
+    id: `orientation-${cefrLevel.toLowerCase()}`,
+    type: "lesson",
+    title: `${cefrLevel} orientation`,
+    status: "next",
+    cefrLevel,
+    skillArea: "reading-comprehension",
+  }),
+  buildLearningPathItem({
+    id: `matched-resources-${cefrLevel.toLowerCase()}`,
+    type: "review",
+    title: "Matched resources",
+    status: "locked",
+    cefrLevel,
+    skillArea: "listening-comprehension",
+  }),
+  buildLearningPathItem({
+    id: `first-practice-${cefrLevel.toLowerCase()}`,
+    type: "exercise",
+    title: "First practice session",
+    status: "locked",
+    cefrLevel,
+    skillArea: "grammar-accuracy",
+  }),
+  buildLearningPathItem({
+    id: `conversation-${cefrLevel.toLowerCase()}`,
+    type: "exercise",
+    title: "Conversation warm-up",
+    status: "locked",
+    cefrLevel,
+    skillArea: "speaking-ability",
+    exerciseIds: ["exercise-speaking-greetings"],
+  }),
+];
+
+const normalizeLearningPathItems = (rawPath, learner = {}) => {
+  const items = Array.isArray(rawPath) ? rawPath : [];
+  if (!items.length) return buildInitialLearningPath(learner.cefrLevel || learner.cefr_level || "A1");
+
+  const doneCount = Math.round((items.length * Number(learner.progressPercent || learner.progress_percent || 0)) / 100);
+  return items.map((item, index) => {
+    if (item && typeof item === "object" && item.id && item.title) {
+      return buildLearningPathItem({
+        ...item,
+        status: item.status || (index === 0 ? "next" : "locked"),
+        cefrLevel: item.cefrLevel || learner.cefrLevel || learner.cefr_level || "A1",
+        skillArea: item.skillArea || SKILL_AREAS[index % SKILL_AREAS.length],
+        exerciseIds: Array.isArray(item.exerciseIds) ? item.exerciseIds : [],
+      });
+    }
+
+    const title = String(item || `Path item ${index + 1}`);
+    const status = index < doneCount ? "done" : index === doneCount ? "next" : "locked";
+    return buildLearningPathItem({
+      id: `${learner.id || learner.email || "learner"}-path-${index + 1}`,
+      type: index % 4 === 3 ? "review" : index % 2 === 0 ? "lesson" : "exercise",
+      title,
+      status,
+      cefrLevel: learner.cefrLevel || learner.cefr_level || "A1",
+      skillArea: SKILL_AREAS[index % SKILL_AREAS.length],
+    });
+  });
+};
+
+const pathProgressPercent = (items) => {
+  if (!items.length) return 0;
+  const doneCount = items.filter((item) => item.status === "done").length;
+  return Math.round((doneCount / items.length) * 100);
+};
 
 const learnerScopeClause = (account) => {
   if (account.role === "platform_admin") return { sql: "", params: [] };
@@ -654,10 +770,26 @@ const applyAdaptiveDecision = (decision) => {
   const learner = getLearnerBundle(decision.learner_id);
   if (!learner) return;
   const currentPath = Array.isArray(learner.learningPath) ? learner.learningPath : [];
-  const insertionLabel = `Targeted exercise insertion: ${decision.subskill}`;
-  if (currentPath.includes(insertionLabel)) return;
+  const insertionId = `targeted-${decision.id}`;
+  if (currentPath.some((item) => item.id === insertionId)) return;
+  const targetedExerciseIds =
+    decision.status === "overridden" && decision.override_targeted_exercise_ids
+      ? jsonParse(decision.override_targeted_exercise_ids, [])
+      : jsonParse(decision.targeted_exercise_ids, []);
+  const insertion = buildLearningPathItem({
+    id: insertionId,
+    type: "targeted_exercise_insertion",
+    title: `Targeted practice: ${decision.subskill}`,
+    status: "next",
+    cefrLevel: learner.cefrLevel,
+    skillArea: decision.skill_area,
+    exerciseIds: targetedExerciseIds,
+  });
+  const demotedPath = currentPath.map((item) =>
+    item.status === "next" ? { ...item, status: "in_progress" } : item
+  );
   db.prepare("UPDATE learners SET learning_path = ? WHERE id = ?").run(
-    JSON.stringify([...currentPath, insertionLabel]),
+    JSON.stringify([...demotedPath, insertion]),
     decision.learner_id
   );
 };
@@ -753,13 +885,7 @@ app.post("/api/learners/profile", requireAuth, requireRoles("learner"), (req, re
   const goal = String(req.body.goal || "general").trim() || "general";
   const displayName = String(req.body.name || req.account.display_name || req.account.email.split("@")[0]).trim();
   const learnerId = `learner-${crypto.randomUUID()}`;
-  const now = new Date().toISOString();
-  const learningPath = [
-    "Learner profile setup",
-    `${cefrLevel} orientation`,
-    "Matched resources",
-    "First practice session",
-  ];
+  const learningPath = buildInitialLearningPath(cefrLevel);
 
   const transaction = db.transaction(() => {
     db.prepare(`

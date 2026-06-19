@@ -296,6 +296,32 @@
     "translationProduction": "Translation production {{number}}",
     "translationRecognition": "Translation recognition {{number}}"
   },
+  "roadmap": {
+    "empty": "Your roadmap will appear after learner profile setup.",
+    "todayPath": "Today's Path",
+    "title": "Gamified Roadmap",
+    "dashboardTitle": "Choose your next station",
+    "pathTitle": "Scroll your learning stations",
+    "pathProgress": "Path Progress",
+    "freePractice": "Free Practice",
+    "stationDescription": "Open this station to continue the linked lesson, exercise, review, or assessment.",
+    "openStation": "Open station",
+    "lockedStation": "Locked",
+    "status": {
+      "done": "Done",
+      "next": "Next",
+      "in_progress": "In progress",
+      "targeted": "Targeted",
+      "locked": "Locked"
+    },
+    "types": {
+      "lesson": "Lesson",
+      "exercise": "Exercise",
+      "review": "Review",
+      "assessment": "Assessment",
+      "targeted_exercise_insertion": "Targeted practice"
+    }
+  },
   "learnerDashboard": {
     "learningPath": "Learning Path",
     "languagePerformance": "Language Performance",

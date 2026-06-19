@@ -297,6 +297,32 @@
     "translationProduction": "Übersetzung produzieren {{number}}",
     "translationRecognition": "Übersetzung erkennen {{number}}"
   },
+  "roadmap": {
+    "empty": "Deine Roadmap erscheint nach der Einrichtung des Lernendenprofils.",
+    "todayPath": "Heutiger Pfad",
+    "title": "Gamifizierte Roadmap",
+    "dashboardTitle": "Wähle deine nächste Station",
+    "pathTitle": "Scrolle durch deine Lernstationen",
+    "pathProgress": "Pfadfortschritt",
+    "freePractice": "Freies Üben",
+    "stationDescription": "Öffne diese Station, um die verknüpfte Lektion, Übung, Wiederholung oder Bewertung fortzusetzen.",
+    "openStation": "Station öffnen",
+    "lockedStation": "Gesperrt",
+    "status": {
+      "done": "Erledigt",
+      "next": "Nächste",
+      "in_progress": "In Arbeit",
+      "targeted": "Gezielt",
+      "locked": "Gesperrt"
+    },
+    "types": {
+      "lesson": "Lektion",
+      "exercise": "Übung",
+      "review": "Wiederholung",
+      "assessment": "Bewertung",
+      "targeted_exercise_insertion": "Gezieltes Üben"
+    }
+  },
   "learnerDashboard": {
     "learningPath": "Lernpfad",
     "languagePerformance": "Sprachleistung",

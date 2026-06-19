@@ -307,6 +307,32 @@
     "translationProduction": "تولید ترجمه {{number}}",
     "translationRecognition": "تشخیص ترجمه {{number}}"
   },
+  "roadmap": {
+    "empty": "مسیر شما پس از تکمیل نمایه یادگیرنده نمایش داده می‌شود.",
+    "todayPath": "مسیر امروز",
+    "title": "نقشه راه بازی‌وار",
+    "dashboardTitle": "ایستگاه بعدی خود را انتخاب کنید",
+    "pathTitle": "در ایستگاه‌های یادگیری حرکت کنید",
+    "pathProgress": "پیشرفت مسیر",
+    "freePractice": "تمرین آزاد",
+    "stationDescription": "این ایستگاه را باز کنید تا درس، تمرین، مرور یا ارزیابی مرتبط را ادامه دهید.",
+    "openStation": "باز کردن ایستگاه",
+    "lockedStation": "قفل است",
+    "status": {
+      "done": "انجام شده",
+      "next": "بعدی",
+      "in_progress": "در حال انجام",
+      "targeted": "هدفمند",
+      "locked": "قفل"
+    },
+    "types": {
+      "lesson": "درس",
+      "exercise": "تمرین",
+      "review": "مرور",
+      "assessment": "ارزیابی",
+      "targeted_exercise_insertion": "تمرین هدفمند"
+    }
+  },
   "learnerDashboard": {
     "learningPath": "مسیر یادگیری",
     "languagePerformance": "عملکرد زبانی",

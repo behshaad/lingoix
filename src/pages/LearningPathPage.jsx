@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BookOpen, Brain, CheckCircle2, Languages, LineChart, MessageCircle } from "lucide-react";
 import { saveLearnerEntryIntent } from "../services/authSession";
+import { apiClient } from "../services/apiClient";
+import GamifiedRoadmap from "../components/Roadmap/GamifiedRoadmap";
 
 const steps = [
   { icon: Languages, titleKey: "learningPath.steps.profile", detailKey: "learningPath.details.profile" },
@@ -15,6 +18,28 @@ const steps = [
 const LearningPathPage = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "fa";
+  const [learner, setLearner] = useState(null);
+  const [isLoadingLearner, setIsLoadingLearner] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadLearner = async () => {
+      try {
+        const { account } = await apiClient.me();
+        if (!account?.learnerId) return;
+        const data = await apiClient.learner(account.learnerId);
+        if (isMounted) setLearner(data.learner);
+      } catch {
+        if (isMounted) setLearner(null);
+      } finally {
+        if (isMounted) setIsLoadingLearner(false);
+      }
+    };
+    loadLearner();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <main dir={isRtl ? "rtl" : "ltr"} className="min-h-screen bg-white px-4 py-10 text-gray-950 dark:bg-gray-950 dark:text-white sm:px-6 lg:px-8">
@@ -45,6 +70,18 @@ const LearningPathPage = () => {
             </Link>
           </div>
         </div>
+
+        {learner && (
+          <div className="mt-10">
+            <GamifiedRoadmap items={learner.learningPath || []} variant="path" />
+          </div>
+        )}
+
+        {isLoadingLearner && (
+          <div className="mt-10 rounded-lg border border-gray-200 p-5 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-300">
+            {t("practice.loading")}
+          </div>
+        )}
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {steps.map((step) => {
