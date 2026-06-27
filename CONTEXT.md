@@ -240,6 +240,10 @@ _Avoid_: Course, group
 An authenticated identity used to access Lingoix with a role such as learner, teacher, school admin, or platform admin. An account is not the same as a learner profile; teacher and admin accounts do not require learner profiles.
 _Avoid_: Learner, Student, User
 
+**Account Profile**:
+The personal account settings surface where an authenticated account manages display name, contact details, short bio, and profile photo. An account profile is not the same as a learner profile and does not define learning goals, CEFR level, or adaptive-learning state.
+_Avoid_: Learner Profile, Student Profile, learning profile
+
 **Persistent Account Session**:
 An authenticated account session that remains available across browser restarts until logout or session expiry. This is the expected result when an account chooses to be remembered during login.
 _Avoid_: Permanent login, saved user

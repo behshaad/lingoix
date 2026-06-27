@@ -9,6 +9,9 @@ CREATE TABLE IF NOT EXISTS accounts (
   learner_id TEXT,
   teacher_name TEXT,
   school_name TEXT,
+  avatar_url TEXT,
+  phone TEXT NOT NULL DEFAULT '',
+  bio TEXT NOT NULL DEFAULT '',
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

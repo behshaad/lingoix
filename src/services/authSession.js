@@ -18,7 +18,9 @@ export const publicUserFromAccount = (account) => ({
   name: account.displayName,
   role: account.role,
   learnerId: account.learnerId,
-  profilePic: `https://i.pravatar.cc/150?u=${account.email}`,
+  profilePic: account.avatarUrl || "",
+  phone: account.phone || "",
+  bio: account.bio || "",
 });
 
 export const loadStoredUser = () => {

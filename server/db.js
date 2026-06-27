@@ -124,6 +124,11 @@ const ensureContentColumns = () => {
     ["status", "TEXT NOT NULL DEFAULT 'published'"],
     ["attachments", "TEXT NOT NULL DEFAULT '[]'"],
   ]);
+  ensureColumns("accounts", [
+    ["avatar_url", "TEXT"],
+    ["phone", "TEXT NOT NULL DEFAULT ''"],
+    ["bio", "TEXT NOT NULL DEFAULT ''"],
+  ]);
   ensureColumns("learning_events", [
     ["response_value", "TEXT"],
     ["score", "REAL"],

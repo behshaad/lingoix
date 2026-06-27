@@ -29,7 +29,7 @@ const researchOutputDir = path.join(__dirname, "..", "research", "adaptive_learn
 initializeDatabase();
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "3mb" }));
 app.use(cookieParser());
 
 const jsonParse = (value, fallback) => {
@@ -206,6 +206,9 @@ const publicAccount = (account) => {
     learnerId: account.learner_id,
     teacherName: account.teacher_name,
     schoolName: account.school_name,
+    avatarUrl: account.avatar_url,
+    phone: account.phone || "",
+    bio: account.bio || "",
   };
 };
 
@@ -979,6 +982,45 @@ app.post("/api/auth/logout", requireAuth, (req, res) => {
 
 app.get("/api/auth/me", requireAuth, (req, res) => {
   res.json({ account: publicAccount(req.account) });
+});
+
+app.put("/api/account/profile", requireAuth, (req, res) => {
+  const displayName = String(req.body.displayName || "").trim();
+  const phone = String(req.body.phone || "").trim().slice(0, 40);
+  const bio = String(req.body.bio || "").trim().slice(0, 280);
+  const avatarUrl = req.body.avatarUrl ? String(req.body.avatarUrl) : null;
+
+  if (!displayName) {
+    res.status(400).json({ error: "display_name_required" });
+    return;
+  }
+
+  if (avatarUrl && (!avatarUrl.startsWith("data:image/") || avatarUrl.length > 900000)) {
+    res.status(400).json({ error: "invalid_avatar" });
+    return;
+  }
+
+  db.prepare(
+    `UPDATE accounts
+     SET display_name = @displayName,
+       phone = @phone,
+       bio = @bio,
+       avatar_url = @avatarUrl
+     WHERE id = @id`
+  ).run({
+    id: req.account.id,
+    displayName,
+    phone,
+    bio,
+    avatarUrl,
+  });
+
+  if (req.account.learner_id) {
+    db.prepare("UPDATE learners SET name = ? WHERE id = ?").run(displayName, req.account.learner_id);
+  }
+
+  const account = db.prepare("SELECT * FROM accounts WHERE id = ?").get(req.account.id);
+  res.json({ account: publicAccount(account) });
 });
 
 app.get("/api/learners", requireAuth, (req, res) => {

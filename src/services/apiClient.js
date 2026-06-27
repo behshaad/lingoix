@@ -72,6 +72,13 @@ export const apiClient = {
     return request("/auth/me");
   },
 
+  updateAccountProfile(profile) {
+    return request("/account/profile", {
+      method: "PUT",
+      body: JSON.stringify(profile),
+    });
+  },
+
   learners() {
     return request("/learners");
   },

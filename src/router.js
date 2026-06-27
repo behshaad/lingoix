@@ -16,6 +16,7 @@ import LearningPathPage from "./pages/LearningPathPage.jsx";
 import ProfileSetupPage from "./pages/ProfileSetupPage.jsx";
 import AdaptiveLearningResearchPage from "./pages/AdaptiveLearningResearchPage.jsx";
 import ResearchGuidancePage from "./pages/ResearchGuidancePage.jsx";
+import AccountProfilePage from "./pages/AccountProfilePage.jsx";
 
 const AppRouter = () => {
   return (
@@ -61,6 +62,14 @@ const AppRouter = () => {
             element={
               <ProtectedRoute allowedRoles={["learner"]} requireLearnerProfile={false}>
                 <ProfileSetupPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/account/profile"
+            element={
+              <ProtectedRoute requireLearnerProfile={false}>
+                <AccountProfilePage />
               </ProtectedRoute>
             }
           />
