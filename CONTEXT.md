@@ -128,6 +128,10 @@ _Avoid_: Live evidence, debug snapshot, audit log
 Operational measures used to inspect adaptive learning behavior, such as proposed-decision approval rate, scoring reliability, learner improvement after targeted exercise insertion, time-to-mastery proxies, and exercise effectiveness. These metrics support research methodology but are not proof that the adaptive model is effective without a study design and real research data.
 _Avoid_: Research validation, proof, model accuracy
 
+**Research Results Index**:
+An admin-accessible navigation surface for generated research artifacts, including reports, figures, tables, datasets, model comparisons, guidance, and research-result pages. It organizes research outputs; it is not the same thing as the operational admin panel.
+_Avoid_: Admin overview, learner dashboard, resource library
+
 **Scoring Reliability**:
 The confidence that an exercise's scoring rule provides useful evidence for adaptive learning. Scoring reliability is not the same as educational correctness or teacher assessment.
 _Avoid_: Correctness, grading accuracy, assessment validity
