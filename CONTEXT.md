@@ -132,6 +132,10 @@ _Avoid_: Correctness, grading accuracy, assessment validity
 An operational estimate of how many learning events or days it takes for a learner to show stable recent performance in a skill or subskill. It is a proxy for mastery, not proof of mastery.
 _Avoid_: Mastery, final proficiency, CEFR achievement
 
+**Simulated Mastery Proxy**:
+A bounded score generated in a synthetic-data research simulation from recent accuracy, retention, response efficiency, and consistency. It is useful for comparing simulated learning outcomes, but it is not proof of CEFR mastery or real-world proficiency.
+_Avoid_: True mastery, CEFR mastery, real proficiency score
+
 **Synthetic Learner Dataset**:
 Generated learner profiles, simulated learning behavior, learning events, error patterns, adaptive decisions, and progress states used for development and demos before real learner data exists. Synthetic data can support product development, but it is not evidence that an adaptive model is accurate.
 _Avoid_: Real data, training data, research data
