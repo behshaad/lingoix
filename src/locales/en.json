@@ -181,7 +181,8 @@
   "nav": {
     "admin": "Admin",
     "practice": "Practice",
-    "research": "Research"
+    "research": "Research",
+    "researchGuidance": "Research Guidance"
   },
   "auth": {
     "email": "Email",
@@ -632,6 +633,145 @@
       "grammar_weakness": "grammar weakness",
       "reading_weakness": "reading weakness",
       "listening_weakness": "listening weakness"
+    }
+  },
+  "researchGuidance": {
+    "eyebrow": "Research Guidance",
+    "title": "How to Read the Adaptive Learning Research",
+    "subtitle": "A guided explanation of the synthetic dataset, machine-learning models, evaluation metrics, adaptive decisions, and the limits of what the results prove.",
+    "resultsLink": "Open results dashboard",
+    "sections": [
+      {
+        "icon": "overview",
+        "title": "Purpose of This Section",
+        "body": "This page explains the research prototype in human language. The results dashboard shows outputs; this guide explains why those outputs exist and how to interpret them.",
+        "points": [
+          "The study uses synthetic learner data because real learner data is unavailable.",
+          "The goal is to test whether injected learning patterns can be recovered by machine-learning models.",
+          "The results are useful for thesis methodology and product direction, not proof of real-world learning effectiveness."
+        ]
+      },
+      {
+        "icon": "pipeline",
+        "title": "Research Pipeline",
+        "body": "The pipeline starts by generating virtual learners, simulates hundreds of learning events per learner, engineers features, trains models, evaluates results, and writes the final report.",
+        "points": [
+          "Raw interactions become features such as error rate, hint use, retry frequency, retention, and mastery proxy.",
+          "The same seed reproduces the same learners, tables, figures, and report.",
+          "Generated ground truth is kept separate from model-discovered patterns."
+        ]
+      },
+      {
+        "icon": "classification",
+        "title": "Classification Models",
+        "body": "Classification models predict the learner weakness category. The important question is whether behavior features can identify vocabulary, grammar, reading, listening, or balanced learners.",
+        "points": [
+          "Random Forest is strong for feature importance and nonlinear patterns.",
+          "Logistic Regression is simple, fast, and interpretable.",
+          "SVM can separate complex boundaries but is less transparent.",
+          "CatBoost, XGBoost, and LightGBM are gradient-boosting models when available."
+        ]
+      },
+      {
+        "icon": "regression",
+        "title": "Regression Models",
+        "body": "Regression models estimate future simulated outcomes: future mastery proxy, future performance score, and next-session success probability.",
+        "points": [
+          "RMSE and MAE show prediction error.",
+          "R² shows how much target variance the model explains.",
+          "Linear Regression can win when the target is smooth and feature relationships are close to linear."
+        ]
+      },
+      {
+        "icon": "clustering",
+        "title": "Clustering Models",
+        "body": "Clustering models discover learner groups without using the hidden labels. This helps test whether behavioral patterns naturally form groups similar to the injected archetypes.",
+        "points": [
+          "K-Means is useful when groups are compact and roughly balanced.",
+          "Hierarchical clustering shows nested similarity structure.",
+          "DBSCAN searches for dense regions and may return few clusters when the dataset is small or diffuse."
+        ]
+      },
+      {
+        "icon": "recommendation",
+        "title": "Adaptive Decisions",
+        "body": "The recommendation engine is framed as Lingoix Adaptive Decisions. It turns recent performance and error patterns into difficulty, exercise type, review content, and next learning-path suggestions.",
+        "points": [
+          "Rule-based decisions are easier to audit and explain.",
+          "ML-based decisions can scale to richer patterns but need strong evidence presentation.",
+          "Adaptive decisions should be treated as proposed interventions until reviewed."
+        ]
+      },
+      {
+        "icon": "interpretation",
+        "title": "How to Interpret the Tables",
+        "body": "High model scores mean the pipeline recovered patterns that were intentionally embedded in the synthetic simulation. They do not mean the system has been validated with real learners.",
+        "points": [
+          "Use macro F1 to compare classifiers when classes are imbalanced.",
+          "Use RMSE and MAE to compare regressors.",
+          "Use Silhouette and Davies-Bouldin to compare cluster quality.",
+          "Use feature importance to explain which behaviors drive predictions."
+        ]
+      },
+      {
+        "icon": "validity",
+        "title": "Threats to Validity",
+        "body": "The strongest honest claim is methodological: the project demonstrates an end-to-end adaptive-learning research pipeline when real learner data is unavailable.",
+        "points": [
+          "Synthetic assumptions influence the results.",
+          "Labels are generated by the same simulation logic that creates behavior.",
+          "The mastery score is a proxy, not true CEFR mastery.",
+          "Real learner validation is future work."
+        ]
+      }
+    ],
+    "models": {
+      "title": "Model Guide",
+      "headers": ["Model", "Purpose", "How to Interpret It"],
+      "rows": [
+        {
+          "name": "Random Forest",
+          "purpose": "Predict weakness categories and estimate future scores using many decision trees.",
+          "interpretation": "Strong baseline for nonlinear data; feature importance helps explain the prediction."
+        },
+        {
+          "name": "CatBoost",
+          "purpose": "Gradient boosting classifier that often performs well on tabular data.",
+          "interpretation": "If it wins, the data likely benefits from boosted tree interactions."
+        },
+        {
+          "name": "Logistic Regression",
+          "purpose": "Linear classifier for weakness prediction.",
+          "interpretation": "Useful as an interpretable baseline; strong results suggest simple feature boundaries."
+        },
+        {
+          "name": "SVM",
+          "purpose": "Classifier that separates learners through a margin-based decision boundary.",
+          "interpretation": "Useful for complex boundaries, but harder to explain to nontechnical reviewers."
+        },
+        {
+          "name": "Linear Regression",
+          "purpose": "Predict future numeric outcomes from engineered features.",
+          "interpretation": "A strong result suggests the simulated target is smooth and feature-driven."
+        },
+        {
+          "name": "K-Means",
+          "purpose": "Group learners into a fixed number of clusters.",
+          "interpretation": "Best read as exploratory grouping, then compared with hidden archetypes."
+        }
+      ]
+    },
+    "steps": {
+      "title": "Recommended Reading Order",
+      "items": [
+        "Start with Dataset Characteristics to understand what was generated.",
+        "Read Feature Engineering to see how interactions became model inputs.",
+        "Compare Classification Results to identify the best weakness detector.",
+        "Compare Regression Results to understand future-performance prediction.",
+        "Review Clustering Results to see unsupervised learner groups.",
+        "Inspect Adaptive Decisions to understand how model outputs become learning-path suggestions.",
+        "Finish with Threats to Validity before making research claims."
+      ]
     }
   },
   "languages": [

@@ -182,7 +182,8 @@
   "nav": {
     "admin": "Administration",
     "practice": "Üben",
-    "research": "Forschung"
+    "research": "Forschung",
+    "researchGuidance": "Forschungsleitfaden"
   },
   "auth": {
     "email": "E-Mail",
@@ -633,6 +634,145 @@
       "grammar_weakness": "Grammatikschwäche",
       "reading_weakness": "Leseschwäche",
       "listening_weakness": "Hörschwäche"
+    }
+  },
+  "researchGuidance": {
+    "eyebrow": "Forschungsleitfaden",
+    "title": "So liest man die adaptive Lernforschung",
+    "subtitle": "Eine geführte Erklärung des synthetischen Datensatzes, der ML-Modelle, Bewertungsmetriken, adaptiven Entscheidungen und der Grenzen der Ergebnisse.",
+    "resultsLink": "Ergebnis-Dashboard öffnen",
+    "sections": [
+      {
+        "icon": "overview",
+        "title": "Zweck dieses Abschnitts",
+        "body": "Diese Seite erklärt den Forschungsprototyp in verständlicher Sprache. Das Ergebnis-Dashboard zeigt Outputs; dieser Leitfaden erklärt, warum diese Outputs existieren und wie sie zu interpretieren sind.",
+        "points": [
+          "Die Studie nutzt synthetische Lerndaten, weil reale Lerndaten nicht verfügbar sind.",
+          "Ziel ist zu prüfen, ob injizierte Lernmuster durch ML-Modelle wiedergefunden werden können.",
+          "Die Ergebnisse unterstützen Thesis-Methodik und Produktentwicklung, sind aber kein Nachweis realer Lerneffektivität."
+        ]
+      },
+      {
+        "icon": "pipeline",
+        "title": "Forschungspipeline",
+        "body": "Die Pipeline generiert virtuelle Lernende, simuliert hunderte Lernereignisse pro Lernendem, erstellt Features, trainiert Modelle, bewertet Ergebnisse und schreibt den Abschlussbericht.",
+        "points": [
+          "Rohinteraktionen werden zu Features wie Fehlerrate, Hinweisnutzung, Wiederholversuchen, Retention und Mastery-Proxy.",
+          "Ein fester Seed erzeugt dieselben Lernenden, Tabellen, Abbildungen und Berichte.",
+          "Generierte Ground Truth bleibt von modellentdeckten Mustern getrennt."
+        ]
+      },
+      {
+        "icon": "classification",
+        "title": "Klassifikationsmodelle",
+        "body": "Klassifikationsmodelle sagen die Schwächenkategorie eines Lernenden voraus. Entscheidend ist, ob Verhaltensfeatures Wortschatz-, Grammatik-, Lese-, Hörschwächen oder ausgewogene Lernende erkennen.",
+        "points": [
+          "Random Forest ist stark für Feature Importance und nichtlineare Muster.",
+          "Logistic Regression ist einfach, schnell und interpretierbar.",
+          "SVM kann komplexe Grenzen trennen, ist aber weniger transparent.",
+          "CatBoost, XGBoost und LightGBM sind Gradient-Boosting-Modelle, wenn sie verfügbar sind."
+        ]
+      },
+      {
+        "icon": "regression",
+        "title": "Regressionsmodelle",
+        "body": "Regressionsmodelle schätzen zukünftige simulierte Outcomes: zukünftiger Mastery-Proxy, zukünftige Performance und Erfolgswahrscheinlichkeit der nächsten Sitzung.",
+        "points": [
+          "RMSE und MAE zeigen den Vorhersagefehler.",
+          "R² zeigt, wie viel Zielvarianz das Modell erklärt.",
+          "Linear Regression kann gewinnen, wenn das Ziel glatt ist und Feature-Beziehungen fast linear sind."
+        ]
+      },
+      {
+        "icon": "clustering",
+        "title": "Clustering-Modelle",
+        "body": "Clustering-Modelle entdecken Gruppen ohne versteckte Labels. So lässt sich prüfen, ob Verhaltensmuster natürlich Gruppen bilden, die den injizierten Archetypen ähneln.",
+        "points": [
+          "K-Means ist nützlich bei kompakten, ungefähr ausgeglichenen Gruppen.",
+          "Hierarchisches Clustering zeigt verschachtelte Ähnlichkeitsstrukturen.",
+          "DBSCAN sucht dichte Regionen und kann bei kleinen oder diffusen Daten wenige Cluster finden."
+        ]
+      },
+      {
+        "icon": "recommendation",
+        "title": "Adaptive Entscheidungen",
+        "body": "Die Recommendation Engine wird in Lingoix als Adaptive Decision formuliert. Sie übersetzt aktuelle Leistung und Fehlermuster in Schwierigkeit, Übungstyp, Wiederholungsinhalt und nächste Lernpfad-Schritte.",
+        "points": [
+          "Regelbasierte Entscheidungen sind leichter prüfbar und erklärbar.",
+          "ML-basierte Entscheidungen skalieren auf reichere Muster, benötigen aber klare Evidenz.",
+          "Adaptive Entscheidungen sollten bis zur Prüfung als vorgeschlagene Interventionen behandelt werden."
+        ]
+      },
+      {
+        "icon": "interpretation",
+        "title": "Tabellen interpretieren",
+        "body": "Hohe Modellwerte bedeuten, dass die Pipeline Muster wiedergefunden hat, die absichtlich in die synthetische Simulation eingebettet wurden. Das ist keine Validierung mit realen Lernenden.",
+        "points": [
+          "Macro-F1 eignet sich zum Vergleich von Klassifikatoren bei unausgeglichenen Klassen.",
+          "RMSE und MAE eignen sich zum Vergleich von Regressoren.",
+          "Silhouette und Davies-Bouldin vergleichen Clusterqualität.",
+          "Feature Importance erklärt, welche Verhaltensmerkmale Vorhersagen treiben."
+        ]
+      },
+      {
+        "icon": "validity",
+        "title": "Bedrohungen der Validität",
+        "body": "Die stärkste ehrliche Aussage ist methodisch: Das Projekt demonstriert eine vollständige adaptive Lernforschungspipeline, wenn reale Lerndaten fehlen.",
+        "points": [
+          "Synthetische Annahmen beeinflussen die Ergebnisse.",
+          "Labels werden durch dieselbe Simulationslogik erzeugt wie das Verhalten.",
+          "Der Mastery Score ist ein Proxy, kein echter CEFR-Nachweis.",
+          "Validierung mit realen Lernenden ist zukünftige Arbeit."
+        ]
+      }
+    ],
+    "models": {
+      "title": "Modellleitfaden",
+      "headers": ["Modell", "Zweck", "Interpretation"],
+      "rows": [
+        {
+          "name": "Random Forest",
+          "purpose": "Sagt Schwächenkategorien voraus und schätzt zukünftige Scores mit vielen Entscheidungsbäumen.",
+          "interpretation": "Starke Baseline für nichtlineare Daten; Feature Importance hilft bei der Erklärung."
+        },
+        {
+          "name": "CatBoost",
+          "purpose": "Gradient-Boosting-Klassifikator, der oft gut auf tabellarischen Daten funktioniert.",
+          "interpretation": "Wenn er gewinnt, profitiert der Datensatz wahrscheinlich von geboosteten Bauminteraktionen."
+        },
+        {
+          "name": "Logistic Regression",
+          "purpose": "Linearer Klassifikator zur Schwächenvorhersage.",
+          "interpretation": "Interpretierbare Baseline; starke Ergebnisse deuten auf einfache Feature-Grenzen hin."
+        },
+        {
+          "name": "SVM",
+          "purpose": "Klassifikator mit marginbasierter Entscheidungsgrenze.",
+          "interpretation": "Nützlich für komplexe Grenzen, aber schwieriger für nichttechnische Reviewende zu erklären."
+        },
+        {
+          "name": "Linear Regression",
+          "purpose": "Sagt zukünftige numerische Outcomes aus Features voraus.",
+          "interpretation": "Ein starkes Ergebnis deutet auf ein glattes, feature-getriebenes Simulationsziel hin."
+        },
+        {
+          "name": "K-Means",
+          "purpose": "Gruppiert Lernende in eine feste Anzahl von Clustern.",
+          "interpretation": "Als explorative Gruppierung lesen und danach mit versteckten Archetypen vergleichen."
+        }
+      ]
+    },
+    "steps": {
+      "title": "Empfohlene Lesereihenfolge",
+      "items": [
+        "Beginne mit den Datensatzmerkmalen, um zu verstehen, was generiert wurde.",
+        "Lies Feature Engineering, um zu sehen, wie Interaktionen zu Modelleingaben wurden.",
+        "Vergleiche Klassifikationsergebnisse, um den besten Schwächendetektor zu finden.",
+        "Vergleiche Regressionsergebnisse, um zukünftige Performance-Vorhersage zu verstehen.",
+        "Prüfe Clustering-Ergebnisse, um unüberwachte Lerngruppen zu sehen.",
+        "Lies Adaptive Entscheidungen, um zu verstehen, wie Modelloutputs zu Lernpfad-Vorschlägen werden.",
+        "Schließe mit Validitätsbedrohungen ab, bevor Forschungsclaims formuliert werden."
+      ]
     }
   },
   "languages": [

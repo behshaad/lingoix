@@ -61,6 +61,9 @@ const Navbar = () => {
               <Link to="/research/adaptive-learning" className="hover:text-gray-600 dark:hover:text-gray-300">
                 {t("nav.research")}
               </Link>
+              <Link to="/research/guidance" className="hover:text-gray-600 dark:hover:text-gray-300">
+                {t("nav.researchGuidance")}
+              </Link>
             </>
           )}
         </div>
