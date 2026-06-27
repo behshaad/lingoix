@@ -28,6 +28,10 @@ _Avoid_: Guest, logged-out user, broken learner
 The learner's intended learner-only destination when they enter the account and learner profile setup flow, such as opening the dashboard, learning path, or resources after setup. Auth pages and learner profile setup itself are not valid learner entry intents.
 _Avoid_: Button action, redirect flag, generic onboarding source
 
+**Remembered Login Email**:
+An email address that successfully signed in or signed up on the current device and can be suggested on the login form. A remembered login email is local convenience history, not proof that an account currently exists.
+_Avoid_: Account directory, registered email list, backend email suggestion
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
