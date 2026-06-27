@@ -196,6 +196,10 @@ _Avoid_: Dataset, question list, content bank
 A person who manages students, assignments, attendance, and class-level reports.
 _Avoid_: Admin, instructor
 
+**Teacher Assignment**:
+Work assigned by a teacher to students in a class. A teacher assignment is separate from a learner's adaptive today's path unless explicitly linked into the learning path.
+_Avoid_: Today's path, free practice, targeted exercise insertion
+
 **School Admin**:
 A person who manages teachers, classes, students, and institution-level reports for one school.
 _Avoid_: Admin, platform admin
