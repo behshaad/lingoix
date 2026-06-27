@@ -32,6 +32,10 @@ _Avoid_: Button action, redirect flag, generic onboarding source
 An email address that successfully signed in or signed up on the current device and can be suggested on the login form. A remembered login email is local convenience history, not proof that an account currently exists.
 _Avoid_: Account directory, registered email list, backend email suggestion
 
+**Account Profile**:
+The authenticated person's general identity and contact surface, such as display name, avatar, phone, and bio. It is separate from the learner profile because it does not define language background, CEFR level, learning goals, or adaptive-learning state.
+_Avoid_: Learner profile, learner profile setup, learning identity
+
 **Student**:
 A learner viewed in the context of a class, teacher, school, or institutional management workflow.
 _Avoid_: Learner when discussing class administration
