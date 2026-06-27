@@ -224,6 +224,10 @@ _Avoid_: Permanent login, saved user
 An authenticated account session intended to last only for the current browser session or until its shorter session expiry. This is the expected result when an account does not choose to be remembered during login.
 _Avoid_: Temporary user, guest session
 
+**Account Session Navigation**:
+The navigation behavior that shows logged-out accounts a clear login entry, shows authenticated accounts their role home and logout actions, and returns accounts to public browsing after logout.
+_Avoid_: Navbar polish, auth buttons
+
 **Learner Detail Report**:
 A report focused on one learner's language performance, learning path, learning events, skill weaknesses, targeted exercises, and adaptive decisions.
 _Avoid_: Student report when the report is about personalization
