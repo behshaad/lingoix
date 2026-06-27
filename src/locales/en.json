@@ -206,6 +206,7 @@
     "passwordMin": "Password must be at least 6 characters.",
     "passwordMismatch": "Passwords do not match.",
     "invalidCredentials": "Invalid email or password.",
+    "forgetRememberedEmail": "Forget {{email}}",
     "googleLogin": "Continue with Google",
     "googleComingSoon": "Google sign-in will be connected soon."
   },

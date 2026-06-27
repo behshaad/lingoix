@@ -217,6 +217,7 @@
     "passwordMin": "رمز عبور باید حداقل ۶ کاراکتر باشد.",
     "passwordMismatch": "رمزهای عبور مطابقت ندارند.",
     "invalidCredentials": "ایمیل یا رمز عبور نادرست است.",
+    "forgetRememberedEmail": "فراموش کردن {{email}}",
     "googleLogin": "ادامه با گوگل",
     "googleComingSoon": "ورود با گوگل به‌زودی متصل می‌شود."
   },

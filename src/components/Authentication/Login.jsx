@@ -7,6 +7,11 @@ import {
   accountLandingPath,
   saveAccountSession,
 } from "../../services/authSession";
+import {
+  forgetRememberedLoginEmail,
+  getRememberedLoginEmails,
+  rememberLoginEmail,
+} from "../../services/rememberedLoginEmails";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -16,12 +21,15 @@ const Login = () => {
   const [statusMessage, setStatusMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [rememberedEmails, setRememberedEmails] = useState([]);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const requestedPath = location.state?.from;
 
   useEffect(() => {
       document.body.style.overflow = "hidden";
+    setRememberedEmails(getRememberedLoginEmails());
     apiClient
       .me()
       .then(({ account }) => {
@@ -32,6 +40,11 @@ const Login = () => {
       document.body.style.overflow = "auto";
     };
   }, [navigate, requestedPath]);
+
+  const matchingRememberedEmails = rememberedEmails.filter((email) =>
+    email.includes(username.trim().toLowerCase())
+  );
+  const shouldShowRememberedEmails = isEmailFocused && matchingRememberedEmails.length > 0;
 
   const validateForm = () => {
     let errors = {};
@@ -62,6 +75,7 @@ const Login = () => {
       try {
         const { account } = await apiClient.login(username, password, rememberMe);
         saveAccountSession(account, rememberMe);
+        setRememberedEmails(rememberLoginEmail(account.email || username));
         navigate(accountLandingPath(account, requestedPath));
       } catch (error) {
         setErrors({ password: t("auth.invalidCredentials", "Invalid email or password.") });
@@ -90,9 +104,39 @@ const Login = () => {
               className="w-full h-12 bg-transparent text-white px-4 border border-gray-400 rounded-full outline-none focus:ring-2 focus:ring-gray-300"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onFocus={() => setIsEmailFocused(true)}
+              onBlur={() => setIsEmailFocused(false)}
               required
               placeholder={t("auth.email")}
             />
+            {shouldShowRememberedEmails && (
+              <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-lg border border-white/20 bg-gray-950/95 text-sm shadow-lg">
+                {matchingRememberedEmails.map((email) => (
+                  <div key={email} className="flex items-center justify-between gap-2 border-b border-white/10 last:border-b-0">
+                    <button
+                      type="button"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => {
+                        setUsername(email);
+                        setIsEmailFocused(false);
+                      }}
+                      className="min-w-0 flex-1 px-3 py-2 text-left text-white hover:bg-white/10"
+                    >
+                      <span className="block truncate">{email}</span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t("auth.forgetRememberedEmail", { email })}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => setRememberedEmails(forgetRememberedLoginEmail(email))}
+                      className="px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white"
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             {errors.username && (
               <p className="text-red-400 text-sm mt-1">{errors.username}</p>
             )}

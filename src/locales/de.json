@@ -207,6 +207,7 @@
     "passwordMin": "Das Passwort muss mindestens 6 Zeichen lang sein.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
     "invalidCredentials": "Ungültige E-Mail oder ungültiges Passwort.",
+    "forgetRememberedEmail": "{{email}} vergessen",
     "googleLogin": "Mit Google fortfahren",
     "googleComingSoon": "Google-Anmeldung wird bald verbunden."
   },

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../services/apiClient";
 import { saveAccountSession } from "../../services/authSession";
+import { rememberLoginEmail } from "../../services/rememberedLoginEmails";
 
 
 const SignUp = () => {
@@ -56,6 +57,7 @@ const SignUp = () => {
       try {
         const { account } = await apiClient.signup(email, password);
         saveAccountSession(account);
+        rememberLoginEmail(account.email || email);
         navigate("/profile-setup");
       } catch (error) {
         setErrors({
