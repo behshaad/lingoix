@@ -59,7 +59,7 @@ const Navbar = () => {
                 {t("nav.admin")}
               </Link>
               <Link to="/research/adaptive-learning" className="hover:text-gray-600 dark:hover:text-gray-300">
-                Research
+                {t("nav.research")}
               </Link>
             </>
           )}
