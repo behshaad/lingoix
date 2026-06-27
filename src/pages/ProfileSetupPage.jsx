@@ -6,7 +6,7 @@ import { apiClient } from "../services/apiClient";
 import {
   consumeLearnerEntryIntent,
   getLearnerEntryIntent,
-  saveAccountSession,
+  refreshAccountSession,
 } from "../services/authSession";
 
 const cefrLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
@@ -66,8 +66,8 @@ const ProfileSetupPage = () => {
     setIsSubmitting(true);
     try {
       const { account } = await apiClient.createLearnerProfile(form);
-      saveAccountSession(account);
-      window.location.assign(consumeLearnerEntryIntent());
+      refreshAccountSession(account);
+      navigate(consumeLearnerEntryIntent(), { replace: true });
     } catch (submitError) {
       setError(t("profileSetup.saveFailed", "Could not save your learner profile."));
     } finally {

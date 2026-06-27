@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BookOpen, Brain, CheckCircle2, Languages, LineChart, MessageCircle } from "lucide-react";
-import { saveLearnerEntryIntent } from "../services/authSession";
 import { apiClient } from "../services/apiClient";
 import GamifiedRoadmap from "../components/Roadmap/GamifiedRoadmap";
 
@@ -56,11 +55,10 @@ const LearningPathPage = () => {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              to="/signup"
-              onClick={() => saveLearnerEntryIntent("/dashboard")}
+              to="/dashboard"
               className="rounded-md bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-gray-950"
             >
-              {t("hero.start")}
+              {t("Dashboard")}
             </Link>
             <Link
               to="/resources"
@@ -77,11 +75,15 @@ const LearningPathPage = () => {
           </div>
         )}
 
-        {isLoadingLearner && (
+        {isLoadingLearner ? (
           <div className="mt-10 rounded-lg border border-gray-200 p-5 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-300">
             {t("practice.loading")}
           </div>
-        )}
+        ) : !learner ? (
+          <div className="mt-10 rounded-lg border border-gray-200 p-5 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-300">
+            {t("roadmap.empty", "Your roadmap will appear after learner profile setup.")}
+          </div>
+        ) : null}
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {steps.map((step) => {

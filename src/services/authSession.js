@@ -3,6 +3,8 @@ const LEARNER_ENTRY_INTENT_KEY = "lingoixLearnerEntryIntent";
 export const AUTH_SESSION_EVENT = "lingoix-auth-session";
 
 export const adminRoles = ["teacher", "school_admin", "platform_admin"];
+const validLearnerEntryPaths = ["/dashboard", "/learning-path", "/resources", "/practice"];
+const authFlowPaths = ["/login", "/signup", "/profile-setup"];
 
 export const accountHomePath = (account) => {
   if (!account) return "/login";
@@ -39,6 +41,12 @@ export const saveAccountSession = (account, remember = true) => {
   return user;
 };
 
+export const refreshAccountSession = (account) => {
+  const isPersistent = Boolean(localStorage.getItem(USER_STORAGE_KEY));
+  const isBrowserSession = Boolean(sessionStorage.getItem(USER_STORAGE_KEY));
+  return saveAccountSession(account, isPersistent || !isBrowserSession);
+};
+
 export const clearAccountSession = () => {
   localStorage.removeItem(USER_STORAGE_KEY);
   sessionStorage.removeItem(USER_STORAGE_KEY);
@@ -48,13 +56,35 @@ export const clearAccountSession = () => {
 export const canAccessRole = (account, allowedRoles = []) =>
   Boolean(account && (allowedRoles.length === 0 || allowedRoles.includes(account.role)));
 
-export const saveLearnerEntryIntent = (path) => {
-  if (path) sessionStorage.setItem(LEARNER_ENTRY_INTENT_KEY, path);
+const pathFromValue = (value) => {
+  if (!value) return "";
+  try {
+    const parsed = new URL(value, window.location.origin);
+    if (parsed.origin !== window.location.origin) return "";
+    return `${parsed.pathname}${parsed.search}`;
+  } catch {
+    return "";
+  }
 };
 
-const normalizeLearnerEntryIntent = (path) => {
-  if (!path || ["/login", "/signup", "/profile-setup"].includes(path)) return "/dashboard";
-  return path;
+export const normalizeLearnerEntryIntent = (path) => {
+  const normalized = pathFromValue(path);
+  const pathname = normalized.split("?")[0];
+  if (!normalized || authFlowPaths.includes(pathname)) return "/dashboard";
+  return validLearnerEntryPaths.includes(pathname) ? normalized : "/dashboard";
+};
+
+export const isValidLearnerEntryIntent = (path) => {
+  const normalized = pathFromValue(path);
+  const pathname = normalized.split("?")[0];
+  return Boolean(normalized && validLearnerEntryPaths.includes(pathname));
+};
+
+export const saveLearnerEntryIntent = (path) => {
+  const normalized = normalizeLearnerEntryIntent(path);
+  if (isValidLearnerEntryIntent(normalized)) {
+    sessionStorage.setItem(LEARNER_ENTRY_INTENT_KEY, normalized);
+  }
 };
 
 export const getLearnerEntryIntent = () =>
@@ -64,4 +94,13 @@ export const consumeLearnerEntryIntent = () => {
   const path = getLearnerEntryIntent();
   sessionStorage.removeItem(LEARNER_ENTRY_INTENT_KEY);
   return path;
+};
+
+export const accountLandingPath = (account, requestedPath) => {
+  if (!account) return "/login";
+  if (account.role !== "learner") return accountHomePath(account);
+  if (isValidLearnerEntryIntent(requestedPath)) {
+    saveLearnerEntryIntent(requestedPath);
+  }
+  return account.learnerId ? consumeLearnerEntryIntent() : "/profile-setup";
 };

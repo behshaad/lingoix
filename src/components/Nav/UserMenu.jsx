@@ -8,7 +8,7 @@ import {
   adminRoles,
   clearAccountSession,
   loadStoredUser,
-  saveAccountSession,
+  refreshAccountSession,
 } from "../../services/authSession";
 
 const UserMenu = () => {
@@ -21,7 +21,7 @@ const UserMenu = () => {
     setUser(loadStoredUser());
     apiClient
       .me()
-      .then(({ account }) => setUser(saveAccountSession(account)))
+      .then(({ account }) => setUser(refreshAccountSession(account)))
       .catch(() => {});
     const handleAuthChange = (event) => setUser(event.detail || loadStoredUser());
     window.addEventListener(AUTH_SESSION_EVENT, handleAuthChange);
@@ -56,7 +56,12 @@ const UserMenu = () => {
           {t("login")}
         </button>
       ) : (
-        <button onClick={handleProfileClick} className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleProfileClick}
+          aria-label={t("accountMenu", "Account menu")}
+          className="flex items-center gap-2"
+        >
           <img
             src={user.profilePic || "https://i.pravatar.cc/150"}
             alt="Profile"

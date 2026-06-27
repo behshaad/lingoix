@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { apiClient } from "../../services/apiClient";
-import { accountHomePath, canAccessRole, saveAccountSession } from "../../services/authSession";
+import {
+  accountHomePath,
+  canAccessRole,
+  isValidLearnerEntryIntent,
+  refreshAccountSession,
+  saveLearnerEntryIntent,
+} from "../../services/authSession";
 
 const ProtectedRoute = ({ allowedRoles = [], requireLearnerProfile = true, children }) => {
   const location = useLocation();
@@ -12,7 +18,7 @@ const ProtectedRoute = ({ allowedRoles = [], requireLearnerProfile = true, child
     apiClient
       .me()
       .then(({ account }) => {
-        saveAccountSession(account);
+        refreshAccountSession(account);
         if (isMounted) setState({ status: "ready", account });
       })
       .catch(() => {
@@ -33,7 +39,11 @@ const ProtectedRoute = ({ allowedRoles = [], requireLearnerProfile = true, child
   }
 
   if (state.status === "guest") {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    const requestedPath = `${location.pathname}${location.search}`;
+    if (isValidLearnerEntryIntent(requestedPath)) {
+      saveLearnerEntryIntent(requestedPath);
+    }
+    return <Navigate to="/login" replace state={{ from: requestedPath }} />;
   }
 
   if (!canAccessRole(state.account, allowedRoles)) {
@@ -45,7 +55,11 @@ const ProtectedRoute = ({ allowedRoles = [], requireLearnerProfile = true, child
     state.account.role === "learner" &&
     !state.account.learnerId
   ) {
-    return <Navigate to="/profile-setup" replace state={{ from: location.pathname }} />;
+    const requestedPath = `${location.pathname}${location.search}`;
+    if (isValidLearnerEntryIntent(requestedPath)) {
+      saveLearnerEntryIntent(requestedPath);
+    }
+    return <Navigate to="/profile-setup" replace state={{ from: requestedPath }} />;
   }
 
   return children;

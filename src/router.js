@@ -22,7 +22,14 @@ const AppRouter = () => {
       <div className="content pt-20">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/learning-path" element={<LearningPathPage />} />
+          <Route
+            path="/learning-path"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <LearningPathPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/resources"
             element={
