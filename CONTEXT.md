@@ -68,6 +68,10 @@ _Avoid_: Dashboard, generic course list, lesson menu
 An interactive visual station in the gamified roadmap that represents one learning path item and opens the learner's next lesson, exercise, review, or assessment for that item.
 _Avoid_: Section, card, generic lesson button
 
+**Roadmap Station Target**:
+The concrete lesson, exercise, review, assessment, or resource opened by a roadmap station. If a roadmap station does not yet have a concrete target, it should be shown as unavailable rather than opening generic practice.
+_Avoid_: Generic practice redirect, fallback page
+
 **Learning Event**:
 A timestamped record of one meaningful learner action, such as answering a question, requesting a hint, replaying audio, searching a word, submitting writing, or completing an exercise.
 _Avoid_: Log, activity, interaction data
