@@ -132,6 +132,10 @@ _Avoid_: Research validation, proof, model accuracy
 An admin-accessible navigation surface for generated research artifacts, including reports, figures, tables, datasets, model comparisons, guidance, and research-result pages. It organizes research outputs; it is not the same thing as the operational admin panel.
 _Avoid_: Admin overview, learner dashboard, resource library
 
+**Interactive Research Explainer**:
+A research-facing interface that lets admins inspect synthetic-data research outputs through filters, chart views, and plain-language interpretation. It explains generated research artifacts and does not apply adaptive decisions to learner paths.
+_Avoid_: Adaptive decision console, live intervention tool, learner dashboard
+
 **Scoring Reliability**:
 The confidence that an exercise's scoring rule provides useful evidence for adaptive learning. Scoring reliability is not the same as educational correctness or teacher assessment.
 _Avoid_: Correctness, grading accuracy, assessment validity
