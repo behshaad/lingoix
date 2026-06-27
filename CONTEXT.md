@@ -244,6 +244,10 @@ _Avoid_: Learner, Student, User
 The personal account settings surface where an authenticated account manages display name, contact details, short bio, and profile photo. An account profile is not the same as a learner profile and does not define learning goals, CEFR level, or adaptive-learning state.
 _Avoid_: Learner Profile, Student Profile, learning profile
 
+**Display Name**:
+The personal name shown for an account across Lingoix. For learner accounts in the current product scope, the display name is also the learner name shown in learner-facing and student-facing views.
+_Avoid_: Username, legal name, profile name
+
 **Persistent Account Session**:
 An authenticated account session that remains available across browser restarts until logout or session expiry. This is the expected result when an account chooses to be remembered during login.
 _Avoid_: Permanent login, saved user
