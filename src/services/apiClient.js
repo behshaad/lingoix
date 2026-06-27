@@ -154,4 +154,16 @@ export const apiClient = {
       body: JSON.stringify(event),
     });
   },
+
+  adaptiveLearningResearch() {
+    return request("/research/adaptive-learning");
+  },
+
+  adaptiveLearningResearchFigureUrl(fileName) {
+    return `${API_BASE_URL}/research/adaptive-learning/figures/${encodeURIComponent(fileName)}`;
+  },
+
+  adaptiveLearningResearchReportUrl() {
+    return `${API_BASE_URL}/research/adaptive-learning/report`;
+  },
 };

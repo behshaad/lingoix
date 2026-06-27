@@ -54,9 +54,14 @@ const Navbar = () => {
             {t("Resources")}
           </Link>
           {isAdminRole && (
-            <Link to="/admin" className="hover:text-gray-600 dark:hover:text-gray-300">
-              {t("nav.admin")}
-            </Link>
+            <>
+              <Link to="/admin" className="hover:text-gray-600 dark:hover:text-gray-300">
+                {t("nav.admin")}
+              </Link>
+              <Link to="/research/adaptive-learning" className="hover:text-gray-600 dark:hover:text-gray-300">
+                Research
+              </Link>
+            </>
           )}
         </div>
         <div className="flex items-center gap-4">

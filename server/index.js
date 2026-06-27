@@ -1,4 +1,6 @@
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -22,6 +24,7 @@ const REVIEW_STATUSES = ["approved", "rejected", "overridden"];
 const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const RESOURCE_STATUSES = ["draft", "published", "archived"];
 const RESOURCE_ATTACHMENT_TYPES = ["pdf", "audio", "video", "image", "link", "text"];
+const researchOutputDir = path.join(__dirname, "..", "research", "adaptive_learning", "outputs");
 
 initializeDatabase();
 
@@ -35,6 +38,82 @@ const jsonParse = (value, fallback) => {
   } catch {
     return fallback;
   }
+};
+
+const parseCsv = (content) => {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let index = 0; index < content.length; index += 1) {
+    const char = content[index];
+    const next = content[index + 1];
+
+    if (char === '"' && quoted && next === '"') {
+      cell += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      row.push(cell);
+      cell = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(cell);
+      if (row.some((value) => value.length > 0)) rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+
+  if (cell || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  const [headers = [], ...dataRows] = rows;
+  return dataRows.map((dataRow) =>
+    headers.reduce((record, header, index) => {
+      const value = dataRow[index] ?? "";
+      const numeric = Number(value);
+      record[header] = value !== "" && Number.isFinite(numeric) ? numeric : value;
+      return record;
+    }, {})
+  );
+};
+
+const readResearchJson = () => {
+  const manifestPath = path.join(researchOutputDir, "manifest.json");
+  const reportPath = path.join(researchOutputDir, "final_report.md");
+  const tableDir = path.join(researchOutputDir, "tables");
+  const readTable = (fileName) => parseCsv(fs.readFileSync(path.join(tableDir, fileName), "utf8"));
+
+  return {
+    manifest: jsonParse(fs.readFileSync(manifestPath, "utf8"), {}),
+    reportMarkdown: fs.readFileSync(reportPath, "utf8"),
+    tables: {
+      classification: readTable("classification_results.csv"),
+      regression: readTable("regression_results.csv"),
+      clustering: readTable("clustering_results.csv"),
+      statisticalTests: readTable("statistical_tests.csv"),
+      archetypes: readTable("archetype_distribution.csv"),
+      weaknesses: readTable("weakness_distribution.csv"),
+      questionTypeErrors: readTable("question_type_errors.csv"),
+      featureImportance: readTable("feature_importance.csv"),
+      ruleDecisions: readTable("rule_based_adaptive_decisions.csv").slice(0, 8),
+      mlDecisions: readTable("ml_based_adaptive_decisions.csv").slice(0, 8),
+    },
+    figures: [
+      "mastery_histogram.png",
+      "error_rate_boxplot.png",
+      "correlation_heatmap.png",
+      "learning_trend.png",
+      "cluster_pca.png",
+    ],
+  };
 };
 
 const normalizeChoices = (choices) => {
@@ -1217,6 +1296,48 @@ app.get("/api/reports/platform", requireAuth, (req, res) => {
 app.get("/api/reports/adaptive-metrics", requireAuth, requireRoles("teacher", "school_admin", "platform_admin"), (req, res) => {
   res.json({ metrics: buildAdaptiveEvaluationMetrics(req.account) });
 });
+
+app.get(
+  "/api/research/adaptive-learning",
+  requireAuth,
+  requireRoles("teacher", "school_admin", "platform_admin"),
+  (req, res) => {
+    try {
+      res.json({ research: readResearchJson() });
+    } catch (error) {
+      res.status(404).json({ error: "research_outputs_not_found" });
+    }
+  }
+);
+
+app.get(
+  "/api/research/adaptive-learning/figures/:fileName",
+  requireAuth,
+  requireRoles("teacher", "school_admin", "platform_admin"),
+  (req, res) => {
+    const safeFileName = path.basename(req.params.fileName);
+    const figurePath = path.join(researchOutputDir, "figures", safeFileName);
+    if (!safeFileName.endsWith(".png") || !fs.existsSync(figurePath)) {
+      res.status(404).json({ error: "figure_not_found" });
+      return;
+    }
+    res.sendFile(figurePath);
+  }
+);
+
+app.get(
+  "/api/research/adaptive-learning/report",
+  requireAuth,
+  requireRoles("teacher", "school_admin", "platform_admin"),
+  (req, res) => {
+    const reportPath = path.join(researchOutputDir, "final_report.md");
+    if (!fs.existsSync(reportPath)) {
+      res.status(404).json({ error: "report_not_found" });
+      return;
+    }
+    res.type("text/markdown").sendFile(reportPath);
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Lingoix API running on http://localhost:${PORT}`);
