@@ -216,6 +216,14 @@ _Avoid_: Course, group
 An authenticated identity used to access Lingoix with a role such as learner, teacher, school admin, or platform admin. An account is not the same as a learner profile; teacher and admin accounts do not require learner profiles.
 _Avoid_: Learner, Student, User
 
+**Persistent Account Session**:
+An authenticated account session that remains available across browser restarts until logout or session expiry. This is the expected result when an account chooses to be remembered during login.
+_Avoid_: Permanent login, saved user
+
+**Browser-Session Account Session**:
+An authenticated account session intended to last only for the current browser session or until its shorter session expiry. This is the expected result when an account does not choose to be remembered during login.
+_Avoid_: Temporary user, guest session
+
 **Learner Detail Report**:
 A report focused on one learner's language performance, learning path, learning events, skill weaknesses, targeted exercises, and adaptive decisions.
 _Avoid_: Student report when the report is about personalization
