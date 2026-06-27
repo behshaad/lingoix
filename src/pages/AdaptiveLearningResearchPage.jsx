@@ -151,11 +151,72 @@ const ModelExplanation = ({ mode, t }) => (
   </section>
 );
 
+const ArchetypeSelector = ({ archetypes, selectedArchetype, onSelect, t }) => (
+  <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div>
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <Brain className="h-4 w-4" />
+          {t("research.archetypeSelector.title", "Learner archetype selector")}
+        </div>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600 dark:text-gray-300">
+          {t(
+            "research.archetypeSelector.description",
+            "Focus the research outputs on one synthetic learner archetype. This narrows explanatory tables and sample decisions without changing product data."
+          )}
+        </p>
+      </div>
+      <select
+        value={selectedArchetype}
+        onChange={(event) => onSelect(event.target.value)}
+        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-950 dark:border-gray-700 dark:bg-gray-950 dark:text-white lg:max-w-xs"
+        aria-label={t("research.archetypeSelector.title", "Learner archetype selector")}
+      >
+        <option value="all">{t("research.archetypeSelector.all", "All archetypes")}</option>
+        {archetypes.map((item) => (
+          <option key={item.learner_archetype} value={item.learner_archetype}>
+            {t(`research.values.${item.learner_archetype}`, item.learner_archetype)} ({item.count})
+          </option>
+        ))}
+      </select>
+    </div>
+  </section>
+);
+
+const ArchetypeExplanation = ({ archetype, count, t }) => (
+  <section className="rounded-lg border border-sky-200 bg-sky-50 p-5 text-sky-950 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-50">
+    <div className="flex items-start gap-3">
+      <Database className="mt-0.5 h-5 w-5 shrink-0" />
+      <div>
+        <h2 className="text-base font-semibold">
+          {archetype === "all"
+            ? t("research.archetypeSelector.allTitle", "All synthetic learner archetypes")
+            : t("research.archetypeSelector.selectedTitle", {
+                archetype: t(`research.values.${archetype}`, archetype),
+              })}
+        </h2>
+        <p className="mt-2 text-sm leading-6">
+          {archetype === "all"
+            ? t(
+                "research.archetypeSelector.allBody",
+                "The tables below show the complete synthetic learner mix, including generated archetypes, weakness categories, and sampled adaptive decisions."
+              )
+            : t("research.archetypeSelector.selectedBody", {
+                count,
+                archetype: t(`research.values.${archetype}`, archetype),
+              })}
+        </p>
+      </div>
+    </div>
+  </section>
+);
+
 const AdaptiveLearningResearchPage = () => {
   const { t, i18n } = useTranslation();
   const [research, setResearch] = useState(null);
   const [error, setError] = useState("");
   const [selectedModelMode, setSelectedModelMode] = useState("overview");
+  const [selectedArchetype, setSelectedArchetype] = useState("all");
   const isRtl = i18n.language === "fa";
   const locale = i18n.language === "fa" ? "fa-IR" : i18n.language === "de" ? "de-DE" : "en-US";
 
@@ -201,6 +262,36 @@ const AdaptiveLearningResearchPage = () => {
     };
   }, [locale, research, t]);
   const selectedModelModeConfig = modelModes.find((mode) => mode.id === selectedModelMode) || modelModes[0];
+  const selectedArchetypeCount =
+    selectedArchetype === "all"
+      ? research?.manifest?.learners || 0
+      : research?.tables?.archetypes?.find((item) => item.learner_archetype === selectedArchetype)?.count || 0;
+  const selectedArchetypeLearnerIds = useMemo(() => {
+    if (!research || selectedArchetype === "all") return null;
+    return new Set(
+      (research.tables.clusterAssignments || [])
+        .filter((item) => item.learner_archetype === selectedArchetype)
+        .map((item) => item.learner_id)
+    );
+  }, [research, selectedArchetype]);
+  const archetypeFocusedTables = useMemo(() => {
+    if (!research || selectedArchetype === "all") {
+      return {
+        archetypes: research?.tables?.archetypes || [],
+        clusterAssignments: research?.tables?.clusterAssignments || [],
+        ruleDecisions: research?.tables?.ruleDecisions || [],
+        mlDecisions: research?.tables?.mlDecisions || [],
+      };
+    }
+
+    const includesSelectedLearner = (row) => selectedArchetypeLearnerIds?.has(row.learner_id);
+    return {
+      archetypes: (research.tables.archetypes || []).filter((item) => item.learner_archetype === selectedArchetype),
+      clusterAssignments: (research.tables.clusterAssignments || []).filter(includesSelectedLearner),
+      ruleDecisions: (research.tables.ruleDecisions || []).filter(includesSelectedLearner),
+      mlDecisions: (research.tables.mlDecisions || []).filter(includesSelectedLearner),
+    };
+  }, [research, selectedArchetype, selectedArchetypeLearnerIds]);
 
   if (error) {
     return (
@@ -297,6 +388,13 @@ const AdaptiveLearningResearchPage = () => {
 
         <ModelSelector selectedMode={selectedModelMode} onSelect={setSelectedModelMode} t={t} />
         <ModelExplanation mode={selectedModelModeConfig.id} t={t} />
+        <ArchetypeSelector
+          archetypes={research.tables.archetypes || []}
+          selectedArchetype={selectedArchetype}
+          onSelect={setSelectedArchetype}
+          t={t}
+        />
+        <ArchetypeExplanation archetype={selectedArchetype} count={selectedArchetypeCount} t={t} />
 
         <section className="grid gap-4 lg:grid-cols-2">
           {research.figures.map((figure) => (
@@ -318,7 +416,7 @@ const AdaptiveLearningResearchPage = () => {
             <ResearchTable
               key={tableKey}
               title={t(`research.tables.${tableKey}`)}
-              rows={research.tables[tableKey]}
+              rows={tableKey === "archetypes" ? archetypeFocusedTables.archetypes : research.tables[tableKey]}
               limit={tableKey === "ruleDecisions" ? 8 : 10}
               t={t}
               locale={locale}
@@ -329,7 +427,13 @@ const AdaptiveLearningResearchPage = () => {
             <>
               <ResearchTable title={t("research.tables.statisticalTests")} rows={research.tables.statisticalTests} limit={10} t={t} locale={locale} isRtl={isRtl} />
               <ResearchTable title={t("research.tables.weaknesses")} rows={research.tables.weaknesses} limit={10} t={t} locale={locale} isRtl={isRtl} />
-              <ResearchTable title={t("research.tables.ruleDecisions")} rows={research.tables.ruleDecisions} limit={8} t={t} locale={locale} isRtl={isRtl} />
+              <ResearchTable title={t("research.tables.ruleDecisions")} rows={archetypeFocusedTables.ruleDecisions} limit={8} t={t} locale={locale} isRtl={isRtl} />
+            </>
+          )}
+          {selectedArchetype !== "all" && (
+            <>
+              <ResearchTable title={t("research.tables.clusterAssignments")} rows={archetypeFocusedTables.clusterAssignments} limit={10} t={t} locale={locale} isRtl={isRtl} />
+              <ResearchTable title={t("research.tables.mlDecisions")} rows={archetypeFocusedTables.mlDecisions} limit={8} t={t} locale={locale} isRtl={isRtl} />
             </>
           )}
         </section>

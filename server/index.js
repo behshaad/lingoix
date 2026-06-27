@@ -101,6 +101,7 @@ const readResearchJson = () => {
       classification: readTable("classification_results.csv"),
       regression: readTable("regression_results.csv"),
       clustering: readTable("clustering_results.csv"),
+      clusterAssignments: readTable("cluster_assignments.csv"),
       statisticalTests: readTable("statistical_tests.csv"),
       archetypes: readTable("archetype_distribution.csv"),
       weaknesses: readTable("weakness_distribution.csv"),

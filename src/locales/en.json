@@ -620,9 +620,11 @@
       "clustering": "Clustering Results",
       "statisticalTests": "Statistical Tests",
       "archetypes": "Archetype Distribution",
+      "clusterAssignments": "Cluster Assignments",
       "weaknesses": "Weakness Distribution",
       "featureImportance": "Feature Importance",
-      "ruleDecisions": "Rule-Based Adaptive Decisions"
+      "ruleDecisions": "Rule-Based Adaptive Decisions",
+      "mlDecisions": "ML-Based Adaptive Decisions"
     },
     "modelSelector": {
       "title": "Model selector",
@@ -651,6 +653,15 @@
           "body": "Clustering models group synthetic learners by behavioral patterns. Archetype distribution explains the simulated learner mix behind those clusters."
         }
       }
+    },
+    "archetypeSelector": {
+      "title": "Learner archetype selector",
+      "description": "Focus the research outputs on one synthetic learner archetype. This narrows explanatory tables and sample decisions without changing product data.",
+      "all": "All archetypes",
+      "allTitle": "All synthetic learner archetypes",
+      "allBody": "The tables below show the complete synthetic learner mix, including generated archetypes, weakness categories, and sampled adaptive decisions.",
+      "selectedTitle": "{{archetype}} archetype",
+      "selectedBody": "Showing {{count}} synthetic learners in the {{archetype}} archetype, plus matching cluster assignments and sampled adaptive decisions where available."
     },
     "columns": {
       "model": "Model",
@@ -688,7 +699,10 @@
       "targeted_exercise_type": "Targeted exercise type",
       "review_content": "Review content",
       "next_learning_path_step": "Next learning path step",
-      "decision_evidence": "Decision evidence"
+      "decision_evidence": "Decision evidence",
+      "kmeans": "K-Means",
+      "hierarchical_clustering": "Hierarchical clustering",
+      "dbscan": "DBSCAN"
     },
     "generated": {
       "reviewContent": "Review German {{skill}} items connected to repeated errors.",

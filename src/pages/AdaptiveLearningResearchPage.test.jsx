@@ -39,6 +39,11 @@ const researchPayload = {
     ],
     archetypes: [
       { learner_archetype: "balanced_learner", count: 25 },
+      { learner_archetype: "grammar_weak", count: 16 },
+    ],
+    clusterAssignments: [
+      { learner_id: "L001", learner_archetype: "balanced_learner", kmeans: 1 },
+      { learner_id: "L002", learner_archetype: "grammar_weak", kmeans: 2 },
     ],
     weaknesses: [
       { weakness_category: "grammar_weakness", count: 20 },
@@ -48,6 +53,11 @@ const researchPayload = {
     ],
     ruleDecisions: [
       { learner_id: "L001", engine: "rule_based", target_skill: "grammar" },
+      { learner_id: "L002", engine: "rule_based", target_skill: "vocabulary" },
+    ],
+    mlDecisions: [
+      { learner_id: "L001", engine: "ml_based", target_skill: "grammar" },
+      { learner_id: "L002", engine: "ml_based", target_skill: "vocabulary" },
     ],
   },
 };
@@ -75,4 +85,17 @@ test("filters research tables by selected model family", async () => {
   expect(screen.getByText("Regression Results")).toBeInTheDocument();
   expect(screen.getByText("Statistical Tests")).toBeInTheDocument();
   expect(screen.queryByText("Feature Importance")).not.toBeInTheDocument();
+});
+
+test("focuses sample outputs by selected learner archetype", async () => {
+  render(<AdaptiveLearningResearchPage />);
+
+  const archetypeSelect = await screen.findByLabelText("Learner archetype selector");
+  await userEvent.selectOptions(archetypeSelect, "grammar_weak");
+
+  expect(screen.getByText("grammar weak archetype")).toBeInTheDocument();
+  expect(screen.getByText("Cluster Assignments")).toBeInTheDocument();
+  expect(screen.getByText("ML-Based Adaptive Decisions")).toBeInTheDocument();
+  expect(screen.getAllByText("L002").length).toBeGreaterThan(0);
+  expect(screen.queryByText("L001")).not.toBeInTheDocument();
 });

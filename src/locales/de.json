@@ -621,9 +621,11 @@
       "clustering": "Clustering-Ergebnisse",
       "statisticalTests": "Statistische Tests",
       "archetypes": "Archetyp-Verteilung",
+      "clusterAssignments": "Cluster-Zuordnungen",
       "weaknesses": "Schwächenverteilung",
       "featureImportance": "Feature Importance",
-      "ruleDecisions": "Regelbasierte adaptive Entscheidungen"
+      "ruleDecisions": "Regelbasierte adaptive Entscheidungen",
+      "mlDecisions": "ML-basierte adaptive Entscheidungen"
     },
     "modelSelector": {
       "title": "Modellauswahl",
@@ -652,6 +654,15 @@
           "body": "Clustering-Modelle gruppieren synthetische Lernende nach Verhaltensmustern. Die Archetyp-Verteilung erklärt den simulierten Lernendenmix hinter diesen Clustern."
         }
       }
+    },
+    "archetypeSelector": {
+      "title": "Auswahl des Lernarchetyps",
+      "description": "Fokussieren Sie die Forschungsausgaben auf einen synthetischen Lernarchetyp. Das grenzt Erklärungstabellen und Beispielentscheidungen ein, ohne Produktdaten zu ändern.",
+      "all": "Alle Archetypen",
+      "allTitle": "Alle synthetischen Lernarchetypen",
+      "allBody": "Die Tabellen unten zeigen den gesamten synthetischen Lernendenmix, einschließlich generierter Archetypen, Schwächenkategorien und Beispielentscheidungen.",
+      "selectedTitle": "Archetyp {{archetype}}",
+      "selectedBody": "Es werden {{count}} synthetische Lernende im Archetyp {{archetype}} angezeigt, plus passende Cluster-Zuordnungen und Beispielentscheidungen, sofern vorhanden."
     },
     "columns": {
       "model": "Modell",
@@ -689,7 +700,10 @@
       "targeted_exercise_type": "Typ der gezielten Übung",
       "review_content": "Wiederholungsinhalt",
       "next_learning_path_step": "Nächster Lernpfad-Schritt",
-      "decision_evidence": "Entscheidungsevidenz"
+      "decision_evidence": "Entscheidungsevidenz",
+      "kmeans": "K-Means",
+      "hierarchical_clustering": "Hierarchisches Clustering",
+      "dbscan": "DBSCAN"
     },
     "generated": {
       "reviewContent": "Deutsche {{skill}}-Elemente mit wiederholten Fehlern wiederholen.",
