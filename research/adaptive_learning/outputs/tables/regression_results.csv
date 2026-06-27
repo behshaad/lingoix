@@ -1,0 +1,5 @@
+model,status,rmse,mae,r2,training_time_seconds
+Random Forest Regressor,trained,2.2359788014002873,1.4837870223250247,0.9548740721689349,0.15169920801417902
+Linear Regression,trained,1.1463599599882095,0.7126548446141071,0.9892511350671355,0.004063792002853006
+XGBoost Regressor,not available,,,,
+LightGBM Regressor,not available,,,,

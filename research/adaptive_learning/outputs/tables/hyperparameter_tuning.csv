@@ -1,0 +1,2 @@
+model,best_params,best_cv_f1_macro
+Random Forest,"{'model__max_depth': 6, 'model__n_estimators': 250}",0.7904699744699745

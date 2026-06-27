@@ -1,0 +1,4 @@
+model,cluster_count,silhouette_score,davies_bouldin_index
+K-Means,5,0.16225010061553546,1.6966168764863678
+Hierarchical Clustering,5,0.13070182453288137,1.869734328108437
+DBSCAN,1,,

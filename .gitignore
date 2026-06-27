@@ -24,3 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Python research environments and caches
+research/adaptive_learning/.venv/
+__pycache__/
+*.pyc
+catboost_info/

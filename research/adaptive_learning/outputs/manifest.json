@@ -1,0 +1,9 @@
+{
+  "seed": 42,
+  "learners": 100,
+  "interactions": 34837,
+  "report": "/Users/happyman/Documents/lingo/research/adaptive_learning/outputs/final_report.md",
+  "data_dir": "/Users/happyman/Documents/lingo/research/adaptive_learning/outputs/data",
+  "table_dir": "/Users/happyman/Documents/lingo/research/adaptive_learning/outputs/tables",
+  "figure_dir": "/Users/happyman/Documents/lingo/research/adaptive_learning/outputs/figures"
+}
