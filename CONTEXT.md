@@ -132,6 +132,10 @@ _Avoid_: Mastery, final proficiency, CEFR achievement
 Generated learner profiles, simulated learning behavior, learning events, error patterns, adaptive decisions, and progress states used for development and demos before real learner data exists. Synthetic data can support product development, but it is not evidence that an adaptive model is accurate.
 _Avoid_: Real data, training data, research data
 
+**Synthetic-Data Research Simulation**:
+A controlled research prototype that evaluates whether adaptive-learning models can detect injected skill weaknesses and simulated outcome differences under explicitly stated synthetic-data assumptions. It can support academic method comparison, but it is not a validated learner study or proof of real-world educational effectiveness.
+_Avoid_: Validated learner study, real-world effectiveness proof, real learner experiment
+
 **German for Persian-Speaking Learners**:
 The initial learning domain for Lingoix, focused on Persian-speaking learners studying German.
 _Avoid_: Generic language learning when referring to the first dataset
