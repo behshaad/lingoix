@@ -245,7 +245,7 @@ The personal account settings surface where an authenticated account manages dis
 _Avoid_: Learner Profile, Student Profile, learning profile
 
 **Display Name**:
-The personal name shown for an account across Lingoix. For learner accounts in the current product scope, the display name is also the learner name shown in learner-facing and student-facing views.
+The personal name shown for an account across Lingoix. For learner accounts in the current product scope, the display name is also the learner name shown in learner-facing and student-facing views; for teacher and admin accounts, it does not rename institutional teacher, class, or school records.
 _Avoid_: Username, legal name, profile name
 
 **Profile Photo**:
