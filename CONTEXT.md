@@ -204,6 +204,10 @@ _Avoid_: Admin, school admin
 The access boundary attached to an account role. Learners access their own learning data, teachers access assigned classes and students, school admins access their school, and platform admins access platform-wide management.
 _Avoid_: Visibility rule, access setting
 
+**Role Home**:
+The default destination for an authenticated account after login or an invalid route attempt. Learner accounts use valid learner entry intent when present; teacher, school-admin, and platform-admin accounts always return to the admin panel.
+_Avoid_: Redirect fallback, previous page
+
 **Class**:
 A group where a teacher manages enrolled students. A learner may exist independently, but becomes a student when enrolled in a class.
 _Avoid_: Course, group
