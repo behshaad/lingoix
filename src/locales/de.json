@@ -292,7 +292,11 @@
     "example": "Beispiel",
     "pronounce": "Aussprechen",
     "pronunciationUnavailable": "Aussprache ist in diesem Browser nicht verfügbar.",
+    "lookupLoading": "Dieses Wort wird nachgeschlagen...",
     "wordNotFound": "Noch keine lokale Bedeutung gefunden.",
+    "synonyms": "Synonyme",
+    "antonyms": "Antonyme",
+    "suggestions": "Meintest du?",
     "noSavedWords": "Noch keine gespeicherten Wörter.",
     "translate": "Übersetzen",
     "saveWord": "Wort speichern"

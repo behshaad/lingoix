@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const { db, initializeDatabase } = require("./db");
 const { validateAccountProfileInput } = require("./accountProfileValidation");
+const { createDictionaryLookupService } = require("./dictionaryLookupService");
 
 const app = express();
 const PORT = process.env.API_PORT || 4000;
@@ -28,6 +29,7 @@ const RESOURCE_ATTACHMENT_TYPES = ["pdf", "audio", "video", "image", "link", "te
 const researchOutputDir = path.join(__dirname, "..", "research", "adaptive_learning", "outputs");
 
 initializeDatabase();
+const dictionaryLookupService = createDictionaryLookupService({ db });
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json({ limit: "3mb" }));
@@ -999,6 +1001,36 @@ app.post("/api/auth/logout", requireAuth, (req, res) => {
 
 app.get("/api/auth/me", requireAuth, (req, res) => {
   res.json({ account: publicAccount(req.account) });
+});
+
+app.get("/api/dictionary/lookup", async (req, res) => {
+  try {
+    const lookup = await dictionaryLookupService.lookup({
+      word: req.query.word,
+      sourceLang: req.query.sourceLang || "auto",
+      targetLang: req.query.targetLang || "fa",
+    });
+    res.json({ lookup });
+  } catch (error) {
+    res.status(200).json({
+      lookup: {
+        word: String(req.query.word || ""),
+        sourceLang: req.query.sourceLang || "auto",
+        targetLang: req.query.targetLang || "fa",
+        definition: "",
+        translation: "",
+        partOfSpeech: "",
+        pronunciation: String(req.query.word || ""),
+        example: "",
+        synonyms: [],
+        antonyms: [],
+        suggestions: [],
+        provider: "",
+        found: false,
+        error: "lookup_failed",
+      },
+    });
+  }
 });
 
 app.put("/api/account/profile", requireAuth, (req, res) => {

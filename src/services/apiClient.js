@@ -162,6 +162,11 @@ export const apiClient = {
     });
   },
 
+  dictionaryLookup(word, sourceLang = "auto", targetLang = "fa") {
+    const params = new URLSearchParams({ word, sourceLang, targetLang });
+    return request(`/dictionary/lookup?${params.toString()}`);
+  },
+
   adaptiveLearningResearch() {
     return request("/research/adaptive-learning");
   },

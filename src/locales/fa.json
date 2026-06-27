@@ -302,7 +302,11 @@
     "example": "مثال",
     "pronounce": "تلفظ",
     "pronunciationUnavailable": "پخش تلفظ در این مرورگر در دسترس نیست.",
+    "lookupLoading": "در حال جستجوی واژه...",
     "wordNotFound": "هنوز معنی محلی برای این واژه وجود ندارد.",
+    "synonyms": "مترادف‌ها",
+    "antonyms": "متضادها",
+    "suggestions": "منظورتان این بود؟",
     "noSavedWords": "هنوز واژه‌ای ذخیره نشده است.",
     "translate": "ترجمه",
     "saveWord": "ذخیره واژه"

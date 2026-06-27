@@ -176,6 +176,10 @@ _Avoid_: Translator when referring to the full learning surface
 The act of selecting one word inside source or translated text and seeing a short learner-facing meaning for that word.
 _Avoid_: Highlight, text selection, search when referring to the dictionary behavior
 
+**Dictionary Lookup**:
+A provider-backed lookup for one valid word that may return definition, translation, part of speech, pronunciation, example sentence, synonyms, antonyms, and spelling suggestions. A dictionary lookup should fail softly when providers cannot answer.
+_Avoid_: Hardcoded word match, local word list
+
 **Pronunciation Playback**:
 Optional audio playback of a selected word so the learner can hear how it sounds in the word's language.
 _Avoid_: Pronunciation analysis, speaking assessment

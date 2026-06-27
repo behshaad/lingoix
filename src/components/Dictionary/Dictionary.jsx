@@ -10,6 +10,7 @@ const Dictionary = () => {
   const textareaRef = useRef(null);
   const translatedRef = useRef(null);
   const [selectedLookup, setSelectedLookup] = useState(null);
+  const [lookupStatus, setLookupStatus] = useState("idle");
   const [pronunciationMessage, setPronunciationMessage] = useState("");
 
   const {
@@ -33,10 +34,14 @@ const Dictionary = () => {
 
   const canPronounce = useMemo(() => dictionaryService.canPronounce(), []);
 
-  const updateLookup = (word) => {
-    const lookup = dictionaryService.lookupWord(word);
-    setSelectedLookup(lookup);
+  const updateLookup = async (word, lookupSourceLang = sourceLang) => {
+    const cleanWord = word.trim();
+    if (!cleanWord) return;
+    setLookupStatus("loading");
     setPronunciationMessage("");
+    const lookup = await dictionaryService.lookupWord(cleanWord, lookupSourceLang, targetLang);
+    setSelectedLookup(lookup);
+    setLookupStatus(lookup?.found ? "ready" : "error");
   };
 
   const handleSourceSelection = (event) => {
@@ -47,7 +52,7 @@ const Dictionary = () => {
 
   const handleTranslatedSelection = () => {
     const selection = window.getSelection?.().toString();
-    if (selection) updateLookup(selection);
+    if (selection) updateLookup(selection, targetLang);
   };
 
   const handlePronounce = () => {
@@ -63,7 +68,7 @@ const Dictionary = () => {
 
   const selectedText = selectedLookup?.word || "";
   const selectedMeaning = selectedLookup?.found
-    ? selectedLookup.meaning
+    ? selectedLookup.definition
     : t("dictionary.wordNotFound");
   const selectedTranslation = selectedLookup?.found ? selectedLookup.translation : "";
 
@@ -188,11 +193,16 @@ const Dictionary = () => {
               {t("dictionary.selectedWord")}
             </div>
 
-            {selectedLookup ? (
+            {lookupStatus === "loading" ? (
+              <div className="mt-4 rounded-md bg-white p-3 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300">
+                {t("dictionary.lookupLoading")}
+              </div>
+            ) : selectedLookup ? (
               <div className="mt-4 space-y-4">
                 <div>
                   <p className="text-2xl font-bold">{selectedText}</p>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    {selectedLookup.partOfSpeech ? `${selectedLookup.partOfSpeech} · ` : ""}
                     {selectedLookup.sourceLang === "fa"
                       ? t("dictionary.persian")
                       : selectedLookup.sourceLang === "de"
@@ -211,15 +221,47 @@ const Dictionary = () => {
                   )}
                 </div>
 
-                {selectedLookup.examples && (
+                {selectedLookup.example && (
                   <div className="rounded-md bg-white p-3 text-sm dark:bg-gray-900">
                     <p className="font-semibold">{t("dictionary.example")}</p>
                     <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      {selectedLookup.examples.de}
+                      {selectedLookup.example}
                     </p>
-                    <p className="mt-1 text-gray-600 dark:text-gray-300">
-                      {selectedLookup.examples.fa}
-                    </p>
+                  </div>
+                )}
+
+                {(selectedLookup.synonyms?.length > 0 || selectedLookup.antonyms?.length > 0) && (
+                  <div className="rounded-md bg-white p-3 text-sm dark:bg-gray-900">
+                    {selectedLookup.synonyms?.length > 0 && (
+                      <p className="text-gray-600 dark:text-gray-300">
+                        <span className="font-semibold text-gray-950 dark:text-white">{t("dictionary.synonyms")}: </span>
+                        {selectedLookup.synonyms.join(", ")}
+                      </p>
+                    )}
+                    {selectedLookup.antonyms?.length > 0 && (
+                      <p className="mt-2 text-gray-600 dark:text-gray-300">
+                        <span className="font-semibold text-gray-950 dark:text-white">{t("dictionary.antonyms")}: </span>
+                        {selectedLookup.antonyms.join(", ")}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {!selectedLookup.found && selectedLookup.suggestions?.length > 0 && (
+                  <div className="rounded-md bg-white p-3 text-sm dark:bg-gray-900">
+                    <p className="font-semibold">{t("dictionary.suggestions")}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedLookup.suggestions.map((suggestion) => (
+                        <button
+                          type="button"
+                          key={suggestion}
+                          onClick={() => updateLookup(suggestion)}
+                          className="rounded-md bg-gray-100 px-2 py-1 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 

@@ -139,6 +139,17 @@ const ensureContentColumns = () => {
     ["priority", "TEXT NOT NULL DEFAULT 'medium'"],
     ["applied_at", "TEXT"],
   ]);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS dictionary_cache (
+      cache_key TEXT PRIMARY KEY,
+      word TEXT NOT NULL,
+      source_lang TEXT NOT NULL,
+      target_lang TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      payload TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 };
 
 const backfillExerciseContent = () => {

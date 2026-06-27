@@ -291,7 +291,11 @@
     "example": "Example",
     "pronounce": "Pronounce",
     "pronunciationUnavailable": "Pronunciation is not available in this browser.",
+    "lookupLoading": "Looking up this word...",
     "wordNotFound": "No local meaning found yet.",
+    "synonyms": "Synonyms",
+    "antonyms": "Antonyms",
+    "suggestions": "Did you mean?",
     "noSavedWords": "No saved words yet.",
     "translate": "Translate",
     "saveWord": "Save Word"
