@@ -248,6 +248,10 @@ _Avoid_: Learner Profile, Student Profile, learning profile
 The personal name shown for an account across Lingoix. For learner accounts in the current product scope, the display name is also the learner name shown in learner-facing and student-facing views.
 _Avoid_: Username, legal name, profile name
 
+**Profile Photo**:
+The account-owned image used to visually represent a person across Lingoix. Learner-facing and student-facing surfaces may show the account profile photo when representing the same learner, but the learner profile does not own a separate photo.
+_Avoid_: Learner photo, student avatar, profile picture
+
 **Persistent Account Session**:
 An authenticated account session that remains available across browser restarts until logout or session expiry. This is the expected result when an account chooses to be remembered during login.
 _Avoid_: Permanent login, saved user
