@@ -149,6 +149,13 @@ const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
               {t("nav.admin")}
             </Link>
             <Link
+              to="/admin/research"
+              onClick={closeMenu}
+              className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              {t("nav.researchIndex", "Research Index")}
+            </Link>
+            <Link
               to="/research/adaptive-learning"
               onClick={closeMenu}
               className="text-base font-medium text-gray-900 dark:text-white transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300"

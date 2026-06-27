@@ -1,4 +1,4 @@
-import { BookOpen, Brain, FlaskConical, GitBranch, LineChart, Network, ShieldAlert, Workflow } from "lucide-react";
+import { BookOpen, Brain, Database, FlaskConical, GitBranch, LineChart, Network, ShieldAlert, Workflow } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -92,13 +92,22 @@ const ResearchGuidancePage = () => {
                 {t("researchGuidance.subtitle")}
               </p>
             </div>
-            <Link
-              to="/research/adaptive-learning"
-              className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
-            >
-              <LineChart className="h-4 w-4" />
-              {t("researchGuidance.resultsLink")}
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                to="/admin/research"
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
+              >
+                <Database className="h-4 w-4" />
+                {t("nav.researchIndex", "Research Index")}
+              </Link>
+              <Link
+                to="/research/adaptive-learning"
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
+              >
+                <LineChart className="h-4 w-4" />
+                {t("researchGuidance.resultsLink")}
+              </Link>
+            </div>
           </div>
         </header>
 

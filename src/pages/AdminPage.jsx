@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   Activity,
   BarChart3,
@@ -464,6 +465,13 @@ const AdminPage = () => {
               ? `${account.displayName} · ${domainLabel(account.role)}`
               : t("admin.apiLoginRequired", "Please log in with a backend account first.")}
           </div>
+          <Link
+            to="/admin/research"
+            className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
+            <Database className="h-4 w-4" />
+            {t("nav.researchIndex", "Research Index")}
+          </Link>
         </header>
 
         {statusMessage && (

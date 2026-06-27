@@ -1426,6 +1426,36 @@ app.get(
 );
 
 app.get(
+  "/api/research/adaptive-learning/tables/:fileName",
+  requireAuth,
+  requireRoles("teacher", "school_admin", "platform_admin"),
+  (req, res) => {
+    const safeFileName = path.basename(req.params.fileName);
+    const tablePath = path.join(researchOutputDir, "tables", safeFileName);
+    if (!safeFileName.endsWith(".csv") || !fs.existsSync(tablePath)) {
+      res.status(404).json({ error: "table_not_found" });
+      return;
+    }
+    res.type("text/csv").sendFile(tablePath);
+  }
+);
+
+app.get(
+  "/api/research/adaptive-learning/data/:fileName",
+  requireAuth,
+  requireRoles("teacher", "school_admin", "platform_admin"),
+  (req, res) => {
+    const safeFileName = path.basename(req.params.fileName);
+    const dataPath = path.join(researchOutputDir, "data", safeFileName);
+    if (!safeFileName.endsWith(".csv") || !fs.existsSync(dataPath)) {
+      res.status(404).json({ error: "dataset_not_found" });
+      return;
+    }
+    res.type("text/csv").sendFile(dataPath);
+  }
+);
+
+app.get(
   "/api/research/adaptive-learning/report",
   requireAuth,
   requireRoles("teacher", "school_admin", "platform_admin"),

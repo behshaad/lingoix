@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, BarChart3, Brain, Clock, Database, FileText, LineChart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../services/apiClient";
 
@@ -176,13 +177,22 @@ const AdaptiveLearningResearchPage = () => {
                 {t("research.subtitle")}
               </p>
             </div>
-            <a
-              href={apiClient.adaptiveLearningResearchReportUrl()}
-              className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
-            >
-              <FileText className="h-4 w-4" />
-              {t("research.reportFile")}
-            </a>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                to="/admin/research"
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
+              >
+                <Database className="h-4 w-4" />
+                {t("nav.researchIndex", "Research Index")}
+              </Link>
+              <a
+                href={apiClient.adaptiveLearningResearchReportUrl()}
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900"
+              >
+                <FileText className="h-4 w-4" />
+                {t("research.reportFile")}
+              </a>
+            </div>
           </div>
         </header>
 

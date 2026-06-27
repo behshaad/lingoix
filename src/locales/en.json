@@ -184,7 +184,8 @@
     "admin": "Admin",
     "practice": "Practice",
     "research": "Research",
-    "researchGuidance": "Research Guidance"
+    "researchGuidance": "Research Guidance",
+    "researchIndex": "Research Index"
   },
   "auth": {
     "email": "Email",

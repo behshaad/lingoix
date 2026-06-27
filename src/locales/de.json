@@ -185,7 +185,8 @@
     "admin": "Administration",
     "practice": "Üben",
     "research": "Forschung",
-    "researchGuidance": "Forschungsleitfaden"
+    "researchGuidance": "Forschungsleitfaden",
+    "researchIndex": "Forschungsindex"
   },
   "auth": {
     "email": "E-Mail",

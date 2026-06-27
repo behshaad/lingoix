@@ -17,6 +17,7 @@ import ProfileSetupPage from "./pages/ProfileSetupPage.jsx";
 import AdaptiveLearningResearchPage from "./pages/AdaptiveLearningResearchPage.jsx";
 import ResearchGuidancePage from "./pages/ResearchGuidancePage.jsx";
 import AccountProfilePage from "./pages/AccountProfilePage.jsx";
+import AdminResearchIndexPage from "./pages/AdminResearchIndexPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -78,6 +79,14 @@ const AppRouter = () => {
             element={
               <ProtectedRoute allowedRoles={["teacher", "school_admin", "platform_admin"]}>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/research"
+            element={
+              <ProtectedRoute allowedRoles={["teacher", "school_admin", "platform_admin"]}>
+                <AdminResearchIndexPage />
               </ProtectedRoute>
             }
           />

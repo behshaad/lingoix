@@ -182,6 +182,14 @@ export const apiClient = {
     return `${API_BASE_URL}/research/adaptive-learning/figures/${encodeURIComponent(fileName)}`;
   },
 
+  adaptiveLearningResearchTableUrl(fileName) {
+    return `${API_BASE_URL}/research/adaptive-learning/tables/${encodeURIComponent(fileName)}`;
+  },
+
+  adaptiveLearningResearchDataUrl(fileName) {
+    return `${API_BASE_URL}/research/adaptive-learning/data/${encodeURIComponent(fileName)}`;
+  },
+
   adaptiveLearningResearchReportUrl() {
     return `${API_BASE_URL}/research/adaptive-learning/report`;
   },

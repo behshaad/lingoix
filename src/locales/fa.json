@@ -195,7 +195,8 @@
     "admin": "مدیریت",
     "practice": "تمرین",
     "research": "پژوهش",
-    "researchGuidance": "راهنمای پژوهش"
+    "researchGuidance": "راهنمای پژوهش",
+    "researchIndex": "فهرست پژوهش"
   },
   "auth": {
     "email": "ایمیل",
