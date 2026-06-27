@@ -44,6 +44,10 @@ _Avoid_: Accuracy, score, language performance
 The learner's current set of next learning path items for daily work. Today's path is the primary learner dashboard flow.
 _Avoid_: Free practice, recommended exercises, task list
 
+**Learner Dashboard**:
+The learner-facing home surface organized around what the learner should do next today. It prioritizes today's path, path progress, targeted exercise insertions or assigned practice, relevant resources, language performance, and optional free practice.
+_Avoid_: Student dashboard, admin dashboard, generic homepage
+
 **Free Practice**:
 Optional learner-initiated practice from the exercise bank that can create learning events and affect language performance, but does not advance path progress unless linked to a learning path item.
 _Avoid_: Today's path, assignment, targeted exercise insertion
