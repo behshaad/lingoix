@@ -73,8 +73,6 @@ export const lookupWord = async (word = "", sourceLang = "auto", targetLang = "f
   }
 };
 
-export const translateLocally = (text = "") => text;
-
 export const canPronounce = () =>
   typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
 
@@ -90,7 +88,6 @@ export const pronounceWord = (word, lang = "de") => {
 export const dictionaryService = {
   detectLanguage,
   lookupWord,
-  translateLocally,
   pronounceWord,
   canPronounce,
 };

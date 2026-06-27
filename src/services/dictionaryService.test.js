@@ -4,6 +4,7 @@ import { dictionaryService } from "./dictionaryService";
 jest.mock("./apiClient", () => ({
   apiClient: {
     dictionaryLookup: jest.fn(),
+    dictionaryTranslate: jest.fn(),
   },
 }));
 

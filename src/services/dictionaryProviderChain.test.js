@@ -82,3 +82,54 @@ test("caches successful provider lookups", async () => {
   expect(second.cached).toBe(true);
   expect(fetchImpl).toHaveBeenCalledTimes(1);
 });
+
+test("translates full text through a configured backend provider", async () => {
+  const fetchImpl = jest.fn().mockResolvedValue(
+    response({
+      candidates: [
+        {
+          content: {
+            parts: [{ text: JSON.stringify({ translatedText: "سلام" }) }],
+          },
+        },
+      ],
+    })
+  );
+  const service = createDictionaryLookupService({
+    db: createDb(),
+    fetchImpl,
+    env: { GEMINI_API_KEY: "test-key" },
+  });
+
+  await expect(service.translate({ text: "Hello", sourceLang: "en", targetLang: "fa" })).resolves.toMatchObject({
+    sourceText: "Hello",
+    translatedText: "سلام",
+    provider: "gemini",
+    translated: true,
+  });
+});
+
+test("does not treat unchanged full text as a successful translation", async () => {
+  const fetchImpl = jest.fn().mockResolvedValue(
+    response({
+      candidates: [
+        {
+          content: {
+            parts: [{ text: JSON.stringify({ translatedText: "Hello" }) }],
+          },
+        },
+      ],
+    })
+  );
+  const service = createDictionaryLookupService({
+    db: createDb(),
+    fetchImpl,
+    env: { GEMINI_API_KEY: "test-key" },
+  });
+
+  await expect(service.translate({ text: "Hello", sourceLang: "en", targetLang: "fa" })).resolves.toMatchObject({
+    translatedText: "",
+    translated: false,
+    error: "translation_failed",
+  });
+});

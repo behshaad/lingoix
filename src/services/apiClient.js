@@ -167,6 +167,13 @@ export const apiClient = {
     return request(`/dictionary/lookup?${params.toString()}`);
   },
 
+  dictionaryTranslate(text, sourceLang = "auto", targetLang = "fa") {
+    return request("/dictionary/translate", {
+      method: "POST",
+      body: JSON.stringify({ text, sourceLang, targetLang }),
+    });
+  },
+
   adaptiveLearningResearch() {
     return request("/research/adaptive-learning");
   },

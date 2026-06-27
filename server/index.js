@@ -1033,6 +1033,23 @@ app.get("/api/dictionary/lookup", async (req, res) => {
   }
 });
 
+app.post("/api/dictionary/translate", async (req, res) => {
+  try {
+    const translation = await dictionaryLookupService.translate({
+      text: req.body.text,
+      sourceLang: req.body.sourceLang || "auto",
+      targetLang: req.body.targetLang || "fa",
+    });
+    if (!translation.translated) {
+      res.status(503).json({ error: translation.error || "translation_failed", translation });
+      return;
+    }
+    res.json({ translation });
+  } catch (error) {
+    res.status(503).json({ error: "translation_failed" });
+  }
+});
+
 app.put("/api/account/profile", requireAuth, (req, res) => {
   const validation = validateAccountProfileInput(req.body);
   if (validation.error) {

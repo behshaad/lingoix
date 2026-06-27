@@ -8,6 +8,7 @@ import { apiClient } from "../../services/apiClient";
 jest.mock("../../services/apiClient", () => ({
   apiClient: {
     dictionaryLookup: jest.fn(),
+    dictionaryTranslate: jest.fn(),
   },
 }));
 
@@ -17,7 +18,17 @@ beforeEach(async () => {
   await i18n.changeLanguage("en");
 });
 
-test("translates full text locally and shows meaning for a selected word", async () => {
+test("translates full text through the backend and shows meaning for a selected word", async () => {
+  apiClient.dictionaryTranslate.mockResolvedValueOnce({
+    translation: {
+      sourceText: "Ich lerne Deutsch heute.",
+      translatedText: "من امروز آلمانی یاد می‌گیرم.",
+      sourceLang: "de",
+      targetLang: "fa",
+      provider: "gemini",
+      translated: true,
+    },
+  });
   apiClient.dictionaryLookup.mockResolvedValueOnce({
     lookup: {
       word: "Deutsch",
@@ -44,7 +55,8 @@ test("translates full text locally and shows meaning for a selected word", async
     await userEvent.click(screen.getByRole("button", { name: "Translate" }));
   });
 
-  expect(screen.getAllByText("Ich lerne Deutsch heute.").length).toBeGreaterThan(0);
+  expect(screen.getByText("من امروز آلمانی یاد می‌گیرم.")).toBeInTheDocument();
+  expect(screen.queryAllByText("Ich lerne Deutsch heute.")).toHaveLength(1);
 
   source.setSelectionRange(10, 17);
   fireEvent.select(source);

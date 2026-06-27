@@ -96,6 +96,7 @@ const Dictionary = () => {
               <option value="auto">{t("dictionary.sourceAuto")}</option>
               <option value="de">{t("dictionary.german")}</option>
               <option value="fa">{t("dictionary.persian")}</option>
+              <option value="en">{t("dictionary.english")}</option>
             </select>
             <button
               type="button"

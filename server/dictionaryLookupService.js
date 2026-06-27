@@ -1,6 +1,8 @@
 const DEFAULT_GEMINI_MODEL = "gemini-1.5-flash";
 const DEFAULT_OPENROUTER_MODEL = "google/gemini-2.0-flash-exp:free";
 const LOOKUP_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const SUPPORTED_SOURCE_LANGS = ["de", "fa", "en"];
+const SUPPORTED_TARGET_LANGS = ["de", "fa"];
 
 const stripWordPunctuation = (value = "") =>
   String(value)
@@ -53,6 +55,40 @@ const normalizeLookup = (lookup, fallback) => ({
   error: lookup.error || "",
 });
 
+const normalizeTranslatedText = (value = "") =>
+  String(value)
+    .trim()
+    .replace(/\s+/g, " ");
+
+const emptyTranslation = ({ text, sourceLang, targetLang, error = "" }) => ({
+  sourceText: text,
+  translatedText: "",
+  sourceLang,
+  targetLang,
+  provider: "",
+  translated: false,
+  error,
+});
+
+const normalizeTranslation = (translation, fallback) => {
+  const translatedText = String(
+    translation.translatedText || translation.translation || translation.text || ""
+  ).trim();
+  const sameAsSource =
+    normalizeTranslatedText(translatedText).toLocaleLowerCase() ===
+    normalizeTranslatedText(fallback.text).toLocaleLowerCase();
+
+  return {
+    sourceText: fallback.text,
+    translatedText,
+    sourceLang: translation.sourceLang || fallback.sourceLang,
+    targetLang: translation.targetLang || fallback.targetLang,
+    provider: translation.provider || "",
+    translated: Boolean(translation.translated ?? translatedText) && !sameAsSource,
+    error: translation.error || (sameAsSource ? "identity_translation" : ""),
+  };
+};
+
 const safeJsonFromText = (text) => {
   const jsonMatch = String(text || "").match(/\{[\s\S]*\}/);
   if (!jsonMatch) return null;
@@ -83,6 +119,17 @@ JSON shape:
 If the word is not valid, set found false and suggestions if possible.
 `;
 
+const translationPrompt = ({ text, sourceLang, targetLang }) => `
+Translate the text from ${sourceLang} to ${targetLang}.
+Return ONLY valid JSON with this shape:
+{
+  "translatedText": "meaning-preserving translation"
+}
+Do not return the source text unchanged unless it truly cannot be translated.
+Text:
+${text}
+`;
+
 const createGeminiProvider = ({ fetchImpl, env }) => ({
   name: "gemini",
   isConfigured: () => Boolean(env.GEMINI_API_KEY || env.REACT_APP_GEMINI_API_KEY),
@@ -96,6 +143,27 @@ const createGeminiProvider = ({ fetchImpl, env }) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: lookupPrompt(request) }] }],
+          generationConfig: { responseMimeType: "application/json" },
+        }),
+      }
+    );
+    if (!response.ok) throw new Error(`gemini_${response.status}`);
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.map((part) => part.text).join("\n");
+    const parsed = safeJsonFromText(text);
+    if (!parsed) throw new Error("gemini_invalid_json");
+    return { ...parsed, provider: "gemini" };
+  },
+  translate: async (request) => {
+    const apiKey = env.GEMINI_API_KEY || env.REACT_APP_GEMINI_API_KEY;
+    const model = env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+    const response = await fetchImpl(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: translationPrompt(request) }] }],
           generationConfig: { responseMimeType: "application/json" },
         }),
       }
@@ -126,6 +194,29 @@ const createOpenRouterProvider = ({ fetchImpl, env }) => ({
       body: JSON.stringify({
         model,
         messages: [{ role: "user", content: lookupPrompt(request) }],
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!response.ok) throw new Error(`openrouter_${response.status}`);
+    const data = await response.json();
+    const parsed = safeJsonFromText(data?.choices?.[0]?.message?.content);
+    if (!parsed) throw new Error("openrouter_invalid_json");
+    return { ...parsed, provider: "openrouter" };
+  },
+  translate: async (request) => {
+    const apiKey = env.OPENROUTER_API_KEY || env.REACT_APP_OPENROUTER_API_KEY;
+    const model = env.OPENROUTER_MODEL || DEFAULT_OPENROUTER_MODEL;
+    const response = await fetchImpl("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": env.APP_PUBLIC_URL || "http://localhost:3000",
+        "X-Title": "Lingoix",
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: translationPrompt(request) }],
         response_format: { type: "json_object" },
       }),
     });
@@ -267,7 +358,38 @@ const createDictionaryLookupService = ({ db, fetchImpl = fetch, env = process.en
     return emptyLookup({ ...fallback, suggestions, error: "lookup_not_found" });
   };
 
-  return { lookup, detectLanguage, stripWordPunctuation };
+  const resolveTranslationLanguages = ({ text, sourceLang = "auto", targetLang = "fa" }) => {
+    const detectedSource = sourceLang === "auto" ? detectLanguage(text) : sourceLang;
+    const resolvedSource = SUPPORTED_SOURCE_LANGS.includes(detectedSource) ? detectedSource : "en";
+    const normalizedTarget = SUPPORTED_TARGET_LANGS.includes(targetLang) ? targetLang : "fa";
+    const resolvedTarget =
+      resolvedSource === normalizedTarget ? (normalizedTarget === "de" ? "fa" : "de") : normalizedTarget;
+    return { sourceLang: resolvedSource, targetLang: resolvedTarget };
+  };
+
+  const translate = async ({ text, sourceLang = "auto", targetLang = "fa" }) => {
+    const sourceText = String(text || "").trim();
+    if (!sourceText) {
+      return emptyTranslation({ text: "", sourceLang, targetLang, error: "invalid_text" });
+    }
+
+    const resolved = resolveTranslationLanguages({ text: sourceText, sourceLang, targetLang });
+    const fallback = { text: sourceText, ...resolved };
+
+    for (const provider of providers) {
+      if (!provider.isConfigured() || typeof provider.translate !== "function") continue;
+      try {
+        const result = normalizeTranslation(await provider.translate(fallback), fallback);
+        if (result.translated) return result;
+      } catch {
+        // Translation providers are isolated so one outage cannot break the chain.
+      }
+    }
+
+    return emptyTranslation({ ...fallback, error: "translation_failed" });
+  };
+
+  return { lookup, translate, detectLanguage, stripWordPunctuation };
 };
 
 module.exports = { createDictionaryLookupService, detectLanguage, stripWordPunctuation };

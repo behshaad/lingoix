@@ -59,9 +59,14 @@ export const useTranslation = () => {
   };
 
   const swapLanguages = () => {
+    const oppositeLearningLang = targetLang === "de" ? "fa" : "de";
     if (sourceLang === "auto") {
       const detectedLang = translationService.detectLanguage(inputText);
-      setSourceLang(detectedLang);
+      setSourceLang(targetLang);
+      setTargetLang(detectedLang === "en" ? oppositeLearningLang : detectedLang);
+    } else if (sourceLang === "en") {
+      setSourceLang(targetLang);
+      setTargetLang(oppositeLearningLang);
     } else {
       setSourceLang(targetLang);
       setTargetLang(sourceLang);
