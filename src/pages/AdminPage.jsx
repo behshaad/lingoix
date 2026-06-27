@@ -20,6 +20,7 @@ import {
 import { apiClient } from "../services/apiClient";
 import { getSkillAreas } from "../services/learningDataService";
 import LanguagePerformanceProfile from "../components/Dashboard/LanguagePerformanceProfile";
+import AccountAvatar from "../components/Account/AccountAvatar";
 
 const numberFormat = new Intl.NumberFormat("en-US");
 
@@ -584,16 +585,24 @@ const AdminPage = () => {
                   <button
                     key={learner.id}
                     onClick={() => setSelectedLearnerId(learner.id)}
-                    className={`w-full rounded-md border p-3 text-left text-sm transition ${
+                    className={`flex w-full items-center gap-3 rounded-md border p-3 text-left text-sm transition ${
                       learner.id === selectedLearnerId
                         ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950"
                         : "border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
                     }`}
                   >
-                    <div className="font-semibold">{learner.name}</div>
-                    <div className="text-gray-500 dark:text-gray-400">
-                      {learner.cefrLevel} · {learner.className} ·{" "}
-                      {t("learnerDashboard.accuracy", { value: learner.accuracy })}
+                    <AccountAvatar
+                      src={learner.avatarUrl}
+                      name={learner.name}
+                      alt={t("accountProfile.avatarAlt", "Profile photo")}
+                      size="sm"
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold">{learner.name}</div>
+                      <div className="truncate text-gray-500 dark:text-gray-400">
+                        {learner.cefrLevel} · {learner.className} ·{" "}
+                        {t("learnerDashboard.accuracy", { value: learner.accuracy })}
+                      </div>
                     </div>
                   </button>
                 ))}
@@ -603,12 +612,20 @@ const AdminPage = () => {
             <section className="space-y-4">
               <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold">{learnerReport.learner.name}</h2>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {learnerReport.learner.goal} · {learnerReport.learner.className} ·{" "}
-                      {learnerReport.learner.teacher}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <AccountAvatar
+                      src={learnerReport.learner.avatarUrl}
+                      name={learnerReport.learner.name}
+                      alt={t("accountProfile.avatarAlt", "Profile photo")}
+                      size="lg"
+                    />
+                    <div>
+                      <h2 className="text-2xl font-bold">{learnerReport.learner.name}</h2>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {learnerReport.learner.goal} · {learnerReport.learner.className} ·{" "}
+                        {learnerReport.learner.teacher}
+                      </p>
+                    </div>
                   </div>
                   <div className="rounded-md bg-gray-100 px-4 py-2 text-sm dark:bg-gray-800">
                     {learnerReport.learner.cefrLevel} ·{" "}

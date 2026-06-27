@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { UserCircle } from "lucide-react";
+import AccountAvatar from "../Account/AccountAvatar";
 import { apiClient } from "../../services/apiClient";
 import {
   AUTH_SESSION_EVENT,
@@ -46,20 +46,16 @@ const UserMenu = () => {
         <button
           type="button"
           onClick={handleProfileClick}
-          aria-label={t("accountMenu", "Account menu")}
+          aria-label={user.name ? t("accountMenuFor", { name: user.name }) : t("accountMenu", "Account menu")}
+          title={user.name ? t("accountMenuFor", { name: user.name }) : t("accountMenu", "Account menu")}
           className="flex items-center gap-2"
         >
-          {user.profilePic ? (
-            <img
-              src={user.profilePic}
-              alt={t("accountProfile.avatarAlt", "Profile photo")}
-              className="h-9 w-9 rounded-full border border-gray-300 object-cover shadow-sm"
-            />
-          ) : (
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-600 shadow-sm dark:bg-gray-900 dark:text-gray-200">
-              <UserCircle className="h-6 w-6" />
-            </span>
-          )}
+          <AccountAvatar
+            src={user.profilePic}
+            name={user.name || user.email}
+            alt={t("accountProfile.avatarAlt", "Profile photo")}
+            size="sm"
+          />
         </button>
       )}
     </div>

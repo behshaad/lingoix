@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
+import AccountAvatar from "../Account/AccountAvatar";
 import { apiClient } from "../../services/apiClient";
 import { adminRoles, clearAccountSession, saveLearnerEntryIntent } from "../../services/authSession";
 
@@ -73,6 +74,26 @@ const MobileMenu = ({ isOpen, toggleMenu, user, setUser }) => {
           isRtl ? "text-right" : "text-left"
         }`}
       >
+        {user && (
+          <Link
+            to="/account/profile"
+            onClick={closeMenu}
+            className="flex items-center gap-3 rounded-md border border-gray-200 bg-white/70 p-3 text-gray-900 transition hover:bg-white dark:border-gray-800 dark:bg-gray-950/60 dark:text-white dark:hover:bg-gray-950"
+          >
+            <AccountAvatar
+              src={user.profilePic}
+              name={user.name || user.email}
+              alt={t("accountProfile.avatarAlt", "Profile photo")}
+              size="sm"
+            />
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold">{user.name || user.email}</span>
+              <span className="block text-xs font-normal text-gray-500 dark:text-gray-400">
+                {t("accountProfile.title", "Your profile")}
+              </span>
+            </span>
+          </Link>
+        )}
         {/* <Link
           to="/"
           className="text-gray-800 dark:text-gray-100 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-300"

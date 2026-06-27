@@ -6,6 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const { db, initializeDatabase } = require("./db");
+const { validateAccountProfileInput } = require("./accountProfileValidation");
 
 const app = express();
 const PORT = process.env.API_PORT || 4000;
@@ -231,6 +232,7 @@ const serializeLearner = (row) => {
     completedExercises: row.completed_exercises,
     accuracy: row.accuracy,
     averageResponseMs: row.average_response_ms,
+    avatarUrl: row.avatar_url || null,
   };
   const learningPath = normalizeLearningPathItems(jsonParse(row.learning_path, []), base);
   const nextItem =
@@ -523,14 +525,22 @@ const pathProgressPercent = (items) => {
 
 const learnerScopeClause = (account) => {
   if (account.role === "platform_admin") return { sql: "", params: [] };
-  if (account.role === "school_admin") return { sql: "WHERE school = ?", params: [account.school_name] };
-  if (account.role === "teacher") return { sql: "WHERE teacher = ?", params: [account.teacher_name] };
-  return { sql: "WHERE id = ?", params: [account.learner_id] };
+  if (account.role === "school_admin") return { sql: "WHERE learners.school = ?", params: [account.school_name] };
+  if (account.role === "teacher") return { sql: "WHERE learners.teacher = ?", params: [account.teacher_name] };
+  return { sql: "WHERE learners.id = ?", params: [account.learner_id] };
 };
 
 const getLearnerRowsForAccount = (account) => {
   const scope = learnerScopeClause(account);
-  return db.prepare(`SELECT * FROM learners ${scope.sql} ORDER BY name`).all(...scope.params);
+  return db
+    .prepare(
+      `SELECT learners.*, accounts.avatar_url AS avatar_url
+       FROM learners
+       LEFT JOIN accounts ON accounts.email = learners.email
+       ${scope.sql}
+       ORDER BY learners.name`
+    )
+    .all(...scope.params);
 };
 
 const canAccessLearner = (account, learner) => {
@@ -542,7 +552,14 @@ const canAccessLearner = (account, learner) => {
 };
 
 const getLearnerBundle = (learnerId) => {
-  const learnerRow = db.prepare("SELECT * FROM learners WHERE id = ?").get(learnerId);
+  const learnerRow = db
+    .prepare(
+      `SELECT learners.*, accounts.avatar_url AS avatar_url
+       FROM learners
+       LEFT JOIN accounts ON accounts.email = learners.email
+       WHERE learners.id = ?`
+    )
+    .get(learnerId);
   if (!learnerRow) return null;
   const learner = serializeLearner(learnerRow);
   const skillWeaknesses = db
@@ -985,20 +1002,12 @@ app.get("/api/auth/me", requireAuth, (req, res) => {
 });
 
 app.put("/api/account/profile", requireAuth, (req, res) => {
-  const displayName = String(req.body.displayName || "").trim();
-  const phone = String(req.body.phone || "").trim().slice(0, 40);
-  const bio = String(req.body.bio || "").trim().slice(0, 280);
-  const avatarUrl = req.body.avatarUrl ? String(req.body.avatarUrl) : null;
-
-  if (!displayName) {
-    res.status(400).json({ error: "display_name_required" });
+  const validation = validateAccountProfileInput(req.body);
+  if (validation.error) {
+    res.status(400).json({ error: validation.error });
     return;
   }
-
-  if (avatarUrl && (!avatarUrl.startsWith("data:image/") || avatarUrl.length > 900000)) {
-    res.status(400).json({ error: "invalid_avatar" });
-    return;
-  }
+  const { displayName, phone, bio, avatarUrl } = validation.value;
 
   db.prepare(
     `UPDATE accounts

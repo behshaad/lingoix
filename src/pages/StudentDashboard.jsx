@@ -5,6 +5,7 @@ import { Activity, ArrowRight, BookOpen, Brain, Clock3, Gauge, Sparkles, Target 
 
 import LanguagePerformanceProfile from "../components/Dashboard/LanguagePerformanceProfile";
 import GamifiedRoadmap from "../components/Roadmap/GamifiedRoadmap";
+import AccountAvatar from "../components/Account/AccountAvatar";
 import { apiClient } from "../services/apiClient";
 
 const MetricCard = ({ icon: Icon, label, value, detail }) => (
@@ -79,18 +80,26 @@ const Dashboard = () => {
       <div className="mx-auto max-w-6xl space-y-7">
         <section className="rounded-[30px] bg-white p-6 shadow-[0_22px_70px_rgba(15,23,42,0.08)] dark:bg-gray-900 md:p-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-700">
-                <Sparkles className="h-4 w-4" />
-                {t("roadmap.todayPath", "Today's Path")}
-              </p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
-                {t("learnerDashboard.greeting", "Welcome back")}, {learner.name}
-              </h1>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-300">
-                {learner.cefrLevel} · {learner.goal} · {t("learnerDashboard.nextFocus", "Your next focus is")}{" "}
-                <span className="font-semibold text-gray-950 dark:text-white">{nextItem?.title}</span>
-              </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <AccountAvatar
+                src={learner.avatarUrl}
+                name={learner.name}
+                alt={t("accountProfile.avatarAlt", "Profile photo")}
+                size="lg"
+              />
+              <div>
+                <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-700">
+                  <Sparkles className="h-4 w-4" />
+                  {t("roadmap.todayPath", "Today's Path")}
+                </p>
+                <h1 className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
+                  {t("learnerDashboard.greeting", "Welcome back")}, {learner.name}
+                </h1>
+                <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-300">
+                  {learner.cefrLevel} · {learner.goal} · {t("learnerDashboard.nextFocus", "Your next focus is")}{" "}
+                  <span className="font-semibold text-gray-950 dark:text-white">{nextItem?.title}</span>
+                </p>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-3">
               <div className="rounded-2xl bg-gray-100 px-4 py-3 dark:bg-gray-800">

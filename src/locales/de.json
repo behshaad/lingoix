@@ -39,6 +39,8 @@
   "Academy": "Akademie",
   "createAccount": "Kostenloses Konto erstellen",
   "login": "Anmelden",
+  "accountMenu": "Account-Menü",
+  "accountMenuFor": "Account-Menü für {{name}}",
   "cart": "Warenkorb",
 
   "assignmentManagement": "Aufgabenverwaltung",
@@ -229,8 +231,22 @@
     "saved": "Profil gespeichert.",
     "saveFailed": "Profil konnte nicht gespeichert werden.",
     "nameRequired": "Anzeigename ist erforderlich.",
+    "nameTooShort": "Der Anzeigename muss mindestens 2 Zeichen lang sein.",
+    "nameTooLong": "Der Anzeigename darf höchstens 80 Zeichen lang sein.",
+    "phoneTooLong": "Die Telefonnummer darf höchstens 40 Zeichen lang sein.",
+    "phoneInvalid": "Verwende nur Ziffern, Leerzeichen, +, - und Klammern.",
+    "bioTooLong": "Die Bio darf höchstens 280 Zeichen lang sein.",
     "imageTypeError": "Bitte wähle eine Bilddatei aus.",
-    "imageSizeError": "Bitte wähle ein Bild kleiner als 700 KB aus."
+    "imageSizeError": "Bitte wähle ein Bild kleiner als 700 KB aus.",
+    "errors": {
+      "display_name_required": "Anzeigename ist erforderlich.",
+      "display_name_too_short": "Der Anzeigename muss mindestens 2 Zeichen lang sein.",
+      "display_name_too_long": "Der Anzeigename darf höchstens 80 Zeichen lang sein.",
+      "phone_too_long": "Die Telefonnummer darf höchstens 40 Zeichen lang sein.",
+      "invalid_phone": "Verwende nur Ziffern, Leerzeichen, +, - und Klammern.",
+      "bio_too_long": "Die Bio darf höchstens 280 Zeichen lang sein.",
+      "invalid_avatar": "Bitte wähle ein gültiges Bild kleiner als 700 KB aus."
+    }
   },
   "learningPath": {
     "eyebrow": "Lernpfad",

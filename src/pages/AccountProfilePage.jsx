@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { Camera, LogOut, Save, UserCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Camera, LogOut, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import AccountAvatar from "../components/Account/AccountAvatar";
 import { apiClient } from "../services/apiClient";
 import { clearAccountSession, refreshAccountSession } from "../services/authSession";
 
@@ -15,16 +16,57 @@ const emptyForm = {
 };
 
 const AccountProfilePage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState("neutral");
+  const isRtl = i18n.language === "fa";
+
+  const setFeedback = (translationKey, tone = "neutral", fallback) => {
+    setMessage(t(translationKey, fallback));
+    setMessageTone(tone);
+  };
+
+  const validateForm = () => {
+    const displayName = form.displayName.trim();
+    const phone = form.phone.trim();
+    const bio = form.bio.trim();
+
+    if (!displayName) {
+      setFeedback("accountProfile.nameRequired", "error", "Display name is required.");
+      return false;
+    }
+    if (displayName.length < 2) {
+      setFeedback("accountProfile.nameTooShort", "error", "Display name must be at least 2 characters.");
+      return false;
+    }
+    if (displayName.length > 80) {
+      setFeedback("accountProfile.nameTooLong", "error", "Display name must be 80 characters or fewer.");
+      return false;
+    }
+    if (phone.length > 40) {
+      setFeedback("accountProfile.phoneTooLong", "error", "Phone must be 40 characters or fewer.");
+      return false;
+    }
+    if (phone && !/^[0-9+\-()\s]*$/.test(phone)) {
+      setFeedback("accountProfile.phoneInvalid", "error", "Use only digits, spaces, +, -, and parentheses.");
+      return false;
+    }
+    if (bio.length > 280) {
+      setFeedback("accountProfile.bioTooLong", "error", "Bio must be 280 characters or fewer.");
+      return false;
+    }
+    return true;
+  };
 
   useEffect(() => {
+    let isMounted = true;
     apiClient
       .me()
       .then(({ account }) => {
+        if (!isMounted) return;
         refreshAccountSession(account);
         setForm({
           displayName: account.displayName || "",
@@ -37,34 +79,28 @@ const AccountProfilePage = () => {
         setStatus("ready");
       })
       .catch(() => {
-        navigate("/login");
+        if (isMounted) navigate("/login");
       });
+    return () => {
+      isMounted = false;
+    };
   }, [navigate]);
-
-  const initials = useMemo(() => {
-    const source = form.displayName || form.email || "L";
-    return source
-      .split(/\s+/)
-      .map((part) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  }, [form.displayName, form.email]);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
     setMessage("");
+    setMessageTone("neutral");
   };
 
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setMessage(t("accountProfile.imageTypeError"));
+      setFeedback("accountProfile.imageTypeError", "error", "Please choose an image file.");
       return;
     }
     if (file.size > 700 * 1024) {
-      setMessage(t("accountProfile.imageSizeError"));
+      setFeedback("accountProfile.imageSizeError", "error", "Please choose an image smaller than 700 KB.");
       return;
     }
 
@@ -74,16 +110,13 @@ const AccountProfilePage = () => {
   };
 
   const handleSave = async () => {
-    if (!form.displayName.trim()) {
-      setMessage(t("accountProfile.nameRequired"));
-      return;
-    }
+    if (!validateForm()) return;
     setStatus("saving");
     try {
       const { account } = await apiClient.updateAccountProfile({
-        displayName: form.displayName,
-        phone: form.phone,
-        bio: form.bio,
+        displayName: form.displayName.trim(),
+        phone: form.phone.trim(),
+        bio: form.bio.trim(),
         avatarUrl: form.avatarUrl,
       });
       refreshAccountSession(account);
@@ -94,10 +127,10 @@ const AccountProfilePage = () => {
         bio: account.bio || "",
         avatarUrl: account.avatarUrl || "",
       }));
-      setMessage(t("accountProfile.saved"));
+      setFeedback("accountProfile.saved", "success", "Profile saved.");
       setStatus("ready");
     } catch (error) {
-      setMessage(t("accountProfile.saveFailed"));
+      setFeedback(`accountProfile.errors.${error.message}`, "error", t("accountProfile.saveFailed"));
       setStatus("ready");
     }
   };
@@ -110,7 +143,7 @@ const AccountProfilePage = () => {
 
   if (status === "loading") {
     return (
-      <main className="min-h-screen bg-gray-50 px-6 py-10 text-gray-950 dark:bg-gray-950 dark:text-white">
+      <main dir={isRtl ? "rtl" : "ltr"} className="min-h-screen bg-gray-50 px-6 py-10 text-gray-950 dark:bg-gray-950 dark:text-white">
         <div className="mx-auto max-w-5xl text-sm text-gray-600 dark:text-gray-300">
           {t("accountProfile.loading")}
         </div>
@@ -119,7 +152,7 @@ const AccountProfilePage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 px-6 py-8 text-gray-950 dark:bg-gray-950 dark:text-white">
+    <main dir={isRtl ? "rtl" : "ltr"} className="min-h-screen bg-gray-50 px-6 py-8 text-gray-950 dark:bg-gray-950 dark:text-white">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="border-b border-gray-200 pb-6 dark:border-gray-800">
           <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
@@ -134,17 +167,12 @@ const AccountProfilePage = () => {
         <section className="grid gap-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900 lg:grid-cols-[280px_1fr]">
           <div className="space-y-4">
             <div className="flex flex-col items-center rounded-lg bg-gray-50 p-5 dark:bg-gray-950">
-              {form.avatarUrl ? (
-                <img
-                  src={form.avatarUrl}
-                  alt={t("accountProfile.avatarAlt")}
-                  className="h-32 w-32 rounded-full border border-gray-200 object-cover shadow-sm dark:border-gray-700"
-                />
-              ) : (
-                <div className="flex h-32 w-32 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
-                  {initials ? <span className="text-3xl font-semibold">{initials}</span> : <UserCircle className="h-16 w-16" />}
-                </div>
-              )}
+              <AccountAvatar
+                src={form.avatarUrl}
+                name={form.displayName || form.email}
+                alt={t("accountProfile.avatarAlt")}
+                size="xl"
+              />
               <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">
                 <Camera className="h-4 w-4" />
                 {t("accountProfile.uploadPhoto")}
@@ -225,7 +253,16 @@ const AccountProfilePage = () => {
             </label>
 
             {message && (
-              <p className="rounded-md bg-gray-100 px-3 py-2 text-sm text-gray-700 dark:bg-gray-950 dark:text-gray-200">
+              <p
+                role={messageTone === "error" ? "alert" : "status"}
+                className={`rounded-md px-3 py-2 text-sm ${
+                  messageTone === "error"
+                    ? "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-200"
+                    : messageTone === "success"
+                      ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-100"
+                      : "bg-gray-100 text-gray-700 dark:bg-gray-950 dark:text-gray-200"
+                }`}
+              >
                 {message}
               </p>
             )}

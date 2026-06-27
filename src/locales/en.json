@@ -38,6 +38,8 @@
   "Academy": "Academy",
   "createAccount": "Create Free Account",
   "login": "Login",
+  "accountMenu": "Account menu",
+  "accountMenuFor": "Account menu for {{name}}",
   "cart": "Cart",
 
   "assignmentManagement": "Assignment Management",
@@ -228,8 +230,22 @@
     "saved": "Profile saved.",
     "saveFailed": "Could not save profile.",
     "nameRequired": "Display name is required.",
+    "nameTooShort": "Display name must be at least 2 characters.",
+    "nameTooLong": "Display name must be 80 characters or fewer.",
+    "phoneTooLong": "Phone must be 40 characters or fewer.",
+    "phoneInvalid": "Use only digits, spaces, +, -, and parentheses.",
+    "bioTooLong": "Bio must be 280 characters or fewer.",
     "imageTypeError": "Please choose an image file.",
-    "imageSizeError": "Please choose an image smaller than 700 KB."
+    "imageSizeError": "Please choose an image smaller than 700 KB.",
+    "errors": {
+      "display_name_required": "Display name is required.",
+      "display_name_too_short": "Display name must be at least 2 characters.",
+      "display_name_too_long": "Display name must be 80 characters or fewer.",
+      "phone_too_long": "Phone must be 40 characters or fewer.",
+      "invalid_phone": "Use only digits, spaces, +, -, and parentheses.",
+      "bio_too_long": "Bio must be 280 characters or fewer.",
+      "invalid_avatar": "Please choose a valid image smaller than 700 KB."
+    }
   },
   "learningPath": {
     "eyebrow": "Learning path",
