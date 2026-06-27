@@ -12,6 +12,10 @@ _Avoid_: Student, user
 The learning identity attached to a learner account, containing the learner's goals, CEFR level, language background, learning path, language performance, and adaptive-learning state. In the current product scope, each learner account has exactly one learner profile.
 _Avoid_: Account, user profile, student profile
 
+**Learner Archetype**:
+A synthetic learner's latent behavioral pattern used to generate realistic learning events, such as vocabulary weakness, slow learning, fast improvement, plateauing, or balanced performance. A learner archetype may explain a skill weakness, but it is not the same thing as the final weakness category predicted by a classifier.
+_Avoid_: Weakness label, learner type, class label
+
 **Learner Profile Setup**:
 The required onboarding step where a new learner provides enough language background, CEFR level, and goal information for Lingoix to create the learner profile before dashboard access.
 _Avoid_: Signup, account setup, student onboarding
