@@ -172,6 +172,10 @@ _Avoid_: Writing prompt, pronunciation exercise, speaking test
 The learner-facing translator and word-lookup surface where a learner can translate a full text, inspect a selected word's meaning, save useful words, and optionally hear pronunciation.
 _Avoid_: Translator when referring to the full learning surface
 
+**Full-Text Translation**:
+A meaning-preserving translation of a learner-provided text from one language to another inside the dictionary workspace. Full-text translation is distinct from selected word lookup because it handles phrases, sentences, and context rather than one isolated word.
+_Avoid_: Dictionary lookup, word lookup, identity fallback
+
 **Selected Word Lookup**:
 The act of selecting one word inside source or translated text and seeing a short learner-facing meaning for that word.
 _Avoid_: Highlight, text selection, search when referring to the dictionary behavior
