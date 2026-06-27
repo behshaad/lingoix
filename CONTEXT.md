@@ -168,6 +168,18 @@ _Avoid_: Pronunciation analysis, audio scoring, speaking test
 An exercise in the exercise bank that presents a topic-based conversation prompt and collects a learner response as evidence for speaking ability.
 _Avoid_: Writing prompt, pronunciation exercise, speaking test
 
+**Dictionary Workspace**:
+The learner-facing translator and word-lookup surface where a learner can translate a full text, inspect a selected word's meaning, save useful words, and optionally hear pronunciation.
+_Avoid_: Translator when referring to the full learning surface
+
+**Selected Word Lookup**:
+The act of selecting one word inside source or translated text and seeing a short learner-facing meaning for that word.
+_Avoid_: Highlight, text selection, search when referring to the dictionary behavior
+
+**Pronunciation Playback**:
+Optional audio playback of a selected word so the learner can hear how it sounds in the word's language.
+_Avoid_: Pronunciation analysis, speaking assessment
+
 **CEFR Level**:
 The learner's broad language level using the Common European Framework of Reference scale: A1, A2, B1, B2, C1, or C2. CEFR level is not the same as language performance; a learner can have uneven performance across skills within one level.
 _Avoid_: Level when discussing skill-specific performance

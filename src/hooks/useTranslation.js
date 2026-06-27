@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { translationService } from "../services/translationService";
-import debounce from "lodash/debounce";
 
 export const useTranslation = () => {
   const [inputText, setInputText] = useState("");
@@ -9,7 +8,12 @@ export const useTranslation = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sourceLang, setSourceLang] = useState("auto");
-  const [targetLang, setTargetLang] = useState("de");
+  const [targetLang, setTargetLang] = useState("fa");
+
+  const resolveTargetLang = (detectedSource) => {
+    if (detectedSource === targetLang) return targetLang === "de" ? "fa" : "de";
+    return targetLang;
+  };
 
   const translate = async () => {
     if (!inputText.trim()) return;
@@ -18,12 +22,16 @@ export const useTranslation = () => {
     setError(null);
 
     try {
+      const detectedSource =
+        sourceLang === "auto" ? translationService.detectLanguage(inputText) : sourceLang;
+      const resolvedTarget = resolveTargetLang(detectedSource);
       const translated = await translationService.translate(
         inputText,
-        sourceLang,
-        targetLang
+        detectedSource,
+        resolvedTarget
       );
       setTranslatedText(translated);
+      if (resolvedTarget !== targetLang) setTargetLang(resolvedTarget);
     } catch (err) {
       setError("Translation failed. Please try again.");
       console.error("Translation error:", err);
@@ -32,35 +40,23 @@ export const useTranslation = () => {
     }
   };
 
-  const handleInputChange = useMemo(
-    () =>
-      debounce(async (text) => {
+  const handleInputChange = (text) => {
       setInputText(text);
       setError(null);
 
       if (!text.trim()) {
         setSuggestions([]);
+        setTranslatedText("");
         return;
       }
 
-      try {
-        const detectedLang = translationService.detectLanguage(text);
-        if (sourceLang === "auto") {
-          setSourceLang(detectedLang);
-        }
-
-        const suggestions = await translationService.getSuggestions(
-          text,
-          detectedLang
-        );
-        setSuggestions(suggestions);
-      } catch (err) {
-        console.error("Error getting suggestions:", err);
-        setSuggestions([]);
+      const detectedLang = translationService.detectLanguage(text);
+      if (sourceLang === "auto") {
+        setSourceLang(detectedLang);
+        setTargetLang((current) => (current === detectedLang ? (detectedLang === "de" ? "fa" : "de") : current));
       }
-      }, 300),
-    [sourceLang]
-  );
+      setSuggestions([]);
+  };
 
   const swapLanguages = () => {
     if (sourceLang === "auto") {

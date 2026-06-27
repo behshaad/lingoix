@@ -1,4 +1,6 @@
 // Translation service using Google Cloud Translation API
+import { dictionaryService } from "./dictionaryService";
+
 const API_KEY = process.env.REACT_APP_GOOGLE_TRANSLATE_API_KEY;
 
 const BASE_URL = "https://translation.googleapis.com/language/translate/v2";
@@ -6,7 +8,7 @@ const BASE_URL = "https://translation.googleapis.com/language/translate/v2";
 export const translationService = {
   async translate(text, sourceLang, targetLang) {
     if (!API_KEY) {
-      throw new Error("Translation API key is not configured");
+      return dictionaryService.translateLocally(text, sourceLang, targetLang);
     }
 
     try {
@@ -47,16 +49,6 @@ export const translationService = {
   },
 
   detectLanguage(text) {
-    // Simple language detection based on character sets
-    const persianRegex = /[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF]/;
-    const germanRegex = /[äöüßÄÖÜ]/;
-
-    if (persianRegex.test(text)) {
-      return "fa";
-    } else if (germanRegex.test(text)) {
-      return "de";
-    }
-
-    return "auto";
+    return dictionaryService.detectLanguage(text);
   },
 };
