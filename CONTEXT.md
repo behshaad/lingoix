@@ -21,7 +21,7 @@ An authenticated learner account that does not yet have its required learner pro
 _Avoid_: Guest, logged-out user, broken learner
 
 **Learner Entry Intent**:
-The learner's intended destination when they enter the account and profile setup flow, such as starting free into the dashboard or viewing their learning path after setup.
+The learner's intended learner-only destination when they enter the account and learner profile setup flow, such as opening the dashboard, learning path, or resources after setup. Auth pages and learner profile setup itself are not valid learner entry intents.
 _Avoid_: Button action, redirect flag, generic onboarding source
 
 **Student**:
@@ -51,6 +51,10 @@ _Avoid_: Today's path, assignment, targeted exercise insertion
 **Roadmap**:
 The visual representation of a learner's learning path.
 _Avoid_: Learning Path when referring only to the UI
+
+**Learning Path Preview**:
+A public explanation of how Lingoix personalizes learning paths before a learner has an assigned path. It is not the learner's actual learning path or roadmap.
+_Avoid_: Learning Path, Roadmap
 
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
@@ -151,6 +155,10 @@ _Avoid_: Level when discussing skill-specific performance
 **Resource**:
 Learning material the learner consumes, such as a PDF, audio file, video, vocabulary list, or grammar explanation.
 _Avoid_: Exercise, task
+
+**Resource Library**:
+The learner-facing collection of published resources available for browsing and consumption. Teachers, school admins, and platform admins may view the resource library to see what learners can access, but resource editing belongs in the admin panel.
+_Avoid_: Resource editor, admin content management
 
 **Published Resource**:
 A resource that is visible to learners in resource browsing and can be recommended or linked from learning paths according to learner profile fit.
