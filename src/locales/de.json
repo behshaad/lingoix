@@ -625,6 +625,34 @@
       "featureImportance": "Feature Importance",
       "ruleDecisions": "Regelbasierte adaptive Entscheidungen"
     },
+    "modelSelector": {
+      "title": "Modellauswahl",
+      "description": "Wählen Sie aus, welche Modellfamilie geprüft wird. Das filtert nur generierte Forschungsausgaben und wendet keine adaptiven Entscheidungen auf Lernpfade an.",
+      "options": {
+        "overview": "Übersicht",
+        "classification": "Klassifikationsmodelle",
+        "regression": "Regressionsmodelle",
+        "clustering": "Clustering-Modelle"
+      },
+      "explanations": {
+        "overview": {
+          "title": "Forschungspipeline vergleichen",
+          "body": "Die Übersicht zeigt Klassifikation, Regression, Clustering, statistische Tests, Schwächen und Regelentscheidungen zusammen, damit Admins die gesamte synthetische Pipeline scannen können."
+        },
+        "classification": {
+          "title": "Ansicht zur Schwächenklassifikation",
+          "body": "Klassifikationsmodelle schätzen, zu welcher injizierten Schwächenkategorie ein synthetischer Lernender gehört. Feature Importance erklärt, welche simulierten Signale diese Klassifikation geprägt haben."
+        },
+        "regression": {
+          "title": "Ansicht zu Ergebnisregression",
+          "body": "Regressionsmodelle schätzen simulierte Mastery-Ergebnisse. Statistische Tests stehen daneben, damit der Vergleich als synthetische Forschung und nicht als Lernendennachweis gerahmt bleibt."
+        },
+        "clustering": {
+          "title": "Ansicht zu Lernarchetyp-Clustering",
+          "body": "Clustering-Modelle gruppieren synthetische Lernende nach Verhaltensmustern. Die Archetyp-Verteilung erklärt den simulierten Lernendenmix hinter diesen Clustern."
+        }
+      }
+    },
     "columns": {
       "model": "Modell",
       "status": "Status",

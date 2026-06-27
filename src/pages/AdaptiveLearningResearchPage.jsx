@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, BarChart3, Brain, Clock, Database, FileText, LineChart } from "lucide-react";
+import { AlertCircle, BarChart3, Brain, Clock, Database, FileText, Filter, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../services/apiClient";
@@ -87,10 +87,75 @@ const StatCard = ({ icon: Icon, label, value, detail }) => (
   </div>
 );
 
+const modelModes = [
+  { id: "overview", tableKeys: ["classification", "regression", "clustering"] },
+  { id: "classification", tableKeys: ["classification", "featureImportance"] },
+  { id: "regression", tableKeys: ["regression", "statisticalTests"] },
+  { id: "clustering", tableKeys: ["clustering", "archetypes"] },
+];
+
+const ModelSelector = ({ selectedMode, onSelect, t }) => (
+  <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div>
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <Filter className="h-4 w-4" />
+          {t("research.modelSelector.title", "Model selector")}
+        </div>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600 dark:text-gray-300">
+          {t(
+            "research.modelSelector.description",
+            "Choose which model family to inspect. This filters generated research outputs only; it does not apply adaptive decisions to learner paths."
+          )}
+        </p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2 lg:min-w-[520px]">
+        {modelModes.map((mode) => {
+          const isActive = selectedMode === mode.id;
+          return (
+            <button
+              key={mode.id}
+              type="button"
+              onClick={() => onSelect(mode.id)}
+              className={`rounded-md border px-3 py-2 text-left text-sm font-medium transition ${
+                isActive
+                  ? "border-gray-950 bg-gray-950 text-white dark:border-white dark:bg-white dark:text-gray-950"
+                  : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 dark:hover:bg-gray-800"
+              }`}
+            >
+              {t(`research.modelSelector.options.${mode.id}`, mode.id)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+);
+
+const ModelExplanation = ({ mode, t }) => (
+  <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-50">
+    <div className="flex items-start gap-3">
+      <Brain className="mt-0.5 h-5 w-5 shrink-0" />
+      <div>
+        <h2 className="text-base font-semibold">
+          {t(`research.modelSelector.explanations.${mode}.title`, t("research.modelSelector.title", "Model selector"))}
+        </h2>
+        <p className="mt-2 text-sm leading-6">
+          {t(
+            `research.modelSelector.explanations.${mode}.body`,
+            "This view explains generated synthetic-data research artifacts and does not validate real-world learner effectiveness."
+          )}
+        </p>
+      </div>
+    </div>
+  </section>
+);
+
 const AdaptiveLearningResearchPage = () => {
   const { t, i18n } = useTranslation();
   const [research, setResearch] = useState(null);
   const [error, setError] = useState("");
+  const [selectedModelMode, setSelectedModelMode] = useState("overview");
   const isRtl = i18n.language === "fa";
   const locale = i18n.language === "fa" ? "fa-IR" : i18n.language === "de" ? "de-DE" : "en-US";
 
@@ -135,6 +200,7 @@ const AdaptiveLearningResearchPage = () => {
         : "-",
     };
   }, [locale, research, t]);
+  const selectedModelModeConfig = modelModes.find((mode) => mode.id === selectedModelMode) || modelModes[0];
 
   if (error) {
     return (
@@ -229,6 +295,9 @@ const AdaptiveLearningResearchPage = () => {
           />
         </section>
 
+        <ModelSelector selectedMode={selectedModelMode} onSelect={setSelectedModelMode} t={t} />
+        <ModelExplanation mode={selectedModelModeConfig.id} t={t} />
+
         <section className="grid gap-4 lg:grid-cols-2">
           {research.figures.map((figure) => (
             <figure key={figure} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -245,14 +314,24 @@ const AdaptiveLearningResearchPage = () => {
         </section>
 
         <section className="grid gap-4 xl:grid-cols-2">
-          <ResearchTable title={t("research.tables.classification")} rows={research.tables.classification} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.regression")} rows={research.tables.regression} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.clustering")} rows={research.tables.clustering} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.statisticalTests")} rows={research.tables.statisticalTests} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.archetypes")} rows={research.tables.archetypes} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.weaknesses")} rows={research.tables.weaknesses} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.featureImportance")} rows={research.tables.featureImportance} limit={10} t={t} locale={locale} isRtl={isRtl} />
-          <ResearchTable title={t("research.tables.ruleDecisions")} rows={research.tables.ruleDecisions} limit={8} t={t} locale={locale} isRtl={isRtl} />
+          {selectedModelModeConfig.tableKeys.map((tableKey) => (
+            <ResearchTable
+              key={tableKey}
+              title={t(`research.tables.${tableKey}`)}
+              rows={research.tables[tableKey]}
+              limit={tableKey === "ruleDecisions" ? 8 : 10}
+              t={t}
+              locale={locale}
+              isRtl={isRtl}
+            />
+          ))}
+          {selectedModelMode === "overview" && (
+            <>
+              <ResearchTable title={t("research.tables.statisticalTests")} rows={research.tables.statisticalTests} limit={10} t={t} locale={locale} isRtl={isRtl} />
+              <ResearchTable title={t("research.tables.weaknesses")} rows={research.tables.weaknesses} limit={10} t={t} locale={locale} isRtl={isRtl} />
+              <ResearchTable title={t("research.tables.ruleDecisions")} rows={research.tables.ruleDecisions} limit={8} t={t} locale={locale} isRtl={isRtl} />
+            </>
+          )}
         </section>
 
         <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">

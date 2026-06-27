@@ -624,6 +624,34 @@
       "featureImportance": "Feature Importance",
       "ruleDecisions": "Rule-Based Adaptive Decisions"
     },
+    "modelSelector": {
+      "title": "Model selector",
+      "description": "Choose which model family to inspect. This filters generated research outputs only; it does not apply adaptive decisions to learner paths.",
+      "options": {
+        "overview": "Overview",
+        "classification": "Classifier models",
+        "regression": "Regression models",
+        "clustering": "Clustering models"
+      },
+      "explanations": {
+        "overview": {
+          "title": "Compare the research pipeline",
+          "body": "Overview mode keeps classification, regression, clustering, statistical, weakness, and rule-decision outputs together so admins can scan the whole synthetic-data pipeline."
+        },
+        "classification": {
+          "title": "Weakness classification view",
+          "body": "Classifier models estimate which injected weakness category a synthetic learner belongs to. Feature importance helps explain which simulated signals shaped those classifications."
+        },
+        "regression": {
+          "title": "Outcome regression view",
+          "body": "Regression models estimate simulated mastery outcomes. Statistical tests sit beside them so the outcome comparison remains framed as synthetic research, not learner proof."
+        },
+        "clustering": {
+          "title": "Learner archetype clustering view",
+          "body": "Clustering models group synthetic learners by behavioral patterns. Archetype distribution explains the simulated learner mix behind those clusters."
+        }
+      }
+    },
     "columns": {
       "model": "Model",
       "status": "Status",
