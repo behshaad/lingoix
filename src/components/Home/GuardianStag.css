@@ -1,0 +1,126 @@
+.guardian-stag {
+  position: fixed;
+  right: clamp(10px, 4vw, 58px);
+  top: 0;
+  z-index: 60;
+  width: clamp(118px, 17vw, 230px);
+  pointer-events: none;
+  opacity: var(--stag-opacity);
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.guardian-stag__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgba(125, 211, 252, 0.68))
+    drop-shadow(0 0 32px rgba(96, 165, 250, 0.46));
+}
+
+.guardian-stag__body,
+.guardian-stag__head,
+.guardian-stag__tail,
+.guardian-stag__leg,
+.guardian-stag__particle {
+  transform-box: fill-box;
+}
+
+.guardian-stag__body {
+  transform-origin: 52% 58%;
+  will-change: transform;
+}
+
+.guardian-stag__head {
+  transform-origin: 183px 68px;
+  will-change: transform;
+}
+
+.guardian-stag__tail {
+  transform-origin: 76px 86px;
+  will-change: transform;
+}
+
+.guardian-stag__leg {
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.guardian-stag__body-fill {
+  fill: url("#guardian-stag-fill");
+  stroke: rgba(255, 255, 255, 0.78);
+  stroke-width: 1.8;
+}
+
+.guardian-stag__line {
+  fill: none;
+  stroke: url("#guardian-stag-line");
+  stroke-width: 5.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.guardian-stag__spine {
+  stroke-width: 3;
+  opacity: 0.78;
+}
+
+.guardian-stag__eye {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 7px #ffffff);
+}
+
+.guardian-stag__trail {
+  opacity: 0;
+  transition: opacity 160ms ease-out;
+}
+
+.guardian-stag__trail path {
+  fill: none;
+  stroke: rgba(186, 230, 253, 0.44);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 28 18;
+  filter: blur(0.3px);
+}
+
+.guardian-stag__particle {
+  fill: #e0f2fe;
+  filter: drop-shadow(0 0 7px rgba(224, 242, 254, 0.9));
+  opacity: 0.2;
+  will-change: transform, opacity;
+}
+
+.guardian-stag--running .guardian-stag__trail path {
+  animation: guardian-stag-trail 640ms linear infinite;
+}
+
+@keyframes guardian-stag-trail {
+  to {
+    stroke-dashoffset: -46;
+  }
+}
+
+@media (max-width: 700px) {
+  .guardian-stag {
+    right: -8px;
+    width: clamp(96px, 31vw, 142px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guardian-stag {
+    opacity: 0.58;
+    transform: translate3d(0, 42vh, 0);
+  }
+
+  .guardian-stag__trail,
+  .guardian-stag__particle {
+    display: none;
+  }
+
+  .guardian-stag--running .guardian-stag__trail path {
+    animation: none;
+  }
+}
