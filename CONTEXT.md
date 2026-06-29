@@ -72,6 +72,10 @@ _Avoid_: Learning Path when referring only to the UI
 A public explanation of how Lingoix personalizes learning paths before a learner has an assigned path. It is not the learner's actual learning path or roadmap.
 _Avoid_: Learning Path, Roadmap
 
+**Public Homepage**:
+The unauthenticated marketing and product-introduction surface that explains Lingoix before a learner enters signup, learner profile setup, or a learner route.
+_Avoid_: Learner Dashboard, whole site, app shell
+
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
