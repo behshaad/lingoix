@@ -92,6 +92,14 @@ _Avoid_: AI backend, adaptive decision engine, teacher review, real model respon
 The global floating learner assistant surface available on authenticated learner routes. It keeps the learner assistant's character behavior, message state, and language-aware interaction consistent across learner pages.
 _Avoid_: Page-specific assistant, decorative learning companion, admin assistant
 
+**Persian Text Interaction**:
+Learner assistant interaction where Persian written messages are accepted, displayed right-to-left, and answered naturally in Persian. Persian text interaction is separate from spoken Persian support.
+_Avoid_: Spoken Persian support, microphone support, generic translation
+
+**Spoken Persian Support**:
+Learner assistant interaction where Persian speech is captured, understood, and answered through voice-aware flows. Spoken Persian support is not part of the learner assistant shell until browser permission, privacy, recognition quality, and fallback behavior are designed.
+_Avoid_: Persian text interaction, microphone-ready UI, simple audio button
+
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
