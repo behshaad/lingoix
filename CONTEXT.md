@@ -77,8 +77,12 @@ The unauthenticated marketing and product-introduction surface that explains Lin
 _Avoid_: Learner Dashboard, whole site, app shell
 
 **Learning Companion**:
-A decorative learner-facing guide or presence that reinforces the feeling of being accompanied through the learning experience without representing a teacher, learner profile, or adaptive decision.
+A decorative learner-facing guide or presence that reinforces the feeling of being accompanied through the learning experience without representing a teacher, learner profile, learner assistant, or adaptive decision.
 _Avoid_: Teacher, assistant, Patronus, mascot when the companion has no product role
+
+**Learner Assistant**:
+An interactive learner-facing assistant that can respond to written or spoken learner questions, provide language-learning guidance, and support Persian and English interaction while staying separate from teachers, learner profiles, and adaptive decisions.
+_Avoid_: Learning Companion, teacher, learner profile, adaptive decision engine, Patronus
 
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
