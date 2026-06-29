@@ -100,6 +100,10 @@ _Avoid_: Lingoix rebrand, separate product, generic mascot, Patronus
 The public homepage presentation of DeerLingua, where unauthenticated visitors can see the deer-led learning experience, bilingual Persian and English support, gamified learning loop, and assistant preview before entering signup or learner routes.
 _Avoid_: Lingoix rebrand, authenticated learner assistant widget, durable learner progress
 
+**Public Assistant Preview**:
+A limited local DeerLingua chat preview on the public homepage that can answer sample Persian or English messages and guide visitors toward signup without using learner data, backend AI, or durable progress.
+_Avoid_: Authenticated learner assistant widget, AI backend, spoken Persian support, learner-specific coaching
+
 **DeerLingua Character**:
 The original animated deer character used by DeerLingua. It may use uploaded deer artwork as visual reference, but the interactive character itself remains an original animation asset that can move, emote, and react.
 _Avoid_: Static uploaded image, copyrighted asset, decorative learning companion
