@@ -92,6 +92,10 @@ _Avoid_: AI backend, adaptive decision engine, teacher review, real model respon
 The global floating learner assistant surface available on authenticated learner routes. It keeps the learner assistant's character behavior, message state, and language-aware interaction consistent across learner pages.
 _Avoid_: Page-specific assistant, decorative learning companion, admin assistant
 
+**DeerLingua**:
+The named learner assistant and gamified learning experience inside Lingoix. DeerLingua is not the platform brand; it is the deer-led assistant surface that supports lessons, practice encouragement, and learner interaction.
+_Avoid_: Lingoix rebrand, separate product, generic mascot, Patronus
+
 **Persian Text Interaction**:
 Learner assistant interaction where Persian written messages are accepted, displayed right-to-left, and answered naturally in Persian. Persian text interaction is separate from spoken Persian support.
 _Avoid_: Spoken Persian support, microphone support, generic translation
