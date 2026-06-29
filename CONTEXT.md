@@ -100,6 +100,10 @@ _Avoid_: Lingoix rebrand, separate product, generic mascot, Patronus
 The original animated deer character used by DeerLingua. It may use uploaded deer artwork as visual reference, but the interactive character itself remains an original animation asset that can move, emote, and react.
 _Avoid_: Static uploaded image, copyrighted asset, decorative learning companion
 
+**DeerLingua Interaction Loop**:
+The first DeerLingua behavior set where the character idles naturally, roams safe screen areas, pays light attention to pointer movement, supports chat states, reacts to lesson answers, and invites the learner back into practice.
+_Avoid_: Full speech assistant, unlockable skins, advanced route-aware coaching
+
 **Demo Learning Progress**:
 Local prototype progress for DeerLingua lessons, XP, streaks, quests, and review state that demonstrates the learning loop without changing persisted learner records or backend schemas.
 _Avoid_: Learner profile, path progress, durable progress, backend-owned progress
