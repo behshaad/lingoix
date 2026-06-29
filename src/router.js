@@ -18,6 +18,14 @@ import AdaptiveLearningResearchPage from "./pages/AdaptiveLearningResearchPage.j
 import ResearchGuidancePage from "./pages/ResearchGuidancePage.jsx";
 import AccountProfilePage from "./pages/AccountProfilePage.jsx";
 import AdminResearchIndexPage from "./pages/AdminResearchIndexPage.jsx";
+import DeerLinguaAssistant from "./components/DeerLingua/DeerLinguaAssistant.jsx";
+
+const LearnerSurface = ({ children }) => (
+  <>
+    {children}
+    <DeerLinguaAssistant />
+  </>
+);
 
 const AppRouter = () => {
   return (
@@ -30,7 +38,9 @@ const AppRouter = () => {
             path="/learning-path"
             element={
               <ProtectedRoute allowedRoles={["learner"]}>
-                <LearningPathPage />
+                <LearnerSurface>
+                  <LearningPathPage />
+                </LearnerSurface>
               </ProtectedRoute>
             }
           />
@@ -38,7 +48,9 @@ const AppRouter = () => {
             path="/resources"
             element={
               <ProtectedRoute allowedRoles={["learner", "teacher", "school_admin", "platform_admin"]}>
-                <ResourcesPage />
+                <LearnerSurface>
+                  <ResourcesPage />
+                </LearnerSurface>
               </ProtectedRoute>
             }
           />
@@ -46,7 +58,9 @@ const AppRouter = () => {
             path="/dashboard"
             element={
               <ProtectedRoute allowedRoles={["learner"]}>
-                <Dashboard />
+                <LearnerSurface>
+                  <Dashboard />
+                </LearnerSurface>
               </ProtectedRoute>
             }
           />
@@ -54,7 +68,9 @@ const AppRouter = () => {
             path="/practice"
             element={
               <ProtectedRoute allowedRoles={["learner"]}>
-                <PracticePage />
+                <LearnerSurface>
+                  <PracticePage />
+                </LearnerSurface>
               </ProtectedRoute>
             }
           />
@@ -111,8 +127,26 @@ const AppRouter = () => {
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/lehre" element={<LehrePage />} />
           <Route path="/Lehre" element={<LehrePage />} />
-          <Route path="/dictionary" element={<Dictionary />} />
-          <Route path="/Dictionary" element={<Dictionary />} />
+          <Route
+            path="/dictionary"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <LearnerSurface>
+                  <Dictionary />
+                </LearnerSurface>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Dictionary"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <LearnerSurface>
+                  <Dictionary />
+                </LearnerSurface>
+              </ProtectedRoute>
+            }
+          />
           <Route path="/product" element={<Product />} />
           <Route path="/Product" element={<Product />} />
           <Route path="/book-player" element={<BookPlayer />} />

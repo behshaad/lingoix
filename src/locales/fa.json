@@ -430,6 +430,36 @@
     "correct": "درست",
     "wrong": "نادرست"
   },
+  "deerLingua": {
+    "name": "DeerLingua",
+    "open": "باز کردن دستیار DeerLingua",
+    "panelLabel": "دستیار یادگیرنده DeerLingua",
+    "status": "پوسته دستیار دوزبانه محلی",
+    "placeholder": "درباره آلمانی بپرسید یا فارسی بنویسید...",
+    "send": "ارسال پیام",
+    "micSoon": "ورودی صوتی فارسی در مرحله بعد اضافه می‌شود",
+    "practiceEyebrow": "مسیر نمایشی DeerLingua",
+    "practiceTitle": "آلمانی پایه با گوزن هوشمند شما",
+    "practiceSubtitle": "درس‌های کوتاه انجام دهید، XP نمایشی بگیرید، زنجیره روزانه بسازید و واکنش DeerLingua را هنگام پاسخ دادن ببینید.",
+    "statsLabel": "پیشرفت یادگیری نمایشی",
+    "level": "سطح {{level}}",
+    "streak": "زنجیره {{count}} روزه",
+    "dailyQuests": "ماموریت‌های روزانه",
+    "reviewQueue": "مرور فاصله‌دار",
+    "reviewCount": "{{count}} پاسخ در انتظار مرور است",
+    "resetDemo": "بازنشانی پیشرفت نمایشی",
+    "correctFeedback": "عالی بود. DeerLingua امتیاز XP اضافه کرد و خوشحال است.",
+    "wrongFeedback": "هنوز نه. پاسخ درست {{answer}} است. DeerLingua آن را برای مرور نگه داشت.",
+    "quests": {
+      "earnXp": "۲۰ XP بگیرید",
+      "answerQuestions": "به ۳ پرسش پاسخ دهید"
+    },
+    "exerciseTypes": {
+      "multiple_choice": "چندگزینه‌ای",
+      "fill_blank": "جای خالی",
+      "translation": "ترجمه جمله"
+    }
+  },
   "admin": {
     "title": "عملیات یادگیری تطبیقی",
     "eyebrow": "مدیریت پلتفرم",

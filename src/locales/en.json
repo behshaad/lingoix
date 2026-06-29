@@ -419,6 +419,36 @@
     "correct": "Correct",
     "wrong": "Wrong"
   },
+  "deerLingua": {
+    "name": "DeerLingua",
+    "open": "Open DeerLingua assistant",
+    "panelLabel": "DeerLingua learner assistant",
+    "status": "Local bilingual assistant shell",
+    "placeholder": "Ask about German or write in Persian...",
+    "send": "Send message",
+    "micSoon": "Persian voice input is coming later",
+    "practiceEyebrow": "DeerLingua demo path",
+    "practiceTitle": "German basics with your AI deer",
+    "practiceSubtitle": "Practice short lessons, earn demo XP, build a streak, and let DeerLingua react while you answer.",
+    "statsLabel": "Demo learning progress",
+    "level": "Level {{level}}",
+    "streak": "{{count}} day streak",
+    "dailyQuests": "Daily quests",
+    "reviewQueue": "Spaced review",
+    "reviewCount": "{{count}} answers waiting for review",
+    "resetDemo": "Reset demo progress",
+    "correctFeedback": "Nice work. DeerLingua added XP and is celebrating.",
+    "wrongFeedback": "Not quite. The answer is {{answer}}. DeerLingua added it to review.",
+    "quests": {
+      "earnXp": "Earn 20 XP",
+      "answerQuestions": "Answer 3 questions"
+    },
+    "exerciseTypes": {
+      "multiple_choice": "Multiple choice",
+      "fill_blank": "Fill in the blank",
+      "translation": "Sentence translation"
+    }
+  },
   "admin": {
     "title": "Adaptive learning operations",
     "eyebrow": "Platform Admin",

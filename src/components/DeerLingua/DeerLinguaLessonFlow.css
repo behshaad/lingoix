@@ -1,0 +1,349 @@
+.deerlingua-lesson {
+  color: #0f172a;
+}
+
+.dark .deerlingua-lesson {
+  color: #f8fafc;
+}
+
+.deerlingua-lesson__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ecfeff 0%, #eef2ff 56%, #f0fdf4 100%);
+  padding: clamp(22px, 4vw, 34px);
+  box-shadow: 0 18px 54px rgba(15, 23, 42, 0.08);
+}
+
+.dark .deerlingua-lesson__hero {
+  background: linear-gradient(135deg, rgba(14, 116, 144, 0.28), rgba(30, 41, 59, 0.9));
+}
+
+.deerlingua-lesson__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: #0369a1;
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.dark .deerlingua-lesson__eyebrow {
+  color: #7dd3fc;
+}
+
+.deerlingua-lesson h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 5vw, 4.1rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.deerlingua-lesson__hero p:last-child {
+  max-width: 720px;
+  margin: 14px 0 0;
+  color: #475569;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.dark .deerlingua-lesson__hero p:last-child {
+  color: #dbeafe;
+}
+
+.deerlingua-lesson__stats {
+  display: grid;
+  gap: 8px;
+  min-width: 178px;
+}
+
+.deerlingua-lesson__stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 10px 12px;
+  font-weight: 850;
+}
+
+.dark .deerlingua-lesson__stats span {
+  background: rgba(15, 23, 42, 0.76);
+}
+
+.deerlingua-lesson__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.deerlingua-lesson__card,
+.deerlingua-lesson__side section,
+.deerlingua-lesson__reset {
+  border: 1px solid rgba(203, 213, 225, 0.78);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.dark .deerlingua-lesson__card,
+.dark .deerlingua-lesson__side section,
+.dark .deerlingua-lesson__reset {
+  border-color: rgba(51, 65, 85, 0.92);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.deerlingua-lesson__card {
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.deerlingua-lesson__card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.deerlingua-lesson__card-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+.deerlingua-lesson__card-header h2,
+.deerlingua-lesson__side h2 {
+  margin: 4px 0 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.deerlingua-lesson__card-header > span {
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 10px;
+  font-weight: 850;
+}
+
+.deerlingua-lesson__progress {
+  height: 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+  margin: 22px 0;
+}
+
+.deerlingua-lesson__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+  transition: width 220ms ease;
+}
+
+.deerlingua-lesson__prompt span {
+  color: #0369a1;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.deerlingua-lesson__prompt h3 {
+  margin: 8px 0 0;
+  font-size: clamp(1.45rem, 3vw, 2.4rem);
+  line-height: 1.18;
+}
+
+.deerlingua-lesson__answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.deerlingua-lesson__answers button {
+  min-height: 58px;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  font-weight: 850;
+  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.deerlingua-lesson__answers button:hover:not(:disabled) {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+}
+
+.deerlingua-lesson__answers button.is-selected {
+  border-color: #4f46e5;
+}
+
+.deerlingua-lesson__answers button.is-correct {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.deerlingua-lesson__answers button.is-wrong {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+.dark .deerlingua-lesson__answers button {
+  border-color: #334155;
+  background: #020617;
+  color: #f8fafc;
+}
+
+.dark .deerlingua-lesson__answers button.is-correct {
+  background: rgba(22, 163, 74, 0.28);
+}
+
+.dark .deerlingua-lesson__answers button.is-wrong {
+  background: rgba(220, 38, 38, 0.28);
+}
+
+.deerlingua-lesson__feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.deerlingua-lesson__feedback p {
+  margin: 0;
+  font-weight: 850;
+}
+
+.deerlingua-lesson__feedback button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 16px;
+  font-weight: 850;
+}
+
+.deerlingua-lesson__feedback--correct {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.deerlingua-lesson__feedback--wrong {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.deerlingua-lesson__side {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.deerlingua-lesson__side section {
+  padding: 18px;
+}
+
+.deerlingua-lesson__quest {
+  margin-top: 14px;
+}
+
+.deerlingua-lesson__quest > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.dark .deerlingua-lesson__quest > div:first-child {
+  color: #cbd5e1;
+}
+
+.deerlingua-lesson__quest > div:last-child {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.deerlingua-lesson__quest > div:last-child span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #38bdf8;
+}
+
+.deerlingua-lesson__side p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.dark .deerlingua-lesson__side p {
+  color: #cbd5e1;
+}
+
+.deerlingua-lesson__reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  cursor: pointer;
+  color: inherit;
+  font-weight: 850;
+}
+
+@media (max-width: 900px) {
+  .deerlingua-lesson__hero,
+  .deerlingua-lesson__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deerlingua-lesson__hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .deerlingua-lesson__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .deerlingua-lesson__answers,
+  .deerlingua-lesson__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .deerlingua-lesson__feedback {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deerlingua-lesson__answers button,
+  .deerlingua-lesson__progress span {
+    transition: none;
+  }
+
+  .deerlingua-lesson__answers button:hover:not(:disabled) {
+    transform: none;
+  }
+}
