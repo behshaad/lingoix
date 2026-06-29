@@ -76,6 +76,10 @@ _Avoid_: Learning Path, Roadmap
 The unauthenticated marketing and product-introduction surface that explains Lingoix before a learner enters signup, learner profile setup, or a learner route.
 _Avoid_: Learner Dashboard, whole site, app shell
 
+**Learning Companion**:
+A decorative learner-facing guide or presence that reinforces the feeling of being accompanied through the learning experience without representing a teacher, learner profile, or adaptive decision.
+_Avoid_: Teacher, assistant, Patronus, mascot when the companion has no product role
+
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
