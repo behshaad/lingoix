@@ -104,6 +104,10 @@ _Avoid_: Lingoix rebrand, authenticated learner assistant widget, durable learne
 A limited local DeerLingua chat preview on the public homepage that can answer sample Persian or English messages and guide visitors toward signup without using learner data, backend AI, or durable progress.
 _Avoid_: Authenticated learner assistant widget, AI backend, spoken Persian support, learner-specific coaching
 
+**Public Lesson Preview**:
+A compact playable DeerLingua lesson sample on the public homepage that demonstrates one short exercise, XP feedback, streak or quest visuals, and deer reactions before signup.
+_Avoid_: Full lesson flow, durable progress, authenticated practice session
+
 **DeerLingua Character**:
 The original animated deer character used by DeerLingua. It may use uploaded deer artwork as visual reference, but the interactive character itself remains an original animation asset that can move, emote, and react.
 _Avoid_: Static uploaded image, copyrighted asset, decorative learning companion
