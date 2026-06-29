@@ -96,6 +96,10 @@ _Avoid_: Page-specific assistant, decorative learning companion, admin assistant
 The named learner assistant and gamified learning experience inside Lingoix. DeerLingua is not the platform brand; it is the deer-led assistant surface that supports lessons, practice encouragement, and learner interaction.
 _Avoid_: Lingoix rebrand, separate product, generic mascot, Patronus
 
+**Demo Learning Progress**:
+Local prototype progress for DeerLingua lessons, XP, streaks, quests, and review state that demonstrates the learning loop without changing persisted learner records or backend schemas.
+_Avoid_: Learner profile, path progress, durable progress, backend-owned progress
+
 **Persian Text Interaction**:
 Learner assistant interaction where Persian written messages are accepted, displayed right-to-left, and answered naturally in Persian. Persian text interaction is separate from spoken Persian support.
 _Avoid_: Spoken Persian support, microphone support, generic translation
