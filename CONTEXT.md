@@ -96,6 +96,10 @@ _Avoid_: Page-specific assistant, decorative learning companion, admin assistant
 The named learner assistant and gamified learning experience inside Lingoix. DeerLingua is not the platform brand; it is the deer-led assistant surface that supports lessons, practice encouragement, and learner interaction.
 _Avoid_: Lingoix rebrand, separate product, generic mascot, Patronus
 
+**DeerLingua Character**:
+The original animated deer character used by DeerLingua. It may use uploaded deer artwork as visual reference, but the interactive character itself remains an original animation asset that can move, emote, and react.
+_Avoid_: Static uploaded image, copyrighted asset, decorative learning companion
+
 **Demo Learning Progress**:
 Local prototype progress for DeerLingua lessons, XP, streaks, quests, and review state that demonstrates the learning loop without changing persisted learner records or backend schemas.
 _Avoid_: Learner profile, path progress, durable progress, backend-owned progress
