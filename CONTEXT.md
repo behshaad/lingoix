@@ -88,6 +88,10 @@ _Avoid_: Learning Companion, teacher, learner profile, adaptive decision engine,
 The interactive learner assistant interface and character behavior before a real AI provider is connected. It can collect learner messages, show local bilingual responses, and demonstrate assistant interaction patterns without making model-backed adaptive decisions.
 _Avoid_: AI backend, adaptive decision engine, teacher review, real model response
 
+**Learner Assistant Widget**:
+The global floating learner assistant surface available on authenticated learner routes. It keeps the learner assistant's character behavior, message state, and language-aware interaction consistent across learner pages.
+_Avoid_: Page-specific assistant, decorative learning companion, admin assistant
+
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
