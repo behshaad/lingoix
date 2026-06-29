@@ -84,6 +84,10 @@ _Avoid_: Teacher, assistant, Patronus, mascot when the companion has no product 
 An interactive learner-facing assistant that can respond to written or spoken learner questions, provide language-learning guidance, and support Persian and English interaction while staying separate from teachers, learner profiles, and adaptive decisions.
 _Avoid_: Learning Companion, teacher, learner profile, adaptive decision engine, Patronus
 
+**Learner Assistant Shell**:
+The interactive learner assistant interface and character behavior before a real AI provider is connected. It can collect learner messages, show local bilingual responses, and demonstrate assistant interaction patterns without making model-backed adaptive decisions.
+_Avoid_: AI backend, adaptive decision engine, teacher review, real model response
+
 **Gamified Roadmap**:
 A game-like roadmap presentation where learning path items appear as interactive stations that a learner can scroll through and open to start the lesson, exercise, review, or assessment for that station.
 _Avoid_: Dashboard, generic course list, lesson menu
