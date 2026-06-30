@@ -65,6 +65,16 @@ const AppRouter = () => {
             }
           />
           <Route
+            path="/naver"
+            element={
+              <ProtectedRoute allowedRoles={["learner"]}>
+                <LearnerSurface>
+                  <Dashboard />
+                </LearnerSurface>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/practice"
             element={
               <ProtectedRoute allowedRoles={["learner"]}>
