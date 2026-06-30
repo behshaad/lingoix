@@ -37,8 +37,9 @@ const UserMenu = () => {
     <div className="relative">
       {!user ? (
         <button
+          type="button"
           onClick={() => navigate("/login")}
-          className="rounded-md bg-gray-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-gray-950"
+          className="app-primary-button"
         >
           {t("login")}
         </button>
@@ -48,7 +49,7 @@ const UserMenu = () => {
           onClick={handleProfileClick}
           aria-label={user.name ? t("accountMenuFor", { name: user.name }) : t("accountMenu", "Account menu")}
           title={user.name ? t("accountMenuFor", { name: user.name }) : t("accountMenu", "Account menu")}
-          className="flex items-center gap-2"
+          className="app-icon-button"
         >
           <AccountAvatar
             src={user.profilePic}

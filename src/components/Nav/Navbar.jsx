@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Menu } from "lucide-react";
 
 import Logo from "./Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -32,70 +33,66 @@ const Navbar = () => {
   const isLearner = user?.role === "learner";
   const isAdminRole = adminRoles.includes(user?.role);
 
+  const navLinks = [
+    { to: "/dictionary", label: t("Translator") },
+    ...(isLearner
+      ? [
+          { to: "/dashboard", label: t("Dashboard") },
+          { to: "/practice", label: t("nav.practice") },
+        ]
+      : []),
+    { to: "/resources", label: t("Resources") },
+    ...(isAdminRole
+      ? [
+          { to: "/admin", label: t("nav.admin") },
+          { to: "/admin/research", label: t("nav.researchIndex", "Research Index") },
+          { to: "/research/adaptive-learning", label: t("nav.research") },
+          { to: "/research/guidance", label: t("nav.researchGuidance") },
+        ]
+      : []),
+  ];
+
   return (
-    <nav className="w-full py-5 bg-white/80 dark:bg-gray-900/80  fixed top-0 left-0 z-50">
-      <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-        <Logo />
-        <div className="hidden items-center gap-5 text-sm font-medium text-gray-900 dark:text-white lg:flex">
-          <Link to="/dictionary" className="hover:text-gray-600 dark:hover:text-gray-300">
-            {t("Translator")}
-          </Link>
-          {isLearner && (
-            <>
-              <Link to="/dashboard" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("Dashboard")}
+    <>
+      <nav className="app-nav" aria-label={t("nav.main", "Main navigation")}>
+        <div className="app-container app-nav__inner">
+          <Logo />
+          <div className="app-nav__links">
+            {navLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="app-nav__link">
+                {link.label}
               </Link>
-              <Link to="/practice" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("nav.practice")}
-              </Link>
-            </>
-          )}
-          <Link to="/resources" className="hover:text-gray-600 dark:hover:text-gray-300">
-            {t("Resources")}
-          </Link>
-          {isAdminRole && (
-            <>
-              <Link to="/admin" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("nav.admin")}
-              </Link>
-              <Link to="/admin/research" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("nav.researchIndex", "Research Index")}
-              </Link>
-              <Link to="/research/adaptive-learning" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("nav.research")}
-              </Link>
-              <Link to="/research/guidance" className="hover:text-gray-600 dark:hover:text-gray-300">
-                {t("nav.researchGuidance")}
-              </Link>
-            </>
-          )}
-        </div>
-        <div className="flex items-center gap-4">
-          {/* دکمه تغییر تم */}
-          <div className="hidden lg:block">
-            <ThemeToggle />
+            ))}
           </div>
-          {/* سوییچر زبان */}
-          <div className="hidden lg:block">
-            <LanguageSwitcher />
+          <div className="app-nav__actions">
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
+            <div className="hidden lg:block">
+              <LanguageSwitcher />
+            </div>
+            <UserMenu />
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              className="app-icon-button lg:hidden"
+              aria-label={t("nav.openMenu", "Open menu")}
+              aria-expanded={isMobileMenuOpen}
+            >
+              <Menu size={20} aria-hidden="true" />
+            </button>
           </div>
-          {/* سوییچر زبان */}
-          {/* نمایش دکمه‌های ورود/ثبت‌نام یا پروفایل کاربر */}
-          <UserMenu />
-          {/* دکمه همبرگری برای موبایل */}
-          <button onClick={toggleMobileMenu} className="lg:hidden text-2xl">
-            ☰
-          </button>
         </div>
-      </div>
+      </nav>
 
       <MobileMenu
         isOpen={isMobileMenuOpen}
         toggleMenu={toggleMobileMenu}
         user={user}
         setUser={setUser}
+        navLinks={navLinks}
       />
-    </nav>
+    </>
   );
 };
 

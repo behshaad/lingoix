@@ -6,10 +6,10 @@ const Logo = () => {
   return (
     <Link
       to="/"
-      className="text-3xl font-semibold "
+      className="app-logo"
+      aria-label="Lingoix"
     >
-      {/* Lingoix */}
-      <img src={CommunitySVG} alt="lingoix" className="w-16 h-16 rounded " />
+      <img src={CommunitySVG} alt="" />
     </Link>
   );
 };

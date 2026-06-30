@@ -1,36 +1,33 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
-import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+import { Github, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About Section */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Lingoix</h3>
-            <p className="text-muted-foreground">
+    <footer className="app-footer">
+      <div className="app-container app-footer__inner">
+        <div className="app-footer__grid">
+          <section className="app-footer__section" aria-label="Lingoix">
+            <h3 className="app-footer__title">Lingoix</h3>
+            <p className="app-footer__text">
               {t(
                 "footer.about",
                 "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths."
               )}
             </p>
-          </div>
+          </section>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">
+          <nav className="app-footer__section" aria-label={t("footer.quickLinks", "Quick Links")}>
+            <h3 className="app-footer__title">
               {t("footer.quickLinks", "Quick Links")}
             </h3>
-            <ul className="space-y-2">
+            <ul className="app-footer__list">
               <li>
                 <Link
                   to="/"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="app-footer__link"
                 >
                   {t("footer.home", "Home")}
                 </Link>
@@ -38,7 +35,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/dashboard"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="app-footer__link"
                 >
                   {t("footer.courses", "Courses")}
                 </Link>
@@ -46,7 +43,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/resources"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="app-footer__link"
                 >
                   {t("footer.resources", "Resources")}
                 </Link>
@@ -54,96 +51,85 @@ export default function Footer() {
               <li>
                 <Link
                   to="/admin"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="app-footer__link"
                 >
                   {t("footer.contact", "Admin")}
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">
+          <section className="app-footer__section" aria-label={t("footer.contactUs", "Contact Us")}>
+            <h3 className="app-footer__title">
               {t("footer.contactUs", "Contact Us")}
             </h3>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <MdEmail className="h-5 w-5" />
+            <ul className="app-footer__list">
+              <li className="app-footer__contact-item">
+                <Mail size={18} aria-hidden="true" />
                 <span>contact@lingoix.com</span>
               </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <MdPhone className="h-5 w-5" />
+              <li className="app-footer__contact-item">
+                <Phone size={18} aria-hidden="true" />
                 <span>+1 (555) 123-4567</span>
               </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <MdLocationOn className="h-5 w-5" />
+              <li className="app-footer__contact-item">
+                <MapPin size={18} aria-hidden="true" />
                 <span>
                   {t("footer.address", "123 Language Street, Education City")}
                 </span>
               </li>
             </ul>
-          </div>
+          </section>
 
-          {/* Social Media */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">
+          <section className="app-footer__section" aria-label={t("footer.followUs", "Follow Us")}>
+            <h3 className="app-footer__title">
               {t("footer.followUs", "Follow Us")}
             </h3>
-            <div className="flex gap-4">
+            <div className="app-footer__social">
               <button
                 type="button"
                 aria-label="GitHub"
-                className="p-2 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="app-social-button"
               >
-                <FaGithub className="h-5 w-5" />
+                <Github size={18} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 aria-label="Twitter"
-                className="p-2 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="app-social-button"
               >
-                <FaTwitter className="h-5 w-5" />
+                <Twitter size={18} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 aria-label="LinkedIn"
-                className="p-2 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="app-social-button"
               >
-                <FaLinkedin className="h-5 w-5" />
+                <Linkedin size={18} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 aria-label="Instagram"
-                className="p-2 bg-muted rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="app-social-button"
               >
-                <FaInstagram className="h-5 w-5" />
+                <Instagram size={18} aria-hidden="true" />
               </button>
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Lingoix.{" "}
-              {t("footer.rights", "All rights reserved.")}
-            </p>
-            <div className="flex gap-6">
-              <button
-                type="button"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                {t("footer.privacy", "Privacy Policy")}
-              </button>
-              <button
-                type="button"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                {t("footer.terms", "Terms of Service")}
-              </button>
-            </div>
+        <div className="app-footer__bottom">
+          <p className="app-footer__meta">
+            © {new Date().getFullYear()} Lingoix.{" "}
+            {t("footer.rights", "All rights reserved.")}
+          </p>
+          <div className="app-footer__legal">
+            <button type="button" className="app-footer__link">
+              {t("footer.privacy", "Privacy Policy")}
+            </button>
+            <button type="button" className="app-footer__link">
+              {t("footer.terms", "Terms of Service")}
+            </button>
           </div>
         </div>
       </div>
