@@ -1,140 +1,166 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  BookOpen,
-  Brain,
-  CheckCircle2,
-  Languages,
-  LineChart,
-  MessageCircle,
-  ShieldCheck,
-  Sparkles,
-  WandSparkles,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Flame, Globe2, Sparkles, Star, Trophy } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import DeerLinguaPublicGuide from "../components/DeerLingua/DeerLinguaPublicGuide";
 import Footer from "../components/Footer/Footer";
-import GuardianStag from "../components/Home/GuardianStag";
 import { saveLearnerEntryIntent } from "../services/authSession";
 import "./HomePage.css";
 
-const pathItems = [
-  { label: "Profile setup", detail: "Goals, CEFR level, language background", status: "ready" },
-  { label: "Today's path", detail: "A1 listening plus vocabulary recall", status: "active" },
-  { label: "Targeted exercise", detail: "Grammar tense repair after repeated errors", status: "review" },
-];
-
-const capabilities = [
-  {
-    icon: Brain,
-    title: "Adaptive learning path",
-    text: "Learners follow an adjustable sequence shaped by goals, learning events, and skill weaknesses.",
-  },
-  {
-    icon: LineChart,
-    title: "Language performance profile",
-    text: "Vocabulary, grammar, listening, reading, writing, translation, and speaking stay visible together.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Teacher-reviewed decisions",
-    text: "Proposed adaptive decisions can be reviewed with evidence before they change a learner path.",
-  },
-];
-
-const journey = [
-  "Create a learner profile with the language background that matters.",
-  "Start with today's path instead of hunting through generic lessons.",
-  "Practice with resources and exercises that produce meaningful learning events.",
-  "Let targeted exercise insertions repair real error patterns over time.",
-];
-
-const proofPoints = [
-  { value: "7", label: "skill areas" },
-  { value: "100+", label: "demo learners" },
-  { value: "4", label: "account roles" },
-];
+const focusMap = {
+  hero: ".public-homepage__hero-copy",
+  preview: ".public-homepage__lesson",
+  path: ".public-homepage__path",
+  language: ".public-homepage__language-card",
+};
 
 const HomePage = () => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === "fa";
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [focusTarget, setFocusTarget] = useState(focusMap.hero);
+
+  const answers = useMemo(() => t("home.lesson.answers", { returnObjects: true }), [t]);
+  const pathItems = useMemo(() => t("home.path.items", { returnObjects: true }), [t]);
+  const features = useMemo(() => t("home.features.items", { returnObjects: true }), [t]);
+  const proof = useMemo(() => t("home.proof", { returnObjects: true }), [t]);
+  const correctAnswer = t("home.lesson.correctAnswer");
+
   const rememberIntent = (destination) => {
     saveLearnerEntryIntent(destination);
   };
 
-  return (
-    <main className="public-homepage">
-      <GuardianStag />
+  const chooseAnswer = (answer) => {
+    setSelectedAnswer(answer);
+    const result = answer === correctAnswer ? "correct" : "wrong";
+    setFeedback(result);
+    setFocusTarget(focusMap.preview);
+    window.dispatchEvent(
+      new CustomEvent("deerlingua:public-reaction", {
+        detail: { type: result === "correct" ? "celebrating" : "reacting" },
+      })
+    );
+  };
 
-      <section className="public-homepage__hero" aria-labelledby="home-title">
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language);
+    setFocusTarget(focusMap.language);
+  };
+
+  return (
+    <main className={`public-homepage ${isRtl ? "public-homepage--fa" : "public-homepage--en"}`} dir={isRtl ? "rtl" : "ltr"}>
+      <DeerLinguaPublicGuide focusTarget={focusTarget} />
+
+      <section
+        className="public-homepage__hero"
+        aria-labelledby="home-title"
+        onMouseEnter={() => setFocusTarget(focusMap.hero)}
+      >
         <div className="public-homepage__hero-copy">
+          <div className="public-homepage__language-card" aria-label={t("home.languageLabel")}>
+            <Globe2 size={18} aria-hidden="true" />
+            <button
+              type="button"
+              className={i18n.language === "en" ? "is-active" : ""}
+              onClick={() => changeLanguage("en")}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              className={i18n.language === "fa" ? "is-active" : ""}
+              onClick={() => changeLanguage("fa")}
+            >
+              FA
+            </button>
+          </div>
           <p className="public-homepage__eyebrow">
-            <WandSparkles size={18} aria-hidden="true" />
-            German for Persian-speaking learners
+            <Sparkles size={18} aria-hidden="true" />
+            {t("home.eyebrow")}
           </p>
-          <h1 id="home-title">Lingoix</h1>
-          <p className="public-homepage__lede">
-            A magical learning journey on the surface, with adaptive language-learning
-            evidence underneath. Build your learner profile, follow today's path, and
-            let targeted practice meet your real weak spots.
-          </p>
-          <div className="public-homepage__actions" aria-label="Primary actions">
+          <h1 id="home-title">{t("home.title")}</h1>
+          <p className="public-homepage__lede">{t("home.subtitle")}</p>
+          <div className="public-homepage__actions" aria-label={t("home.actionsLabel")}>
             <Link
               className="public-homepage__button public-homepage__button--primary"
               to="/signup"
-              onClick={() => rememberIntent("/dashboard")}
+              onClick={() => rememberIntent("/practice")}
             >
-              Start learning
+              {t("home.primaryCta")}
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
-            <Link
+            <button
+              type="button"
               className="public-homepage__button public-homepage__button--secondary"
-              to="/learning-path"
-              onClick={() => rememberIntent("/learning-path")}
+              onClick={() => setFocusTarget(focusMap.preview)}
             >
-              Preview the path
-            </Link>
+              {t("home.secondaryCta")}
+            </button>
           </div>
         </div>
 
-        <div className="public-homepage__preview" aria-label="Learning path preview">
-          <div className="public-homepage__preview-header">
-            <span>Learning Path Preview</span>
-            <span>A1 → A2</span>
+        <article
+          className="public-homepage__lesson"
+          aria-label={t("home.lesson.label")}
+          onMouseEnter={() => setFocusTarget(focusMap.preview)}
+        >
+          <div className="public-homepage__lesson-top">
+            <div>
+              <p>{t("home.lesson.unit")}</p>
+              <h2>{t("home.lesson.title")}</h2>
+            </div>
+            <span>{t("home.lesson.xp")}</span>
           </div>
-          <div className="public-homepage__path-list">
-            {pathItems.map((item) => (
-              <div
-                className={`public-homepage__path-item public-homepage__path-item--${item.status}`}
-                key={item.label}
+          <div className="public-homepage__lesson-progress">
+            <span />
+          </div>
+          <div className="public-homepage__lesson-prompt">
+            <span>{t("home.lesson.type")}</span>
+            <h3>{t("home.lesson.prompt")}</h3>
+          </div>
+          <div className="public-homepage__lesson-answers">
+            {answers.map((answer) => (
+              <button
+                key={answer}
+                type="button"
+                className={[
+                  selectedAnswer === answer ? "is-selected" : "",
+                  feedback && answer === correctAnswer ? "is-correct" : "",
+                  feedback === "wrong" && selectedAnswer === answer ? "is-wrong" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => chooseAnswer(answer)}
               >
-                <span className="public-homepage__path-marker" aria-hidden="true" />
-                <div>
-                  <strong>{item.label}</strong>
-                  <p>{item.detail}</p>
-                </div>
-              </div>
+                {answer}
+              </button>
             ))}
           </div>
-          <div className="public-homepage__signal-grid" aria-label="Learner signals">
-            <span>
-              <Languages size={17} aria-hidden="true" />
-              Persian → German
-            </span>
-            <span>
-              <BookOpen size={17} aria-hidden="true" />
-              Resource fit
-            </span>
-            <span>
-              <MessageCircle size={17} aria-hidden="true" />
-              Conversation
-            </span>
-            <span>
-              <Sparkles size={17} aria-hidden="true" />
-              Targeted repair
-            </span>
-          </div>
-        </div>
+          {feedback && (
+            <div className={`public-homepage__lesson-feedback public-homepage__lesson-feedback--${feedback}`}>
+              <p>
+                {feedback === "correct"
+                  ? t("home.lesson.correct")
+                  : t("home.lesson.wrong", { answer: correctAnswer })}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedAnswer("");
+                  setFeedback(null);
+                  setFocusTarget(focusMap.path);
+                }}
+              >
+                {t("home.lesson.next")}
+              </button>
+            </div>
+          )}
+        </article>
       </section>
 
-      <section className="public-homepage__proof" aria-label="Platform proof points">
-        {proofPoints.map((point) => (
+      <section className="public-homepage__proof" aria-label={t("home.proofLabel")}>
+        {proof.map((point) => (
           <div key={point.label}>
             <strong>{point.value}</strong>
             <span>{point.label}</span>
@@ -142,52 +168,59 @@ const HomePage = () => {
         ))}
       </section>
 
-      <section className="public-homepage__section public-homepage__section--split">
+      <section
+        className="public-homepage__section public-homepage__section--split"
+        onMouseEnter={() => setFocusTarget(focusMap.path)}
+      >
         <div>
-          <p className="public-homepage__eyebrow">Learner-first flow</p>
-          <h2>Know what to do next every time you open Lingoix.</h2>
+          <p className="public-homepage__eyebrow">{t("home.path.eyebrow")}</p>
+          <h2>{t("home.path.title")}</h2>
         </div>
-        <div className="public-homepage__journey">
-          {journey.map((item, index) => (
-            <div className="public-homepage__journey-step" key={item}>
+        <div className="public-homepage__path">
+          {pathItems.map((item, index) => (
+            <article key={item.title}>
               <span>{index + 1}</span>
-              <p>{item}</p>
-            </div>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </article>
           ))}
         </div>
       </section>
 
       <section className="public-homepage__section">
         <div className="public-homepage__section-heading">
-          <p className="public-homepage__eyebrow">Serious adaptive-learning proof</p>
-          <h2>The magic has a learning model behind it.</h2>
-          <p>
-            Lingoix connects learner profile setup, learning events, skill weaknesses,
-            resources, exercises, and teacher review into one coherent learner dashboard.
-          </p>
+          <p className="public-homepage__eyebrow">{t("home.features.eyebrow")}</p>
+          <h2>{t("home.features.title")}</h2>
+          <p>{t("home.features.subtitle")}</p>
         </div>
         <div className="public-homepage__capabilities">
-          {capabilities.map(({ icon: Icon, title, text }) => (
-            <article className="public-homepage__capability" key={title}>
-              <Icon size={28} aria-hidden="true" />
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
+          {features.map((feature, index) => {
+            const icons = [Trophy, Flame, Star];
+            const Icon = icons[index] || CheckCircle2;
+            return (
+              <article className="public-homepage__capability" key={feature.title}>
+                <Icon size={28} aria-hidden="true" />
+                <h3>{feature.title}</h3>
+                <p>{feature.text}</p>
+              </article>
+            );
+          })}
         </div>
       </section>
 
       <section className="public-homepage__closing" aria-labelledby="closing-title">
         <div>
-          <p className="public-homepage__eyebrow">Your companion is ready</p>
-          <h2 id="closing-title">Follow today's path with a little light beside you.</h2>
+          <p className="public-homepage__eyebrow">{t("home.closing.eyebrow")}</p>
+          <h2 id="closing-title">{t("home.closing.title")}</h2>
         </div>
         <Link
           className="public-homepage__button public-homepage__button--primary"
           to="/signup"
-          onClick={() => rememberIntent("/dashboard")}
+          onClick={() => rememberIntent("/practice")}
         >
-          Create learner profile
+          {t("home.closing.cta")}
           <CheckCircle2 size={18} aria-hidden="true" />
         </Link>
       </section>

@@ -938,6 +938,65 @@
       "caption": "a different experience with AI"
     }
   ],
+  "home": {
+    "languageLabel": "Homepage language",
+    "eyebrow": "DeerLingua by Lingoix",
+    "title": "Meet DeerLingua",
+    "subtitle": "A premium AI deer guide for German learning. Practice short lessons, earn XP, build streaks, and switch smoothly between English and Persian with first-class RTL support.",
+    "actionsLabel": "Homepage actions",
+    "primaryCta": "Start with DeerLingua",
+    "secondaryCta": "Try the mini lesson",
+    "proofLabel": "DeerLingua highlights",
+    "proof": [
+      { "value": "A1", "label": "German basics first" },
+      { "value": "XP", "label": "Gamified progress" },
+      { "value": "EN/FA", "label": "Bilingual by design" }
+    ],
+    "lesson": {
+      "label": "Public lesson preview",
+      "unit": "German Basics · Unit 1",
+      "title": "Mini lesson",
+      "xp": "+10 XP",
+      "type": "Multiple choice",
+      "prompt": "What does Hallo mean?",
+      "answers": ["Hello", "Goodbye", "Thanks", "Please"],
+      "correctAnswer": "Hello",
+      "correct": "Correct. DeerLingua celebrates and adds demo XP.",
+      "wrong": "Not quite. The answer is {{answer}}. DeerLingua saves it for review.",
+      "next": "Guide me onward"
+    },
+    "deer": {
+      "name": "DeerLingua",
+      "ask": "Ask DeerLingua",
+      "chatLabel": "Public DeerLingua preview chat",
+      "welcome": "I can preview how DeerLingua explains German and guides practice. Ask in English or Persian.",
+      "placeholder": "Ask about German or write فارسی..."
+    },
+    "path": {
+      "eyebrow": "Duolingo-like learning loop",
+      "title": "A living guide through sections, units, and lessons.",
+      "items": [
+        { "title": "Sections", "text": "Start with German basics, then unlock richer learning areas as you build confidence." },
+        { "title": "Units", "text": "Each unit keeps the next action obvious with quests, streaks, and spaced review." },
+        { "title": "Lessons", "text": "Short exercises give instant feedback while DeerLingua reacts and guides the next step." }
+      ]
+    },
+    "features": {
+      "eyebrow": "Premium assistant experience",
+      "title": "Not a mascot. A guide that feels present.",
+      "subtitle": "The deer moves around the interface, watches focus, celebrates success, and answers local preview questions in English or Persian.",
+      "items": [
+        { "title": "Smart movement", "text": "DeerLingua moves on both axes, approaches relevant UI areas, and avoids important content." },
+        { "title": "Natural animation", "text": "Blinking, ear motion, head tracking, walking, tail movement, and smooth state transitions keep it alive." },
+        { "title": "Persian-first support", "text": "Homepage copy, layout, chat direction, and language switching are designed for RTL from the start." }
+      ]
+    },
+    "closing": {
+      "eyebrow": "Ready for the full path?",
+      "title": "Create a learner profile and let DeerLingua guide your first German practice session.",
+      "cta": "Create learner profile"
+    }
+  },
   "footer": {
     "about": "Your trusted platform for language learning. Master new languages with interactive lessons and personalized learning paths.",
     "quickLinks": "Quick Links",
